@@ -26,4 +26,5 @@ export const COLORES = {
   marcaOscura: '#0052cc',
   textoTenue: '#94a3b8',
   pantalla: '#f0f4f8',
+  exito: '#34d399'
 };

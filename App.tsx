@@ -19,9 +19,40 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { ErrorApi } from '@/conexion/clienteApi';
 import NavegadorRaiz from '@/navegacion/NavegadorRaiz';
-import { limpiarSesion, restaurarSesion } from '@/servicios/servicioSesion';
+import { cerrarSesionRemota, refrescarSesion } from '@/servicios/servicioAutenticacion';
+import { guardarSesion, limpiarSesion, restaurarSesion } from '@/servicios/servicioSesion';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
+
+// 3. Constantes del módulo
+const CODIGO_NO_AUTORIZADO = 401;
+// Si al token de acceso le queda menos que esto, se renueva antes de usarlo.
+const MARGEN_RENOVACION_MS = 60 * 1000;
+
+/**
+ * Restaura la sesión guardada y, si su token de acceso venció, la renueva con el de refresco.
+ * Si el servidor rechaza el refresco (401) la sesión se descarta; si no hay conexión, se
+ * conserva la sesión guardada para no sacar al usuario por una falla de red.
+ */
+async function restaurarYRenovarSesion(): Promise<SesionAutenticacion | null> {
+  const guardada = await restaurarSesion();
+  if (!guardada || guardada.venceEn > Date.now() + MARGEN_RENOVACION_MS) {
+    return guardada;
+  }
+
+  try {
+    const renovada = await refrescarSesion(guardada.tokenRefresco);
+    await guardarSesion(renovada);
+    return renovada;
+  } catch (error) {
+    if (error instanceof ErrorApi && error.estado === CODIGO_NO_AUTORIZADO) {
+      await limpiarSesion();
+      return null;
+    }
+    return guardada;
+  }
+}
 
 // 4. Componente principal
 export default function App() {
@@ -35,12 +66,15 @@ export default function App() {
   const [estaRestaurando, setEstaRestaurando] = useState(true);
 
   useEffect(() => {
-    restaurarSesion()
+    restaurarYRenovarSesion()
       .then(setSesion)
       .finally(() => setEstaRestaurando(false));
   }, []);
 
   const manejarCierreSesion = async () => {
+    if (sesion) {
+      await cerrarSesionRemota(sesion.tokenRefresco);
+    }
     await limpiarSesion();
     setSesion(null);
   };

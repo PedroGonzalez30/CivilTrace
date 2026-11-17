@@ -21,6 +21,9 @@ function esSesionAutenticacion(valor: unknown): valor is SesionAutenticacion {
   if (!('token' in valor) || typeof valor.token !== 'string') {
     return false;
   }
+  if (!('tokenRefresco' in valor) || typeof valor.tokenRefresco !== 'string') {
+    return false;
+  }
   if (!('venceEn' in valor) || typeof valor.venceEn !== 'number') {
     return false;
   }
@@ -35,6 +38,8 @@ function esSesionAutenticacion(valor: unknown): valor is SesionAutenticacion {
     typeof valor.usuario.nombre === 'string' &&
     'correo' in valor.usuario &&
     typeof valor.usuario.correo === 'string' &&
+    'empresaId' in valor.usuario &&
+    typeof valor.usuario.empresaId === 'string' &&
     'rol' in valor.usuario &&
     typeof valor.usuario.rol === 'string' &&
     esRolValido(valor.usuario.rol)
@@ -58,7 +63,8 @@ export async function limpiarSesion(): Promise<void> {
 }
 
 /**
- * Recupera la sesión guardada si existe, es válida y no ha vencido.
+ * Recupera la sesión guardada si existe y tiene la forma correcta. Aunque el token de acceso
+ * haya vencido, se devuelve: quien la restaura la renueva con el token de refresco.
  *
  * @returns La sesión guardada, o null si no hay una sesión utilizable.
  */
@@ -70,7 +76,7 @@ export async function restaurarSesion(): Promise<SesionAutenticacion | null> {
     }
 
     const sesionLeida: unknown = JSON.parse(contenidoGuardado);
-    if (!esSesionAutenticacion(sesionLeida) || sesionLeida.venceEn <= Date.now()) {
+    if (!esSesionAutenticacion(sesionLeida)) {
       await limpiarSesion();
       return null;
     }

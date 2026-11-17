@@ -9,7 +9,9 @@
  */
 
 // 1. Importaciones
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import * as Portapapeles from 'expo-clipboard';
+import { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import {
   EncabezadoApp,
@@ -22,32 +24,63 @@ import {
 } from '@/componentes';
 import { COLORES } from '@/constantes/colores';
 import { RADIOS, SOMBRAS, TAMANOS, TIPOGRAFIA } from '@/constantes/tema';
-import { CODIGOS_ACCESO } from '@/simulados/obras';
+import type { CodigosEmpresa } from '@/servicios/servicioEmpresa';
 import type { Obra } from '@/tipos/obra';
 
 // 2. Tipos e interfaces
 interface PantallaPrincipalDuenoProps {
   nombreEmpresa?: string;
   obras: Obra[];
+  codigos: CodigosEmpresa | null;
+  cargandoCodigos: boolean;
+  errorCodigos: string | null;
+  onReintentarCodigos: () => void;
   onAbrirObra: (idObra: string) => void;
 }
 
 // 3. Constantes del módulo
 const TAMANO_ICONO_BOTON_FLOTANTE = 24;
+const DURACION_AVISO_COPIADO_MS = 2000;
 
 // TODO(Equipo): conectar la lógica real de estas acciones.
-const manejarNuevaObra = () => {};
-const manejarCompartirCodigoAcceso = () => {};
-const manejarCopiarCodigo = (_codigo: string) => {};
+const manejarNuevaObra = () => { };
+const manejarCompartirCodigoAcceso = () => { };
 
 // 4. Componente principal
 export default function PantallaPrincipalDueno({
   nombreEmpresa,
   obras,
+  codigos,
+  cargandoCodigos,
+  errorCodigos,
+  onReintentarCodigos,
   onAbrirObra,
 }: PantallaPrincipalDuenoProps) {
   const estaVacio = obras.length === 0;
   const nombreMostrado = nombreEmpresa?.trim() || 'Todo Concreto';
+  const [codigoCopiado, setCodigoCopiado] = useState<string | null>(null);
+  const temporizadorCopiado = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (temporizadorCopiado.current) {
+        clearTimeout(temporizadorCopiado.current);
+      }
+    },
+    [],
+  );
+
+  const manejarCopiarCodigo = async (codigo: string) => {
+    await Portapapeles.setStringAsync(codigo);
+    setCodigoCopiado(codigo);
+    if (temporizadorCopiado.current) {
+      clearTimeout(temporizadorCopiado.current);
+    }
+    temporizadorCopiado.current = setTimeout(
+      () => setCodigoCopiado(null),
+      DURACION_AVISO_COPIADO_MS,
+    );
+  };
 
   return (
     <View style={estilos.contenedor}>
@@ -84,18 +117,33 @@ export default function PantallaPrincipalDueno({
             <View style={estilos.codigos}>
               <Text style={estilos.tituloSeccion}>Códigos de acceso</Text>
               <View style={estilos.listaCodigos}>
-                <TarjetaCodigoAcceso
-                  titulo="Código de acceso para trabajadores"
-                  descripcion="Los trabajadores necesitan este código para acceder a la empresa."
-                  codigo={CODIGOS_ACCESO.trabajadores}
-                  onCopiar={() => manejarCopiarCodigo(CODIGOS_ACCESO.trabajadores)}
-                />
-                <TarjetaCodigoAcceso
-                  titulo="Código de acceso para supervisores"
-                  descripcion="Los supervisores necesitan este código para acceder a la empresa."
-                  codigo={CODIGOS_ACCESO.supervisores}
-                  onCopiar={() => manejarCopiarCodigo(CODIGOS_ACCESO.supervisores)}
-                />
+                {codigos ? (
+                  <>
+                    <TarjetaCodigoAcceso
+                      titulo="Código de acceso para trabajadores"
+                      descripcion="Los trabajadores necesitan este código para acceder a la empresa."
+                      codigo={codigos.trabajadores}
+                      copiado={codigoCopiado === codigos.trabajadores}
+                      onCopiar={() => manejarCopiarCodigo(codigos.trabajadores)}
+                    />
+                    <TarjetaCodigoAcceso
+                      titulo="Código de acceso para supervisores"
+                      descripcion="Los supervisores necesitan este código para acceder a la empresa."
+                      codigo={codigos.supervisores}
+                      copiado={codigoCopiado === codigos.supervisores}
+                      onCopiar={() => manejarCopiarCodigo(codigos.supervisores)}
+                    />
+                  </>
+                ) : errorCodigos ? (
+                  <View style={estilos.errorCodigos}>
+                    <Text style={estilos.textoErrorCodigos}>{errorCodigos}</Text>
+                    <Pressable onPress={onReintentarCodigos}>
+                      <Text style={estilos.enlaceReintentar}>Reintentar</Text>
+                    </Pressable>
+                  </View>
+                ) : cargandoCodigos ? (
+                  <ActivityIndicator color={COLORES.marca} />
+                ) : null}
               </View>
             </View>
             <View style={estilos.nota}>
@@ -235,5 +283,18 @@ const estilos = StyleSheet.create({
     borderRadius: RADIOS.pildora,
     backgroundColor: COLORES.marca,
     ...SOMBRAS.botonFlotante,
+  },
+  errorCodigos: {
+    gap: 8,
+    alignItems: 'center',
+  },
+  textoErrorCodigos: {
+    ...TIPOGRAFIA.leyenda,
+    textAlign: 'center',
+    color: COLORES.error,
+  },
+  enlaceReintentar: {
+    ...TIPOGRAFIA.etiqueta,
+    color: COLORES.marca,
   },
 });

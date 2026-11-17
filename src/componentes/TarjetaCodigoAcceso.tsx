@@ -2,8 +2,8 @@
  * @archivo TarjetaCodigoAcceso.tsx
  * @proyecto Civil Trace
  * @descripcion Tarjeta que muestra un código de acceso con un botón para copiarlo.
- * @autor POR_COMPLETAR
- * @fecha POR_COMPLETAR
+ * @autor Pedro Ivan Gonzalez Valdez
+ * @fecha 16/11/2026
  * @version 1.0.0
  */
 
@@ -18,14 +18,15 @@ interface TarjetaCodigoAccesoProps {
   titulo: string;
   descripcion: string;
   codigo: string;
+  copiado?: boolean;
   onCopiar: () => void;
 }
-
 // 4. Componente principal
 export default function TarjetaCodigoAcceso({
   titulo,
   descripcion,
   codigo,
+  copiado,
   onCopiar,
 }: TarjetaCodigoAccesoProps) {
   return (
@@ -37,8 +38,7 @@ export default function TarjetaCodigoAcceso({
           {codigo}
         </Text>
         <Pressable style={estilos.botonCopiar} onPress={onCopiar}>
-          <Text style={estilos.etiquetaCopiar}>Copiar</Text>
-        </Pressable>
+          <Text style={estilos.etiquetaCopiar}>{copiado ? '¡Copiado!' : 'Copiar'}</Text>        </Pressable>
       </View>
     </View>
   );
@@ -72,4 +72,5 @@ const estilos = StyleSheet.create({
     ...SOMBRAS.opcion,
   },
   etiquetaCopiar: { ...TIPOGRAFIA.leyenda, color: COLORES.superficie },
+  copiado: { ...TIPOGRAFIA.leyenda, color: COLORES.exito },
 });

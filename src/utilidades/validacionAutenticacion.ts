@@ -22,7 +22,7 @@ export const CAMPOS_REGISTRO: readonly CampoRegistro[] = [
 ];
 
 const REGEX_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const LONGITUD_MINIMA_CONTRASENA = 6;
+const LONGITUD_MINIMA_CONTRASENA = 8;
 const LONGITUD_MINIMA_NOMBRE = 3;
 
 function validarCorreo(valor: string): string | undefined {
