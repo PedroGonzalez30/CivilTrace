@@ -36,6 +36,14 @@ export const TIPOGRAFIA = {
   etiquetaNavegacion: { fontFamily: FUENTES.media, fontSize: 12, lineHeight: 18 },
   etiquetaNavegacionActiva: { fontFamily: FUENTES.seminegrita, fontSize: 12, lineHeight: 18 },
   botonPequeno: { fontFamily: FUENTES.seminegrita, fontSize: 14, lineHeight: 21 },
+  etiquetaResumen: { fontFamily: FUENTES.media, fontSize: 13, lineHeight: 18 },
+  valorResumen: { fontFamily: FUENTES.seminegrita, fontSize: 15, lineHeight: 21 },
+  subtituloPantalla: {
+    fontFamily: FUENTES.regular,
+    fontSize: 14,
+    lineHeight: 21,
+    letterSpacing: -0.15,
+  },
 } satisfies Record<string, TextStyle>;
 
 export const RADIOS = {
@@ -76,6 +84,7 @@ export const TAMANOS = {
   menuInferior: 39,
   opcionMenu: 67,
   desenfoque: 20,
+  entradaMultilinea: 72,
 };
 
 export const SOMBRAS = {

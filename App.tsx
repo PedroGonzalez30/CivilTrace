@@ -71,6 +71,31 @@ export default function App() {
       .finally(() => setEstaRestaurando(false));
   }, []);
 
+  // Renueva el token de acceso poco antes de que venza, para que las peticiones no den 401.
+  useEffect(() => {
+    if (!sesion) {
+      return;
+    }
+
+    const espera = Math.max(sesion.venceEn - Date.now() - MARGEN_RENOVACION_MS, 0);
+    const temporizador = setTimeout(() => {
+      refrescarSesion(sesion.tokenRefresco)
+        .then(async (renovada) => {
+          await guardarSesion(renovada);
+          setSesion(renovada);
+        })
+        .catch(async (error: unknown) => {
+          // Solo un 401 cierra la sesión; una falla de red no saca al usuario.
+          if (error instanceof ErrorApi && error.estado === CODIGO_NO_AUTORIZADO) {
+            await limpiarSesion();
+            setSesion(null);
+          }
+        });
+    }, espera);
+
+    return () => clearTimeout(temporizador);
+  }, [sesion]);
+
   const manejarCierreSesion = async () => {
     if (sesion) {
       await cerrarSesionRemota(sesion.tokenRefresco);

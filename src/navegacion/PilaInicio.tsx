@@ -1,22 +1,27 @@
 /**
  * @archivo PilaInicio.tsx
  * @proyecto Civil Trace
- * @descripcion Pila de navegación de la pestaña Inicio: lista de obras y detalle de una obra.
+ * @descripcion Pila de navegación de la pestaña Inicio: lista de obras, detalle y nueva obra.
  * @autor Pedro Ivan Gonzalez Valdez
- * @fecha 15/11/2026
- * @version 1.0.0
+ * @fecha 16/11/2026
+ * @version 1.1.0
  */
 
 // 1. Importaciones
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { EncabezadoApp } from '@/componentes';
 import { COLORES } from '@/constantes/colores';
+import { TIPOGRAFIA } from '@/constantes/tema';
+import { useCodigosEmpresa } from '@/hooks/useCodigoEmpresa';
+import { useObras } from '@/hooks/useObras';
+import PantallaAgregarObra from '@/pantallas/dueno/PantallaAgregarObra';
 import PantallaDetalleObra from '@/pantallas/dueno/PantallaDetalleObra';
 import PantallaPrincipalDueno from '@/pantallas/dueno/PantallaPrincipalDueno';
-import { obtenerObras } from '@/simulados/obras';
+import { crearObra } from '@/servicios/servicioObras';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
 import type { ParametrosPilaInicio } from '@/tipos/navegacion';
-import { useCodigosEmpresa } from '@/hooks/useCodigoEmpresa';
 
 // 2. Tipos e interfaces
 interface PilaInicioProps {
@@ -28,9 +33,31 @@ const Pila = createNativeStackNavigator<ParametrosPilaInicio>();
 
 // 4. Componente principal
 export default function PilaInicio({ sesion }: PilaInicioProps) {
-  const obras = obtenerObras(sesion.usuario.id);
+  const consultaObras = useObras(sesion.token);
+  const obras = consultaObras.obras;
   // Los códigos solo se piden mientras la pantalla los muestra (empresa sin obras).
-  const codigosEmpresa = useCodigosEmpresa(sesion.token, obras.length === 0);
+  const codigosEmpresa = useCodigosEmpresa(sesion.token, obras !== null && obras.length === 0);
+
+  // Solo la primera carga reemplaza la pila; las recargas conservan la lista que ya se ve.
+  if (obras === null) {
+    return (
+      <View style={estilos.contenedor}>
+        <EncabezadoApp />
+        <View style={estilos.centro}>
+          {consultaObras.error ? (
+            <>
+              <Text style={estilos.error}>{consultaObras.error}</Text>
+              <Pressable onPress={consultaObras.recargar}>
+                <Text style={estilos.reintentar}>Reintentar</Text>
+              </Pressable>
+            </>
+          ) : (
+            <ActivityIndicator color={COLORES.marca} />
+          )}
+        </View>
+      </View>
+    );
+  }
 
   return (
     <Pila.Navigator
@@ -45,8 +72,10 @@ export default function PilaInicio({ sesion }: PilaInicioProps) {
             cargandoCodigos={codigosEmpresa.cargando}
             errorCodigos={codigosEmpresa.error}
             onReintentarCodigos={codigosEmpresa.reintentar}
-            onAbrirObra={(idObra) => navigation.navigate('Obras' === 'Obras' ? 'ObraDetalle' : 'ObraDetalle', { idObra })}
-          />)}
+            onAbrirObra={(idObra) => navigation.navigate('ObraDetalle', { idObra })}
+            onNuevaObra={() => navigation.navigate('NuevaObra')}
+          />
+        )}
       </Pila.Screen>
       <Pila.Screen name="ObraDetalle">
         {({ navigation, route }) => {
@@ -54,6 +83,41 @@ export default function PilaInicio({ sesion }: PilaInicioProps) {
           return obra ? <PantallaDetalleObra obra={obra} onRegresar={navigation.goBack} /> : null;
         }}
       </Pila.Screen>
+      <Pila.Screen name="NuevaObra">
+        {({ navigation }) => (
+          <PantallaAgregarObra
+            onAgregar={async (datos) => {
+              await crearObra(sesion.token, datos);
+              consultaObras.recargar();
+            }}
+            onIrAlPanelPrincipal={() => navigation.popToTop()}
+          />
+        )}
+      </Pila.Screen>
     </Pila.Navigator>
   );
 }
+
+// 5. Estilos
+const estilos = StyleSheet.create({
+  contenedor: {
+    flex: 1,
+    backgroundColor: COLORES.pantalla,
+  },
+  centro: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingHorizontal: 24,
+  },
+  error: {
+    ...TIPOGRAFIA.leyenda,
+    textAlign: 'center',
+    color: COLORES.error,
+  },
+  reintentar: {
+    ...TIPOGRAFIA.etiqueta,
+    color: COLORES.marca,
+  },
+});

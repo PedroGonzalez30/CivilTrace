@@ -38,6 +38,7 @@ interface CampoTextoProps {
   autoComplete?: TextInputProps['autoComplete'];
   returnKeyType?: ReturnKeyTypeOptions;
   referenciaEntrada?: Ref<CampoTextoRef>;
+  esMultilinea?: boolean;
   onCambiarTexto?: (texto: string) => void;
   onPerderFoco?: () => void;
   onEnviar?: () => void;
@@ -50,6 +51,7 @@ export default function CampoTexto({
   textoMarcador,
   secureTextEntry,
   esCompacto,
+  esMultilinea,
   error,
   editable,
   keyboardType,
@@ -68,6 +70,7 @@ export default function CampoTexto({
         style={[
           estilos.caja,
           esCompacto && estilos.cajaCompacta,
+          esMultilinea && estilos.cajaMultilinea,
           error ? estilos.cajaError : null,
         ]}
       >
@@ -79,6 +82,8 @@ export default function CampoTexto({
           placeholderTextColor={esCompacto ? COLORES.marcador : COLORES.textoAtenuado}
           secureTextEntry={secureTextEntry}
           editable={editable}
+          multiline={esMultilinea}
+          textAlignVertical={esMultilinea ? 'top' : undefined}
           keyboardType={keyboardType}
           autoCapitalize={autoCapitalize}
           autoComplete={autoComplete}
@@ -93,7 +98,6 @@ export default function CampoTexto({
     </View>
   );
 }
-
 // 5. Estilos
 const estilos = StyleSheet.create({
   contenedor: {
@@ -114,6 +118,11 @@ const estilos = StyleSheet.create({
   },
   cajaCompacta: {
     height: TAMANOS.entradaModal,
+  },
+  cajaMultilinea: {
+    height: TAMANOS.entradaMultilinea,
+    justifyContent: 'flex-start',
+    paddingVertical: 12,
   },
   cajaError: {
     borderColor: COLORES.error,

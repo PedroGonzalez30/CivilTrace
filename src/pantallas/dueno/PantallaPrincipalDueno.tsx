@@ -36,6 +36,7 @@ interface PantallaPrincipalDuenoProps {
   errorCodigos: string | null;
   onReintentarCodigos: () => void;
   onAbrirObra: (idObra: string) => void;
+  onNuevaObra: () => void;
 }
 
 // 3. Constantes del módulo
@@ -43,7 +44,6 @@ const TAMANO_ICONO_BOTON_FLOTANTE = 24;
 const DURACION_AVISO_COPIADO_MS = 2000;
 
 // TODO(Equipo): conectar la lógica real de estas acciones.
-const manejarNuevaObra = () => { };
 const manejarCompartirCodigoAcceso = () => { };
 
 // 4. Componente principal
@@ -55,6 +55,7 @@ export default function PantallaPrincipalDueno({
   errorCodigos,
   onReintentarCodigos,
   onAbrirObra,
+  onNuevaObra,
 }: PantallaPrincipalDuenoProps) {
   const estaVacio = obras.length === 0;
   const nombreMostrado = nombreEmpresa?.trim() || 'Todo Concreto';
@@ -104,7 +105,7 @@ export default function PantallaPrincipalDueno({
                 Icono={IconoMas}
                 titulo="Nueva obra"
                 subtitulo="Crea la primera obra"
-                onPresionar={manejarNuevaObra}
+                onPresionar={onNuevaObra}
               />
               <TarjetaAccion
                 estilo={estilos.accion}
@@ -171,10 +172,9 @@ export default function PantallaPrincipalDueno({
               ))}
             </View>
           </ScrollView>
-          <Pressable style={estilos.botonFlotante} onPress={manejarNuevaObra}>
+          <Pressable style={estilos.botonFlotante} onPress={onNuevaObra}>
             <IconoMas tamano={TAMANO_ICONO_BOTON_FLOTANTE} />
-          </Pressable>
-        </>
+          </Pressable>        </>
       )}
     </View>
   );

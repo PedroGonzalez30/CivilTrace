@@ -7,7 +7,7 @@
  * @version 1.0.0
  */
 
-import type { Obra } from '@/tipos/obra';
+import type { DatosNuevaObra, Obra } from '@/tipos/obra';
 import { CUENTA_SIMULADA } from '@/simulados/autenticacion';
 
 export const OBRAS_SIMULADAS: Obra[] = [
@@ -45,3 +45,14 @@ export const CODIGOS_ACCESO = {
 export function obtenerObras(idUsuario: string): Obra[] {
   return idUsuario === CUENTA_SIMULADA.usuario.id ? OBRAS_SIMULADAS : [];
 }
+
+
+export const DATOS_NUEVA_OBRA_SIMULADOS: DatosNuevaObra = {
+  nombre: 'Construcción de casa',
+  cliente: 'Ramón',
+  correoCliente: 'ramon@ejemplo.com',
+  direccion: 'Calle Ficticia #123, Colonia San Miguel',
+  fechaInicio: '02/04/2024',
+  fechaFin: '02/04/2025',
+  supervisor: 'María Castro',
+};

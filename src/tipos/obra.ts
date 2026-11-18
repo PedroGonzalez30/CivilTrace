@@ -18,3 +18,13 @@ export interface Obra {
   supervisor: string;
   cliente: string;
 }
+
+export interface DatosNuevaObra {
+  nombre: string;
+  cliente: string;
+  correoCliente: string;
+  direccion: string;
+  fechaInicio: string;
+  fechaFin: string;
+  supervisor: string;
+}

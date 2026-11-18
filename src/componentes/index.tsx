@@ -24,3 +24,4 @@ export { default as TarjetaAccion } from './TarjetaAccion';
 export { default as TarjetaCodigoAcceso } from './TarjetaCodigoAcceso';
 export { default as TarjetaFormulario } from './TarjetaFormulario';
 export { default as TarjetaObra } from './TarjetaObra';
+export { default as ModalObraCreada } from './ModalObraCreada';
