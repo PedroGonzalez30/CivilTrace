@@ -22,6 +22,7 @@ import type { DatosNuevaObra } from '@/tipos/obra';
 // 2. Tipos e interfaces
 interface ModalObraCreadaProps {
   datos: DatosNuevaObra;
+  nombreSupervisor: string;
   onCerrar: () => void;
   onIrAlPanelPrincipal: () => void;
 }
@@ -37,6 +38,7 @@ const ESPACIO_SUPERIOR_TARJETA = 64;
 // 4. Componente principal
 export default function ModalObraCreada({
   datos,
+  nombreSupervisor,
   onCerrar,
   onIrAlPanelPrincipal,
 }: ModalObraCreadaProps) {
@@ -48,7 +50,7 @@ export default function ModalObraCreada({
     { etiqueta: TEXTOS_OBRA_CREADA.etiquetaDireccion, valor: datos.direccion },
     { etiqueta: TEXTOS_OBRA_CREADA.etiquetaFechaInicio, valor: datos.fechaInicio },
     { etiqueta: TEXTOS_OBRA_CREADA.etiquetaFechaFin, valor: datos.fechaFin },
-    { etiqueta: TEXTOS_OBRA_CREADA.etiquetaSupervisor, valor: datos.supervisor },
+    { etiqueta: TEXTOS_OBRA_CREADA.etiquetaSupervisor, valor: nombreSupervisor },
   ];
 
   return (

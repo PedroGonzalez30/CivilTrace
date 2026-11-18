@@ -50,3 +50,22 @@ export function convertirFechaLocalAIso(fechaLocal: string): string | null {
 
   return esFechaReal ? `${textoAnio}-${textoMes}-${textoDia}` : null;
 }
+
+/**
+ * Deja solo los números y pone las diagonales mientras el usuario escribe (DD/MM/AAAA).
+ * No agrega la diagonal al terminar un bloque: si lo hiciera, no se podría borrar con retroceso.
+ *
+ * @param texto - Lo que hay escrito en el campo.
+ * @returns El texto con máscara de fecha, de máximo 10 caracteres.
+ */
+export function aplicarMascaraFecha(texto: string): string {
+  const digitos = texto.replace(/\D/g, '').slice(0, 8);
+
+  if (digitos.length <= 2) {
+    return digitos;
+  }
+  if (digitos.length <= 4) {
+    return `${digitos.slice(0, 2)}/${digitos.slice(2)}`;
+  }
+  return `${digitos.slice(0, 2)}/${digitos.slice(2, 4)}/${digitos.slice(4)}`;
+}

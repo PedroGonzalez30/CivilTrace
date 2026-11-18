@@ -1,11 +1,11 @@
 /**
  * @archivo PantallaAgregarObra.tsx
  * @proyecto Civil Trace
- * @descripcion Formulario con el que el dueño crea una nueva obra; al terminar muestra
- *              el modal de confirmación.
+ * @descripcion Formulario con el que el dueño crea una nueva obra, con su supervisor y sus
+ *              trabajadores; al terminar muestra el modal de confirmación.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 16/11/2026
- * @version 1.1.0
+ * @version 1.2.0
  */
 
 // 1. Importaciones
@@ -14,6 +14,7 @@ import {
   type KeyboardTypeOptions,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -24,46 +25,71 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   BotonPrincipal,
   CampoTexto,
+  CampoTrabajadores,
   EncabezadoApp,
   ModalObraCreada,
+  type OpcionSelector,
+  SelectorOpcion,
   TarjetaFormulario,
 } from '@/componentes';
 import { ErrorApi } from '@/conexion/clienteApi';
 import { COLORES } from '@/constantes/colores';
 import { TIPOGRAFIA } from '@/constantes/tema';
 import { TEXTOS_AGREGAR_OBRA } from '@/constantes/textos';
+import { usePersonalEmpresa } from '@/hooks/usePersonalEmpresa';
 import type { DatosNuevaObra } from '@/tipos/obra';
+import { aplicarMascaraFecha } from '@/utilidades/formatearFecha';
 import { type ErroresObra, validarObra } from '@/utilidades/validacionObra';
 
 // 2. Tipos e interfaces
 interface PantallaAgregarObraProps {
+  tokenAcceso: string;
   onAgregar: (datos: DatosNuevaObra) => Promise<void>;
   onIrAlPanelPrincipal: () => void;
 }
 
+type CampoTextoObra =
+  | 'nombre'
+  | 'descripcion'
+  | 'cliente'
+  | 'correoCliente'
+  | 'direccion'
+  | 'fechaInicio'
+  | 'fechaFin';
+
 interface ConfiguracionCampo {
-  clave: keyof DatosNuevaObra;
+  clave: CampoTextoObra;
   etiqueta: string;
   textoMarcador: string;
   teclado?: KeyboardTypeOptions;
   esMultilinea?: boolean;
+  esFecha?: boolean;
 }
 
 // 3. Constantes del módulo
 const ESPACIO_INFERIOR_BASE = 24;
+const NOMBRE_SIN_SUPERVISOR = '—';
 
 const VALORES_INICIALES: DatosNuevaObra = {
   nombre: '',
+  descripcion: '',
   cliente: '',
   correoCliente: '',
   direccion: '',
   fechaInicio: '',
   fechaFin: '',
-  supervisor: '',
+  supervisorId: '',
+  trabajadoresIds: [],
 };
 
 const CAMPOS: ConfiguracionCampo[] = [
   { clave: 'nombre', etiqueta: 'Nombre de la obra', textoMarcador: 'Construcción de casa' },
+  {
+    clave: 'descripcion',
+    etiqueta: 'Descripción',
+    textoMarcador: 'Casa de dos plantas con cochera',
+    esMultilinea: true,
+  },
   { clave: 'cliente', etiqueta: 'Nombre del cliente', textoMarcador: 'Ramón' },
   {
     clave: 'correoCliente',
@@ -81,33 +107,57 @@ const CAMPOS: ConfiguracionCampo[] = [
     clave: 'fechaInicio',
     etiqueta: 'Fecha de inicio',
     textoMarcador: '02/04/2024',
-    teclado: 'numbers-and-punctuation',
+    teclado: 'number-pad',
+    esFecha: true,
   },
   {
     clave: 'fechaFin',
     etiqueta: 'Fecha de fin',
     textoMarcador: '02/04/2025',
-    teclado: 'numbers-and-punctuation',
+    teclado: 'number-pad',
+    esFecha: true,
   },
-  { clave: 'supervisor', etiqueta: 'Supervisor', textoMarcador: 'María Castro' },
 ];
 
 // 4. Componente principal
 export default function PantallaAgregarObra({
+  tokenAcceso,
   onAgregar,
   onIrAlPanelPrincipal,
 }: PantallaAgregarObraProps) {
   const margenesSeguros = useSafeAreaInsets();
+  const consultaPersonal = usePersonalEmpresa(tokenAcceso);
   const [valores, setValores] = useState<DatosNuevaObra>(VALORES_INICIALES);
   const [errores, setErrores] = useState<ErroresObra>({});
   const [estaEnviando, setEstaEnviando] = useState(false);
   const [esModalVisible, setEsModalVisible] = useState(false);
   const [mensajeError, setMensajeError] = useState<string | null>(null);
 
-  const manejarCambio = (clave: keyof DatosNuevaObra) => (texto: string) => {
-    setValores((anteriores) => ({ ...anteriores, [clave]: texto }));
+  const supervisores = consultaPersonal.personal?.supervisores ?? [];
+  const trabajadores = consultaPersonal.personal?.trabajadores ?? [];
+  const opcionesSupervisor: OpcionSelector[] = [
+    { id: '', etiqueta: 'Sin supervisor' },
+    ...supervisores.map((supervisor) => ({ id: supervisor.id, etiqueta: supervisor.nombre })),
+  ];
+  const nombreSupervisor =
+    supervisores.find((supervisor) => supervisor.id === valores.supervisorId)?.nombre ??
+    NOMBRE_SIN_SUPERVISOR;
+
+  const manejarCambioTexto = (clave: CampoTextoObra, esFecha = false) => (texto: string) => {
+    setValores((anteriores) => ({
+      ...anteriores,
+      [clave]: esFecha ? aplicarMascaraFecha(texto) : texto,
+    }));
     setErrores((anteriores) => ({ ...anteriores, [clave]: undefined }));
     setMensajeError(null);
+  };
+
+  const manejarCambioSupervisor = (idSupervisor: string) => {
+    setValores((anteriores) => ({ ...anteriores, supervisorId: idSupervisor }));
+  };
+
+  const manejarCambioTrabajadores = (idsTrabajadores: string[]) => {
+    setValores((anteriores) => ({ ...anteriores, trabajadoresIds: idsTrabajadores }));
   };
 
   const manejarAgregar = async () => {
@@ -128,10 +178,6 @@ export default function PantallaAgregarObra({
     } finally {
       setEstaEnviando(false);
     }
-  };
-
-  const manejarCerrarModal = () => {
-    setEsModalVisible(false);
   };
 
   return (
@@ -165,9 +211,26 @@ export default function PantallaAgregarObra({
                 esMultilinea={campo.esMultilinea}
                 editable={!estaEnviando}
                 autoCapitalize={campo.clave === 'correoCliente' ? 'none' : 'sentences'}
-                onCambiarTexto={manejarCambio(campo.clave)}
+                onCambiarTexto={manejarCambioTexto(campo.clave, campo.esFecha)}
               />
             ))}
+            <SelectorOpcion
+              etiqueta="Supervisor"
+              valor={valores.supervisorId}
+              textoMarcador="Selecciona un supervisor"
+              opciones={opcionesSupervisor}
+              onSeleccionar={manejarCambioSupervisor}
+            />
+            <CampoTrabajadores
+              trabajadores={trabajadores}
+              seleccionados={valores.trabajadoresIds}
+              onCambiar={manejarCambioTrabajadores}
+            />
+            {consultaPersonal.error ? (
+              <Pressable onPress={consultaPersonal.reintentar}>
+                <Text style={estilos.error}>{consultaPersonal.error} Toca para reintentar.</Text>
+              </Pressable>
+            ) : null}
             {mensajeError ? <Text style={estilos.error}>{mensajeError}</Text> : null}
             <BotonPrincipal
               etiqueta={TEXTOS_AGREGAR_OBRA.etiquetaBoton}
@@ -181,7 +244,8 @@ export default function PantallaAgregarObra({
       {esModalVisible ? (
         <ModalObraCreada
           datos={valores}
-          onCerrar={manejarCerrarModal}
+          nombreSupervisor={nombreSupervisor}
+          onCerrar={() => setEsModalVisible(false)}
           onIrAlPanelPrincipal={onIrAlPanelPrincipal}
         />
       ) : null}

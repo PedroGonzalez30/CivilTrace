@@ -25,3 +25,7 @@ export { default as TarjetaCodigoAcceso } from './TarjetaCodigoAcceso';
 export { default as TarjetaFormulario } from './TarjetaFormulario';
 export { default as TarjetaObra } from './TarjetaObra';
 export { default as ModalObraCreada } from './ModalObraCreada';
+export { default as CampoTrabajadores } from './CampoTrabajadores';
+export { default as ModalTrabajadores } from './ModalTrabajadores';
+export { default as SelectorOpcion } from './SelectorOpcion';
+export type { OpcionSelector } from  '@/componentes/SelectorOpcion';

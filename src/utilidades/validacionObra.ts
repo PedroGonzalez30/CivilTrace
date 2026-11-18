@@ -19,6 +19,7 @@ const REGEX_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const LONGITUD_MINIMA_NOMBRE_OBRA = 3;
 const LONGITUD_MINIMA_DIRECCION = 5;
 const MENSAJE_FECHA_INVALIDA = 'Usa el formato DD/MM/AAAA';
+const LONGITUD_MINIMA_DESCRIPCION = 10;
 
 // 4. Función principal
 /**
@@ -35,6 +36,9 @@ export function validarObra(datos: DatosNuevaObra): ErroresObra {
   }
   if (!datos.cliente.trim()) {
     errores.cliente = 'El nombre del cliente es requerido';
+  }
+  if (datos.descripcion.trim().length < LONGITUD_MINIMA_DESCRIPCION) {
+    errores.descripcion = `Mínimo ${LONGITUD_MINIMA_DESCRIPCION} caracteres`;
   }
   if (!REGEX_CORREO.test(datos.correoCliente.trim())) {
     errores.correoCliente = 'Correo inválido';

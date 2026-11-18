@@ -53,3 +53,13 @@ export const TEXTOS_OBRA_CREADA = {
   etiquetaBoton: 'Ir al panel principal',
   nota: 'Puedes ver esta obra y todas las demás en el panel principal.',
 };
+
+export const TEXTOS_ASIGNAR_TRABAJADORES = {
+  etiqueta: 'Trabajadores',
+  sinSeleccion: 'Ninguno seleccionado',
+  titulo: 'Asignar trabajadores',
+  descripcion: 'Selecciona a quienes trabajarán en esta obra.',
+  seleccionarTodos: 'Seleccionar todos',
+  vacio: 'Aún no hay trabajadores en tu empresa. Comparte el código de acceso para que se unan.',
+  etiquetaBoton: 'Listo',
+};

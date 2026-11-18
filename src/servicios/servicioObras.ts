@@ -101,13 +101,15 @@ export async function crearObra(tokenAcceso: string, datos: DatosNuevaObra): Pro
     tokenAcceso,
     cuerpo: {
       nombre: datos.nombre.trim(),
+      descripcion: datos.descripcion.trim(),
       cliente: datos.cliente.trim(),
       correoCliente: datos.correoCliente.trim(),
       direccion: datos.direccion.trim(),
       fechaInicio,
       fechaFinal,
       // Si va vacío no se manda: la API deja la obra sin supervisor.
-      supervisor: datos.supervisor.trim() || undefined,
+      supervisorId: datos.supervisorId || undefined,
+      trabajadoresIds: datos.trabajadoresIds,
     },
   });
   if (!esObjeto(respuesta)) {

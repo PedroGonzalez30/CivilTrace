@@ -2,8 +2,8 @@
  * @archivo tema.ts
  * @proyecto Civil Trace
  * @descripcion Fuentes, tipografía, radios, tamaños y sombras compartidos por los componentes.
- * @autor POR_COMPLETAR
- * @fecha POR_COMPLETAR
+ * @autor Pedro Ivan Gonzalez Valdez
+ * @fecha 15/11/2026
  * @version 1.0.0
  */
 
@@ -55,6 +55,7 @@ export const RADIOS = {
   pildora: 999,
   accion: 12,
   mosaico: 8,
+  casilla: 6,
 };
 
 export const TAMANOS = {
@@ -85,6 +86,8 @@ export const TAMANOS = {
   opcionMenu: 67,
   desenfoque: 20,
   entradaMultilinea: 72,
+  casilla: 22,
+  listaSeleccion: 260,
 };
 
 export const SOMBRAS = {

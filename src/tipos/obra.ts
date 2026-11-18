@@ -21,10 +21,13 @@ export interface Obra {
 
 export interface DatosNuevaObra {
   nombre: string;
+  descripcion: string;
   cliente: string;
   correoCliente: string;
   direccion: string;
   fechaInicio: string;
   fechaFin: string;
-  supervisor: string;
+  // Vacío significa obra sin supervisor.
+  supervisorId: string;
+  trabajadoresIds: string[];
 }

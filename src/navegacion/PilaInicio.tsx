@@ -86,13 +86,13 @@ export default function PilaInicio({ sesion }: PilaInicioProps) {
       <Pila.Screen name="NuevaObra">
         {({ navigation }) => (
           <PantallaAgregarObra
+            tokenAcceso={sesion.token}
             onAgregar={async (datos) => {
               await crearObra(sesion.token, datos);
               consultaObras.recargar();
             }}
             onIrAlPanelPrincipal={() => navigation.popToTop()}
-          />
-        )}
+          />)}
       </Pila.Screen>
     </Pila.Navigator>
   );
