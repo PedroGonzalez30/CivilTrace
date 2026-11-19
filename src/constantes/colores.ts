@@ -28,4 +28,9 @@ export const COLORES = {
   pantalla: '#f0f4f8',
   exito: '#34d399',
   textoSecundario: '#475467',
+  fondoFila: '#f9fafb',
+  fondoAvatar: '#e5e7eb',
+  exitoFondo: '#ecfdf5',
+  exitoBorde: '#a7f3d0',
+  exitoTexto: '#065f46',
 };

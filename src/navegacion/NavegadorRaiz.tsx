@@ -17,6 +17,7 @@ import PestanasPrincipales from '@/navegacion/PestanasPrincipales';
 import PantallaInicioSesion from '@/pantallas/comunes/PantallaInicioSesion';
 import PantallaMiPerfil from '@/pantallas/comunes/PantallaMiPerfil';
 import PantallaRegistro from '@/pantallas/comunes/PantallaRegistro';
+import PantallaPrincipalSupervisor from '@/pantallas/supervisor/PantallaPrincipalSupervisor';
 import { RolUsuario, type SesionAutenticacion } from '@/tipos/autenticacion';
 import type { ParametrosPilaRaiz } from '@/tipos/navegacion';
 
@@ -49,8 +50,10 @@ export default function NavegadorRaiz({
             {() =>
               sesion.usuario.rol === RolUsuario.DUENO ? (
                 <PestanasPrincipales sesion={sesion} onCerrarSesion={onCerrarSesion} />
+              ) : sesion.usuario.rol === RolUsuario.SUPERVISOR ? (
+                <PantallaPrincipalSupervisor sesion={sesion} onCerrarSesion={onCerrarSesion} />
               ) : (
-                // TODO(Equipo): pantallas de inicio de Supervisor y Trabajador.
+                // TODO(Equipo): pantalla de inicio del Trabajador.
                 <PantallaMiPerfil sesion={sesion} onCerrarSesion={onCerrarSesion} />
               )
             }

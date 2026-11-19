@@ -12,9 +12,12 @@ import { TIEMPO_ESPERA_API_MS, URL_API } from '@/conexion/configuracionApi';
 
 // 2. Tipos e interfaces
 interface OpcionesLlamada {
-  metodo?: 'GET' | 'POST';
+    metodo?: 'GET' | 'POST' | 'DELETE';
   cuerpo?: unknown;
+  // Para subir un archivo tal cual (por ejemplo una foto); no se combina con "cuerpo".
+  cuerpoBinario?: { datos: Blob; tipo: string };
   tokenAcceso?: string;
+  tiempoEsperaMs?: number;
 }
 
 // 3. Constantes del módulo
@@ -67,9 +70,12 @@ export async function llamarApi(ruta: string, opciones: OpcionesLlamada = {}): P
     throw new ErrorApi(MENSAJE_SIN_CONFIGURAR, null);
   }
 
-  const { metodo = 'GET', cuerpo, tokenAcceso } = opciones;
+  const { metodo = 'GET', cuerpo, cuerpoBinario, tokenAcceso, tiempoEsperaMs } = opciones;
   const controlador = new AbortController();
-  const temporizador = setTimeout(() => controlador.abort(), TIEMPO_ESPERA_API_MS);
+  const temporizador = setTimeout(
+    () => controlador.abort(),
+    tiempoEsperaMs ?? TIEMPO_ESPERA_API_MS,
+  );
 
   try {
     const respuesta = await fetch(`${URL_API}${ruta}`, {
@@ -77,9 +83,14 @@ export async function llamarApi(ruta: string, opciones: OpcionesLlamada = {}): P
       headers: {
         Accept: 'application/json',
         ...(cuerpo === undefined ? {} : { 'Content-Type': 'application/json' }),
+        ...(cuerpoBinario ? { 'Content-Type': cuerpoBinario.tipo } : {}),
         ...(tokenAcceso ? { Authorization: `Bearer ${tokenAcceso}` } : {}),
       },
-      body: cuerpo === undefined ? undefined : JSON.stringify(cuerpo),
+      body: cuerpoBinario
+        ? cuerpoBinario.datos
+        : cuerpo === undefined
+          ? undefined
+          : JSON.stringify(cuerpo),
       signal: controlador.signal,
     });
 

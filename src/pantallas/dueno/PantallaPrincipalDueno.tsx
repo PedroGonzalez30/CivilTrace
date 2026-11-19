@@ -174,7 +174,8 @@ export default function PantallaPrincipalDueno({
           </ScrollView>
           <Pressable style={estilos.botonFlotante} onPress={onNuevaObra}>
             <IconoMas tamano={TAMANO_ICONO_BOTON_FLOTANTE} />
-          </Pressable>        </>
+          </Pressable>        
+          </>
       )}
     </View>
   );

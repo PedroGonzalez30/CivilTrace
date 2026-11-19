@@ -53,5 +53,17 @@ export function usePersonalEmpresa(tokenAcceso: string) {
 
   const reintentar = useCallback(() => setIntento((previo) => previo + 1), []);
 
-  return { personal, error, reintentar };
+  // Quita a la persona de la lista ya cargada, sin volver a pedirla al servidor.
+  const quitarPersona = useCallback((idPersona: string) => {
+    setPersonal((previo) =>
+      previo === null
+        ? previo
+        : {
+          supervisores: previo.supervisores.filter((persona) => persona.id !== idPersona),
+          trabajadores: previo.trabajadores.filter((persona) => persona.id !== idPersona),
+        },
+    );
+  }, []);
+
+  return { personal, error, reintentar, quitarPersona };
 }

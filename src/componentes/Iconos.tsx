@@ -122,3 +122,22 @@ export function IconoUsuarios({ tamano = 20, color = COLORES.marca }: IconoProps
     </Svg>
   );
 }
+
+export function IconoPapelera({ tamano = 20, color = COLORES.error }: IconoProps) {
+  return (
+    <Svg width={tamano} height={tamano} viewBox="0 0 24 24" stroke={color} {...PROPIEDADES_TRAZO}>
+      <Path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+      <Path d="M10 11v6M14 11v6" />
+    </Svg>
+  );
+}
+
+export function IconoCheckCirculo({ tamano = 16, color = COLORES.exitoTexto }: IconoProps) {
+  return (
+    <Svg width={tamano} height={tamano} viewBox="0 0 24 24" stroke={color} {...PROPIEDADES_TRAZO}>
+      <Circle cx={12} cy={12} r={10} />
+      <Polyline points="9 12 11 14 15 10" />
+    </Svg>
+  );
+}
+

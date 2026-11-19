@@ -63,3 +63,25 @@ export const TEXTOS_ASIGNAR_TRABAJADORES = {
   vacio: 'Aún no hay trabajadores en tu empresa. Comparte el código de acceso para que se unan.',
   etiquetaBoton: 'Listo',
 };
+
+export const TEXTOS_PERSONAL = {
+  titulo: 'Personal',
+  subtitulo: 'Personal inscrito en la empresa',
+  supervisores: 'Supervisores',
+  trabajadores: 'Trabajadores',
+  rolSupervisor: 'Supervisor',
+  rolTrabajador: 'Trabajador',
+  vacioSupervisores: 'Aún no hay supervisores.',
+  vacioTrabajadores: 'Aún no hay trabajadores.',
+  exito: 'Personal eliminado correctamente',
+  errorEliminar: 'No se pudo eliminar. Intente de nuevo',
+  reintentar: 'Reintentar',
+};
+
+export const TEXTOS_ELIMINAR_PERSONAL = {
+  titulo: '¿Quieres eliminar al empleado?',
+  descripcion: 'Si eliminas al trabajador, no podrá volver a acceder a los datos',
+  cancelar: 'Cancelar',
+  aceptar: 'Aceptar',
+};
+

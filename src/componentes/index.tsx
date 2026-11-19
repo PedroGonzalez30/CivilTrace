@@ -29,3 +29,7 @@ export { default as CampoTrabajadores } from './CampoTrabajadores';
 export { default as ModalTrabajadores } from './ModalTrabajadores';
 export { default as SelectorOpcion } from './SelectorOpcion';
 export type { OpcionSelector } from  '@/componentes/SelectorOpcion';
+export { default as AvisoExito } from './AvisoExito';
+export { default as FilaPersona } from './FilaPersona';
+export { default as ModalEliminarPersonal } from './ModalEliminarPersonal';
+export { default as SeccionPersonal } from './SeccionPersonal';

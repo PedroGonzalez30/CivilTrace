@@ -78,3 +78,17 @@ export async function obtenerPersonalEmpresa(tokenAcceso: string): Promise<Perso
     trabajadores: aPersonas(respuesta.personal.trabajadores),
   };
 }
+
+/**
+ * Elimina a un supervisor o trabajador de la empresa. Solo el dueño tiene permiso.
+ *
+ * @param tokenAcceso - Token de acceso de la sesión.
+ * @param idPersona - Id de la persona a eliminar.
+ * @throws ErrorApi si no hay conexión, la sesión expiró o la persona ya no existe.
+ */
+export async function eliminarPersonal(tokenAcceso: string, idPersona: string): Promise<void> {
+  await llamarApi(`/empresa/personal/${encodeURIComponent(idPersona)}`, {
+    metodo: 'DELETE',
+    tokenAcceso,
+  });
+}

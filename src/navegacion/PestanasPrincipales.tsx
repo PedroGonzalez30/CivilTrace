@@ -35,8 +35,9 @@ export default function PestanasPrincipales({ sesion, onCerrarSesion }: Pestanas
       screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: COLORES.pantalla } }}
     >
       <Pestana.Screen name="Inicio">{() => <PilaInicio sesion={sesion} />}</Pestana.Screen>
-      <Pestana.Screen name="Personal" component={PantallaPersonal} />
-      <Pestana.Screen name="Cuenta">
+      <Pestana.Screen name="Personal">
+        {() => <PantallaPersonal tokenAcceso={sesion.token} />}
+      </Pestana.Screen>      <Pestana.Screen name="Cuenta">
         {() => <PantallaMiPerfil sesion={sesion} onCerrarSesion={onCerrarSesion} />}
       </Pestana.Screen>
     </Pestana.Navigator>

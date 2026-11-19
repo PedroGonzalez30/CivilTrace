@@ -44,6 +44,7 @@ export const TIPOGRAFIA = {
     lineHeight: 21,
     letterSpacing: -0.15,
   },
+  iniciales: { fontFamily: FUENTES.seminegrita, fontSize: 12, lineHeight: 18 },
 } satisfies Record<string, TextStyle>;
 
 export const RADIOS = {
@@ -56,6 +57,7 @@ export const RADIOS = {
   accion: 12,
   mosaico: 8,
   casilla: 6,
+  avatar: 16,
 };
 
 export const TAMANOS = {
@@ -88,6 +90,8 @@ export const TAMANOS = {
   entradaMultilinea: 72,
   casilla: 22,
   listaSeleccion: 260,
+  avatar: 32,
+  filaPersona: 50,
 };
 
 export const SOMBRAS = {
