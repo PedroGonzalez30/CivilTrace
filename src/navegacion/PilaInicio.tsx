@@ -22,7 +22,7 @@ import PantallaPrincipalDueno from '@/pantallas/dueno/PantallaPrincipalDueno';
 import { crearObra } from '@/servicios/servicioObras';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
 import type { ParametrosPilaInicio } from '@/tipos/navegacion';
-import PantallaCodigosAcceso from '@/pantallas/dueno/PantallaCodigosAcceso';
+import PantallaCodigosAcceso from '@/pantallas/dueno/PantallaCodigoAcceso';
 import PantallaDatosEmpresa from '@/pantallas/dueno/PantallaDatosEmpresa';
 // 2. Tipos e interfaces
 interface PilaInicioProps {
