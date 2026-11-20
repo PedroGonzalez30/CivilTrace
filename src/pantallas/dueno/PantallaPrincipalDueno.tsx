@@ -2,9 +2,10 @@
  * @archivo PantallaPrincipalDueno.tsx
  * @proyecto Civil Trace
  * @descripcion Pantalla principal del dueño: bienvenida, códigos de acceso y lista de obras.
+ *              Incluye el menú de tres rayas con los datos de la empresa y el código de acceso.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 15/11/2026
- * @version 1.0.0
+ * @version 1.1.0
  * @requerimientos RF-44 Mostrar obras
  */
 
@@ -17,6 +18,7 @@ import {
   EncabezadoApp,
   IconoArchivoTexto,
   IconoMas,
+  MenuDueno,
   TarjetaAccion,
   TarjetaCodigoAcceso,
   TarjetaFormulario,
@@ -46,6 +48,9 @@ const DURACION_AVISO_COPIADO_MS = 2000;
 // TODO(Equipo): conectar la lógica real de estas acciones.
 const manejarCompartirCodigoAcceso = () => { };
 
+// TODO(Equipo): abrir la pantalla de datos de la empresa.
+const manejarDatosEmpresa = () => { };
+
 // 4. Componente principal
 export default function PantallaPrincipalDueno({
   nombreEmpresa,
@@ -60,6 +65,8 @@ export default function PantallaPrincipalDueno({
   const estaVacio = obras.length === 0;
   const nombreMostrado = nombreEmpresa?.trim() || 'Todo Concreto';
   const [codigoCopiado, setCodigoCopiado] = useState<string | null>(null);
+  const [esMenuVisible, setEsMenuVisible] = useState(false);
+  const [alturaEncabezado, setAlturaEncabezado] = useState(0);
   const temporizadorCopiado = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(
@@ -70,6 +77,9 @@ export default function PantallaPrincipalDueno({
     },
     [],
   );
+
+  const manejarAbrirMenu = () => setEsMenuVisible(true);
+  const manejarCerrarMenu = () => setEsMenuVisible(false);
 
   const manejarCopiarCodigo = async (codigo: string) => {
     await Portapapeles.setStringAsync(codigo);
@@ -85,7 +95,7 @@ export default function PantallaPrincipalDueno({
 
   return (
     <View style={estilos.contenedor}>
-      <EncabezadoApp />
+      <EncabezadoApp onPresionarMenu={manejarAbrirMenu} onCambiarAltura={setAlturaEncabezado} />
       {estaVacio ? (
         <ScrollView contentContainerStyle={estilos.contenidoVacio}>
           <Text style={estilos.tituloBienvenida}>Bienvenido a {nombreMostrado}</Text>
@@ -150,8 +160,8 @@ export default function PantallaPrincipalDueno({
             <View style={estilos.nota}>
               <Text style={estilos.tituloNota}>¿Dónde encontrarlos y regenerarlos?</Text>
               <Text style={estilos.textoNota}>
-                En el menú de tres líneas de arriba, entra en «Código de la empresa». Allí puedes
-                consultar y regenerar ambos códigos cuando lo necesites.
+                En el menú de tres líneas de arriba, entra en «Código de acceso a la obra». Allí
+                puedes consultar y regenerar ambos códigos cuando lo necesites.
               </Text>
             </View>
           </TarjetaFormulario>
@@ -174,9 +184,16 @@ export default function PantallaPrincipalDueno({
           </ScrollView>
           <Pressable style={estilos.botonFlotante} onPress={onNuevaObra}>
             <IconoMas tamano={TAMANO_ICONO_BOTON_FLOTANTE} />
-          </Pressable>        
-          </>
+          </Pressable>
+        </>
       )}
+      <MenuDueno
+        esVisible={esMenuVisible}
+        alturaEncabezado={alturaEncabezado}
+        onCerrar={manejarCerrarMenu}
+        onDatosEmpresa={manejarDatosEmpresa}
+        onCodigoAcceso={manejarCompartirCodigoAcceso}
+      />
     </View>
   );
 }

@@ -4,12 +4,20 @@
  * @descripcion Pantalla donde el usuario inicia sesión con su correo y contraseña.
  * @autor POR_COMPLETAR
  * @fecha POR_COMPLETAR
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 // 1. Importaciones
-import { useRef } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import {
+  BackHandler,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -17,14 +25,16 @@ import {
   CampoTexto,
   EncabezadoApp,
   EncabezadoPantalla,
+  ModalEmpresa,
   TarjetaFormulario,
 } from '@/componentes';
 import type { CampoTextoRef } from '@/componentes';
+import { ErrorApi } from '@/conexion/clienteApi';
 import { COLORES } from '@/constantes/colores';
 import { TAMANOS, TIPOGRAFIA } from '@/constantes/tema';
-import { TEXTOS_INICIO_SESION } from '@/constantes/textos';
+import { TEXTOS_INICIO_SESION, TEXTOS_MODAL_CODIGO_EMPRESA } from '@/constantes/textos';
 import { useFormulario } from '@/hooks/useFormulario';
-import { iniciarSesion } from '@/servicios/servicioAutenticacion';
+import { iniciarSesion, unirseAEmpresa } from '@/servicios/servicioAutenticacion';
 import { guardarSesion } from '@/servicios/servicioSesion';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
 import { CAMPOS_INICIO_SESION, validarInicioSesion } from '@/utilidades/validacionAutenticacion';
@@ -38,6 +48,10 @@ interface PantallaInicioSesionProps {
 
 // 3. Constantes del módulo
 const ESPACIO_INFERIOR_BASE = 24;
+// La API responde 403 en el login cuando la contraseña es correcta pero la cuenta no tiene empresa.
+const CODIGO_SIN_EMPRESA = 403;
+const MENSAJE_CODIGO_REQUERIDO = 'El código de la empresa es requerido';
+const MENSAJE_ERROR_INESPERADO = 'Ocurrió un error inesperado';
 
 // 4. Componente principal
 export default function PantallaInicioSesion({
@@ -47,20 +61,78 @@ export default function PantallaInicioSesion({
 }: PantallaInicioSesionProps) {
   const margenesSeguros = useSafeAreaInsets();
   const referenciaContrasena = useRef<CampoTextoRef>(null);
+  const [esModalVisible, setEsModalVisible] = useState(false);
+  const [codigo, setCodigo] = useState('');
+  const [errorCodigo, setErrorCodigo] = useState<string | undefined>(undefined);
+  const [estaUniendo, setEstaUniendo] = useState(false);
 
   const formulario = useFormulario({
     campos: CAMPOS_INICIO_SESION,
     valoresIniciales: { correo: '', contrasena: '' },
     validar: validarInicioSesion,
     onEnviar: async (valores) => {
-      const sesion = await iniciarSesion(valores.correo.trim(), valores.contrasena);
-      await guardarSesion(sesion);
-      onInicioExitoso?.(sesion);
+      try {
+        const sesion = await iniciarSesion(valores.correo.trim(), valores.contrasena);
+        await guardarSesion(sesion);
+        onInicioExitoso?.(sesion);
+      } catch (error) {
+        // Cuenta sin empresa: se pide el código de una empresa en lugar de mostrar un error.
+        if (error instanceof ErrorApi && error.estado === CODIGO_SIN_EMPRESA) {
+          setCodigo('');
+          setErrorCodigo(undefined);
+          setEsModalVisible(true);
+          return;
+        }
+        throw error;
+      }
     },
   });
 
+  // En Android, el botón atrás cierra el modal del código.
+  useEffect(() => {
+    if (!esModalVisible) {
+      return undefined;
+    }
+    const suscripcion = BackHandler.addEventListener('hardwareBackPress', () => {
+      setEsModalVisible(false);
+      return true;
+    });
+    return () => suscripcion.remove();
+  }, [esModalVisible]);
+
   const manejarEnvioCorreo = () => {
     referenciaContrasena.current?.focus();
+  };
+
+  const manejarCambioCodigo = (texto: string) => {
+    setCodigo(texto);
+    setErrorCodigo(undefined);
+  };
+
+  const manejarEnviarCodigo = async () => {
+    if (estaUniendo) {
+      return;
+    }
+    if (!codigo.trim()) {
+      setErrorCodigo(MENSAJE_CODIGO_REQUERIDO);
+      return;
+    }
+
+    setEstaUniendo(true);
+    try {
+      const sesion = await unirseAEmpresa(
+        formulario.valores.correo.trim(),
+        formulario.valores.contrasena,
+        codigo.trim(),
+      );
+      await guardarSesion(sesion);
+      setEsModalVisible(false);
+      onInicioExitoso?.(sesion);
+    } catch (error) {
+      setErrorCodigo(error instanceof Error ? error.message : MENSAJE_ERROR_INESPERADO);
+    } finally {
+      setEstaUniendo(false);
+    }
   };
 
   return (
@@ -136,6 +208,18 @@ export default function PantallaInicioSesion({
           </Text>
         </ScrollView>
       </KeyboardAvoidingView>
+      {esModalVisible ? (
+        <ModalEmpresa
+          titulo={TEXTOS_MODAL_CODIGO_EMPRESA.titulo}
+          descripcion={TEXTOS_MODAL_CODIGO_EMPRESA.descripcion}
+          etiqueta={TEXTOS_MODAL_CODIGO_EMPRESA.etiqueta}
+          textoMarcador={TEXTOS_MODAL_CODIGO_EMPRESA.textoMarcador}
+          valor={codigo}
+          error={errorCodigo}
+          onCambiarTexto={manejarCambioCodigo}
+          onEnviar={manejarEnviarCodigo}
+        />
+      ) : null}
     </View>
   );
 }

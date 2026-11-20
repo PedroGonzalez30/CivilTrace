@@ -10,7 +10,7 @@
  */
 
 // 1. Importaciones
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import {
@@ -33,6 +33,9 @@ interface PantallaPersonalProps {
   tokenAcceso: string;
 }
 
+// 3. Constantes del módulo
+const DURACION_AVISO_MS = 3000;
+
 // 4. Componente principal
 export default function PantallaPersonal({ tokenAcceso }: PantallaPersonalProps) {
   const { personal, error, reintentar, quitarPersona } = usePersonalEmpresa(tokenAcceso);
@@ -41,6 +44,15 @@ export default function PantallaPersonal({ tokenAcceso }: PantallaPersonalProps)
   const [seElimino, setSeElimino] = useState(false);
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
 
+  // Oculta el aviso de éxito a los 3 segundos.
+  useEffect(() => {
+    if (!seElimino) {
+      return undefined;
+    }
+    const temporizador = setTimeout(() => setSeElimino(false), DURACION_AVISO_MS);
+    return () => clearTimeout(temporizador);
+  }, [seElimino]);
+  
   const manejarPedirEliminar = (persona: PersonaEmpresa) => {
     setSeElimino(false);
     setErrorEliminar(null);

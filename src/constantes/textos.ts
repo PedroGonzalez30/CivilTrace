@@ -84,3 +84,27 @@ export const TEXTOS_ELIMINAR_PERSONAL = {
   cancelar: 'Cancelar',
   aceptar: 'Aceptar',
 };
+
+export const TEXTOS_UNIRSE_EMPRESA = {
+  titulo: 'Unirme a una empresa',
+  subtitulo: 'Usa el código que te dio el dueño de la empresa.',
+  etiquetaBoton: 'Unirme',
+};
+
+export const TEXTOS_CAMBIAR_CONTRASENA = {
+  volver: 'Volver a Mi perfil',
+  titulo: 'Cambiar contraseña',
+  subtitulo: 'Actualiza tu contraseña para mantener tu cuenta segura.',
+  etiquetaActual: 'Contraseña actual',
+  marcadorActual: 'Ingresa tu contraseña actual',
+  etiquetaNueva: 'Nueva contraseña',
+  marcadorNueva: 'Ingresa tu nueva contraseña',
+  etiquetaConfirmacion: 'Confirmar nueva contraseña',
+  marcadorConfirmacion: 'Repite tu nueva contraseña',
+  tituloRequisitos: 'Tu nueva contraseña debe tener:',
+  requisitos: ['Al menos 8 caracteres.', 'Una mayúscula, una minúscula y un número.'],
+  etiquetaBoton: 'Guardar contraseña',
+  exitoTitulo: 'Contraseña cambiada correctamente',
+  exitoDescripcion: 'Tu contraseña fue actualizada',
+  etiquetaAceptar: 'Aceptar',
+};

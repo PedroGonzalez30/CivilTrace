@@ -97,6 +97,28 @@ export async function registrar(datos: DatosRegistro): Promise<SesionAutenticaci
 }
 
 /**
+ * Une a una persona que quedó sin empresa a otra (o a la misma) con un código de acceso, y
+ * abre su sesión. El código decide su rol: el de supervisores o el de trabajadores.
+ *
+ * @param correo - Correo de la cuenta.
+ * @param contrasena - Contraseña de la cuenta.
+ * @param codigo - Código de acceso de la empresa.
+ * @returns Sesión creada para el usuario.
+ * @throws ErrorApi si las credenciales fallan, ya tiene empresa, el código no existe o no hay conexión.
+ */
+export async function unirseAEmpresa(
+  correo: string,
+  contrasena: string,
+  codigo: string,
+): Promise<SesionAutenticacion> {
+  const respuesta = await llamarApi('/auth/unirse-empresa', {
+    metodo: 'POST',
+    cuerpo: { correo, contrasena, codigo },
+  });
+  return aSesion(respuesta);
+}
+
+/**
  * Cambia el token de refresco por una sesión nueva (la API rota el token de refresco).
  *
  * @param tokenRefresco - Token de refresco guardado en el dispositivo.
@@ -123,4 +145,26 @@ export async function cerrarSesionRemota(tokenRefresco: string): Promise<void> {
   } catch {
     // Sin conexión o token ya inválido: no hay nada más que hacer.
   }
+}
+
+/**
+ * Cambia la contraseña del usuario que tiene la sesión abierta.
+ *
+ * @param tokenAcceso - Token de acceso de la sesión.
+ * @param tokenRefresco - Token de refresco de la sesión (se conserva; las demás se cierran).
+ * @param contrasenaActual - Contraseña vigente.
+ * @param contrasenaNueva - Contraseña nueva.
+ * @throws ErrorApi si la contraseña actual es incorrecta, no cumple las reglas o no hay conexión.
+ */
+export async function cambiarContrasena(
+  tokenAcceso: string,
+  tokenRefresco: string,
+  contrasenaActual: string,
+  contrasenaNueva: string,
+): Promise<void> {
+  await llamarApi('/auth/cambiar-contrasena', {
+    metodo: 'POST',
+    tokenAcceso,
+    cuerpo: { contrasenaActual, contrasenaNueva, tokenRefresco },
+  });
 }

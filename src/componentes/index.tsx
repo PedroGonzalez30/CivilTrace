@@ -33,3 +33,4 @@ export { default as AvisoExito } from './AvisoExito';
 export { default as FilaPersona } from './FilaPersona';
 export { default as ModalEliminarPersonal } from './ModalEliminarPersonal';
 export { default as SeccionPersonal } from './SeccionPersonal';
+export { default as ModalExito } from './ModalExito';

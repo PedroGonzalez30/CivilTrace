@@ -8,9 +8,10 @@
  */
 
 // 1. Importaciones
-import type { ComponentRef, Ref } from 'react';
+import { type ComponentRef, type Ref, useState } from 'react';
 import {
   type KeyboardTypeOptions,
+  Pressable,
   type ReturnKeyTypeOptions,
   StyleSheet,
   Text,
@@ -19,6 +20,7 @@ import {
   View,
 } from 'react-native';
 
+import { IconoOjo, IconoOjoOculto } from '@/componentes/Iconos';
 import { COLORES } from '@/constantes/colores';
 import { RADIOS, TAMANOS, TIPOGRAFIA } from '@/constantes/tema';
 
@@ -39,6 +41,7 @@ interface CampoTextoProps {
   returnKeyType?: ReturnKeyTypeOptions;
   referenciaEntrada?: Ref<CampoTextoRef>;
   esMultilinea?: boolean;
+  puedeAlternarVisibilidad?: boolean;
   onCambiarTexto?: (texto: string) => void;
   onPerderFoco?: () => void;
   onEnviar?: () => void;
@@ -58,11 +61,16 @@ export default function CampoTexto({
   autoCapitalize,
   autoComplete,
   returnKeyType,
+  puedeAlternarVisibilidad,
   referenciaEntrada,
   onCambiarTexto,
   onPerderFoco,
   onEnviar,
 }: CampoTextoProps) {
+  const [esVisible, setEsVisible] = useState(false);
+  const estaOculto = puedeAlternarVisibilidad ? !esVisible : secureTextEntry;
+
+  const manejarAlternarVisibilidad = () => setEsVisible((anterior) => !anterior);
   return (
     <View style={estilos.contenedor}>
       <Text style={estilos.etiqueta}>{etiqueta}</Text>
@@ -76,11 +84,11 @@ export default function CampoTexto({
       >
         <TextInput
           ref={referenciaEntrada}
-          style={estilos.entrada}
+          style={[estilos.entrada, puedeAlternarVisibilidad && estilos.entradaConIcono]}
+          secureTextEntry={estaOculto}
           value={valor}
           placeholder={textoMarcador}
           placeholderTextColor={esCompacto ? COLORES.marcador : COLORES.textoAtenuado}
-          secureTextEntry={secureTextEntry}
           editable={editable}
           multiline={esMultilinea}
           textAlignVertical={esMultilinea ? 'top' : undefined}
@@ -93,6 +101,17 @@ export default function CampoTexto({
           onBlur={onPerderFoco}
           onSubmitEditing={onEnviar}
         />
+        {puedeAlternarVisibilidad ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={esVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+            hitSlop={8}
+            style={estilos.botonVisibilidad}
+            onPress={manejarAlternarVisibilidad}
+          >
+            {esVisible ? <IconoOjo /> : <IconoOjoOculto />}
+          </Pressable>
+        ) : null}
       </View>
       {error ? <Text style={estilos.error}>{error}</Text> : null}
     </View>
@@ -135,5 +154,15 @@ const estilos = StyleSheet.create({
   error: {
     ...TIPOGRAFIA.leyenda,
     color: COLORES.error,
+  },
+  entradaConIcono: {
+    paddingRight: 30,
+  },
+  botonVisibilidad: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 16,
+    justifyContent: 'center',
   },
 });

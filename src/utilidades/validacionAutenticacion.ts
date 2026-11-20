@@ -20,6 +20,13 @@ export const CAMPOS_REGISTRO: readonly CampoRegistro[] = [
   'rol',
   'empresa',
 ];
+export type CampoUnirseEmpresa = 'correo' | 'contrasena' | 'codigo';
+
+export const CAMPOS_UNIRSE_EMPRESA: readonly CampoUnirseEmpresa[] = [
+  'correo',
+  'contrasena',
+  'codigo',
+];
 
 const REGEX_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const LONGITUD_MINIMA_CONTRASENA = 8;
@@ -98,3 +105,76 @@ export function validarRegistro(
 
   return errores;
 }
+
+/**
+ * Valida los campos del formulario para unirse a una empresa.
+ *
+ * @param valores - Valores actuales de los campos.
+ * @returns Mensaje de error por campo; un campo sin error queda en undefined.
+ */
+export function validarUnirseEmpresa(
+  valores: Record<CampoUnirseEmpresa, string>,
+): Partial<Record<CampoUnirseEmpresa, string>> {
+  const errores: Partial<Record<CampoUnirseEmpresa, string>> = {};
+
+  errores.correo = validarCorreo(valores.correo);
+  errores.contrasena = validarContrasena(valores.contrasena);
+
+  if (!valores.codigo.trim()) {
+    errores.codigo = 'El código de la empresa es requerido';
+  }
+
+  return errores;
+}
+
+export type CampoCambioContrasena = 'contrasenaActual' | 'contrasenaNueva' | 'confirmacion';
+
+export const CAMPOS_CAMBIO_CONTRASENA: readonly CampoCambioContrasena[] = [
+  'contrasenaActual',
+  'contrasenaNueva',
+  'confirmacion',
+];
+
+function validarContrasenaNueva(valor: string, actual: string): string | undefined {
+  if (!valor) {
+    return 'La nueva contraseña es requerida';
+  }
+  if (valor.length < LONGITUD_MINIMA_CONTRASENA) {
+    return `Mínimo ${LONGITUD_MINIMA_CONTRASENA} caracteres`;
+  }
+  if (!/[a-z]/.test(valor) || !/[A-Z]/.test(valor) || !/[0-9]/.test(valor)) {
+    return 'Debe tener una mayúscula, una minúscula y un número';
+  }
+  if (valor === actual) {
+    return 'Debe ser distinta a la contraseña actual';
+  }
+  return undefined;
+}
+
+/**
+ * Valida los campos del formulario de cambio de contraseña.
+ *
+ * @param valores - Valores actuales de los campos.
+ * @returns Mensaje de error por campo; un campo sin error queda en undefined.
+ */
+export function validarCambioContrasena(
+  valores: Record<CampoCambioContrasena, string>,
+): Partial<Record<CampoCambioContrasena, string>> {
+  const errores: Partial<Record<CampoCambioContrasena, string>> = {};
+
+  if (!valores.contrasenaActual) {
+    errores.contrasenaActual = 'La contraseña actual es requerida';
+  }
+  errores.contrasenaNueva = validarContrasenaNueva(
+    valores.contrasenaNueva,
+    valores.contrasenaActual,
+  );
+  if (!valores.confirmacion) {
+    errores.confirmacion = 'Confirma tu nueva contraseña';
+  } else if (valores.confirmacion !== valores.contrasenaNueva) {
+    errores.confirmacion = 'Las contraseñas no coinciden';
+  }
+
+  return errores;
+}
+
