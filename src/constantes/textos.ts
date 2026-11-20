@@ -80,8 +80,7 @@ export const TEXTOS_PERSONAL = {
 
 export const TEXTOS_ELIMINAR_PERSONAL = {
   titulo: '¿Quieres eliminar al empleado?',
-  descripcion: 'Si eliminas al trabajador, no podrá volver a acceder a los datos',
+  descripcion: 'Se quitará de la empresa y de sus obras. Su cuenta no se borra.',
   cancelar: 'Cancelar',
   aceptar: 'Aceptar',
 };
-

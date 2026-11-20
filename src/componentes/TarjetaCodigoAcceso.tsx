@@ -38,7 +38,8 @@ export default function TarjetaCodigoAcceso({
           {codigo}
         </Text>
         <Pressable style={estilos.botonCopiar} onPress={onCopiar}>
-          <Text style={estilos.etiquetaCopiar}>{copiado ? '¡Copiado!' : 'Copiar'}</Text>        </Pressable>
+          <Text style={estilos.etiquetaCopiar}>{copiado ? '¡Copiado!' : 'Copiar'}</Text>
+          |</Pressable>
       </View>
     </View>
   );

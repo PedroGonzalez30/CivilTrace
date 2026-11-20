@@ -8,7 +8,7 @@
  */
 
 export const COLORES = {
-  primario: '#1e7cf2',
+  primario: '#0a0a0a',
   fondo: '#f5f7fb',
   superficie: '#ffffff',
   texto: '#0f172a',
@@ -22,12 +22,12 @@ export const COLORES = {
   superposicion: 'rgba(31,41,55,0.23)',
   negro: '#000000',
   error: '#ff3b30',
-  marca: '#1e7cf2',
-  marcaOscura: '#0052cc',
+  marca: '#aa280e',
+  marcaOscura: '#aa280e',
   textoTenue: '#94a3b8',
   pantalla: '#f0f4f8',
   exito: '#34d399',
-  textoSecundario: '#475467',
+  textoSecundario: '#778190',
   fondoFila: '#f9fafb',
   fondoAvatar: '#e5e7eb',
   exitoFondo: '#ecfdf5',

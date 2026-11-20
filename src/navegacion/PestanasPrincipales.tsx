@@ -37,7 +37,8 @@ export default function PestanasPrincipales({ sesion, onCerrarSesion }: Pestanas
       <Pestana.Screen name="Inicio">{() => <PilaInicio sesion={sesion} />}</Pestana.Screen>
       <Pestana.Screen name="Personal">
         {() => <PantallaPersonal tokenAcceso={sesion.token} />}
-      </Pestana.Screen>      <Pestana.Screen name="Cuenta">
+      </Pestana.Screen>      
+      <Pestana.Screen name="Cuenta">
         {() => <PantallaMiPerfil sesion={sesion} onCerrarSesion={onCerrarSesion} />}
       </Pestana.Screen>
     </Pestana.Navigator>
