@@ -33,6 +33,8 @@ const RUTA_FOTO = '/perfil/foto';
 const TIEMPO_ESPERA_SUBIDA_MS = 60000;
 const MENSAJE_RESPUESTA_INVALIDA = 'El servidor envió una respuesta inesperada';
 const MENSAJE_FOTO_ILEGIBLE = 'No se pudo leer la foto seleccionada';
+const MENSAJE_FOTO_NO_DISPONIBLE = 'No se pudo cargar tu foto de perfil';
+const MENSAJE_SIN_CONEXION = 'No se pudo conectar con el servidor. Revisa tu conexión.';
 
 // 4. Funciones privadas
 function esObjeto(valor: unknown): valor is Record<string, unknown> {
@@ -56,6 +58,21 @@ function aPerfil(respuesta: unknown): PerfilUsuario {
     telefono: typeof perfil.telefono === 'string' ? perfil.telefono : '',
     tieneFoto: perfil.tieneFoto,
   };
+}
+
+function leerComoUrlDatos(datos: Blob): Promise<string> {
+  return new Promise((resolver, rechazar) => {
+    const lector = new FileReader();
+    lector.onloadend = () => {
+      if (typeof lector.result === 'string') {
+        resolver(lector.result);
+      } else {
+        rechazar(new ErrorApi(MENSAJE_FOTO_NO_DISPONIBLE, null));
+      }
+    };
+    lector.onerror = () => rechazar(new ErrorApi(MENSAJE_FOTO_NO_DISPONIBLE, null));
+    lector.readAsDataURL(datos);
+  });
 }
 
 // 5. Funciones públicas
@@ -93,6 +110,7 @@ export async function subirFotoPerfil(
   tokenAcceso: string,
   uriFoto: string,
   tipo: string,
+  ruta: string = RUTA_FOTO,
 ): Promise<void> {
   let datos: Blob;
   try {
@@ -100,7 +118,7 @@ export async function subirFotoPerfil(
   } catch {
     throw new ErrorApi(MENSAJE_FOTO_ILEGIBLE, null);
   }
-  await llamarApi(RUTA_FOTO, {
+  await llamarApi(ruta, {
     metodo: 'POST',
     tokenAcceso,
     cuerpoBinario: { datos, tipo },
@@ -119,4 +137,28 @@ export function crearOrigenFotoPerfil(tokenAcceso: string, version: number): Ori
     uri: `${URL_API}${RUTA_FOTO}?v=${version}`,
     headers: { Authorization: `Bearer ${tokenAcceso}` },
   };
+}
+
+/**
+ * Descarga la foto guardada con la sesión y la devuelve lista para mostrarse (url de datos).
+ * Se descarga desde JavaScript, y no con el encabezado de la imagen, para poder ver el motivo
+ * exacto cuando falla (sesión vencida, sin foto, almacenamiento caído).
+ *
+ * @param tokenAcceso - Token de acceso de la sesión.
+ * @returns La imagen como url de datos.
+ * @throws ErrorApi con el código HTTP en el mensaje si la API no la entrega.
+ */
+export async function descargarFotoPerfil(tokenAcceso: string,ruta: string = RUTA_FOTO,): Promise<string> {
+  let respuesta: Response;
+  try {
+    respuesta = await fetch(`${URL_API}${ruta}`, {
+      headers: { Authorization: `Bearer ${tokenAcceso}` },
+    });
+  } catch {
+    throw new ErrorApi(MENSAJE_SIN_CONEXION, null);
+  }
+  if (!respuesta.ok) {
+    throw new ErrorApi(`${MENSAJE_FOTO_NO_DISPONIBLE} (error ${respuesta.status})`, respuesta.status);
+  }
+  return leerComoUrlDatos(await respuesta.blob());
 }

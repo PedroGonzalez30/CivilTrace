@@ -14,6 +14,8 @@ export type ParametrosPilaInicio = {
   Obras: undefined;
   ObraDetalle: { idObra: string };
   NuevaObra: undefined;
+  CodigosAcceso: undefined;
+  DatosEmpresa: undefined;
 };
 
 export type ParametrosPestanasPrincipales = {
@@ -25,5 +27,5 @@ export type ParametrosPestanasPrincipales = {
 export type ParametrosPilaRaiz = {
   InicioSesion: undefined;
   Registro: undefined;
-  Principal: undefined;
+  Principal: NavigatorScreenParams<ParametrosPestanasPrincipales> | undefined;
 };

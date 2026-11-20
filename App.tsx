@@ -108,6 +108,21 @@ export default function App() {
     return null;
   }
 
+  // Mantiene el nombre de la empresa de la sesión al día para el saludo del inicio.
+  const manejarCambioNombreEmpresa = (nombre: string) => {
+    if (!sesion) {
+      return;
+    }
+    const actualizada: SesionAutenticacion = {
+      ...sesion,
+      usuario: { ...sesion.usuario, empresa: nombre },
+    };
+    setSesion(actualizada);
+    guardarSesion(actualizada).catch(() => {
+      // La sesión en memoria ya quedó actualizada; al renovar el token la API corrige el nombre.
+    });
+  };
+
   return (
     <SafeAreaProvider>
       <StatusBar style="light" />
@@ -115,6 +130,7 @@ export default function App() {
         sesion={sesion}
         onIniciarSesion={setSesion}
         onCerrarSesion={manejarCierreSesion}
+        onNombreEmpresaCambiado={manejarCambioNombreEmpresa}
       />
     </SafeAreaProvider>
   );

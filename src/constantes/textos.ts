@@ -127,3 +127,46 @@ export const TEXTOS_PERFIL = {
   errorGaleria: 'No se pudo abrir la galería',
   reintentar: 'Reintentar',
 };
+
+export const TEXTOS_CODIGOS_ACCESO = {
+  titulo: 'Códigos de acceso a la empresa',
+  subtitulo:
+    'Comparte cada código con supervisores o trabajadores para que accedan a la información ' +
+    'de la empresa. Los códigos se mantendrán vigentes hasta que se regeneren',
+  tituloSupervisor: 'Código del supervisor',
+  descripcionSupervisor: 'Solo tú, como dueño, puedes regenerarlo. El código del trabajador no cambia.',
+  tituloTrabajador: 'Código del trabajador',
+  descripcionTrabajador: 'Solo tú, como dueño, puedes regenerarlo. El código del supervisor no cambia.',
+  regenerar: 'Regenerar código',
+  codigoCopiado: 'Código copiado',
+  codigoCambiado: 'Código cambiado correctamente',
+  confirmarTitulo: '¿Seguro de que quieres cambiar el código de ingreso?',
+  confirmarDescripcion: 'Si cambias el código los trabajadores ya no podrán acceder con el anterior.',
+  errorRegenerar: 'No se pudo cambiar el código. Intente de nuevo',
+  errorCopiar: 'No se pudo copiar el código',
+  reintentar: 'Reintentar',
+};
+
+export const TEXTOS_DATOS_EMPRESA = {
+  titulo: 'Datos de la empresa',
+  subtitulo: 'Información de tu empresa.',
+  cambiarLogotipo: 'Cambiar logotipo',
+  formatoLogotipo: 'JPG o PNG · Máximo 5 MB',
+  etiquetaNombre: 'Nombre de empresa',
+  etiquetaCorreo: 'Correo de empresa',
+  marcadorCorreo: 'Agrega correo electrónico...',
+  etiquetaDescripcion: 'Descripción',
+  marcadorDescripcion: 'Agregar descripción...',
+  etiquetaUbicacion: 'Ubicación de la empresa',
+  marcadorUbicacion: 'Agregar dirección...',
+  editar: 'Editar',
+  aceptar: 'Aceptar',
+  guardar: 'Guardar cambios',
+  confirmarTitulo: '¿Seguro de que quieres actualizar los datos de la empresa?',
+  confirmarDescripcion: 'El cambio será permanente',
+  exito: 'Datos cambiados correctamente',
+  errorCarga: 'No se pudieron cargar los datos de la empresa.',
+  errorGuardar: 'No se pudo guardar. Intente de nuevo',
+  errorGaleria: 'No se pudo abrir la galería',
+  reintentar: 'Reintentar',
+};

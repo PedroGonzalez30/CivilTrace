@@ -26,8 +26,8 @@ interface NavegadorRaizProps {
   sesion: SesionAutenticacion | null;
   onIniciarSesion: (sesion: SesionAutenticacion) => void;
   onCerrarSesion: () => void;
+  onNombreEmpresaCambiado: (nombre: string) => void;
 }
-
 // 3. Constantes del módulo
 const Pila = createNativeStackNavigator<ParametrosPilaRaiz>();
 
@@ -36,6 +36,7 @@ export default function NavegadorRaiz({
   sesion,
   onIniciarSesion,
   onCerrarSesion,
+  onNombreEmpresaCambiado,
 }: NavegadorRaizProps) {
   return (
     <NavigationContainer>
@@ -49,10 +50,14 @@ export default function NavegadorRaiz({
           <Pila.Screen name="Principal">
             {() =>
               sesion.usuario.rol === RolUsuario.DUENO ? (
-                <PestanasPrincipales sesion={sesion} onCerrarSesion={onCerrarSesion} />
+                <PestanasPrincipales
+                  sesion={sesion}
+                  onCerrarSesion={onCerrarSesion}
+                  onNombreEmpresaCambiado={onNombreEmpresaCambiado}
+                />
               ) : sesion.usuario.rol === RolUsuario.SUPERVISOR ? (
-                <PantallaPrincipalSupervisor sesion={sesion} onCerrarSesion={onCerrarSesion} />
-              ) : (
+                  <PantallaPrincipalSupervisor sesion={sesion} onCerrarSesion={onCerrarSesion} />
+                ) : (
                 // TODO(Equipo): pantalla de inicio del Trabajador.
                 <PantallaMiPerfil sesion={sesion} onCerrarSesion={onCerrarSesion} />
               )

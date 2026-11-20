@@ -26,7 +26,7 @@ import { TEXTOS_PERFIL as TEXTOS } from '@/constantes/textos';
 import { useFormulario } from '@/hooks/useFormulario';
 import {
   actualizarPerfil,
-  crearOrigenFotoPerfil,
+  descargarFotoPerfil,
   subirFotoPerfil,
   type PerfilUsuario,
 } from '@/servicios/servicioPerfil';
@@ -57,8 +57,8 @@ export default function FormularioPerfil({
   onCambiarContrasena,
 }: FormularioPerfilProps) {
   const [fotoElegida, setFotoElegida] = useState<FotoElegida | null>(null);
-  const [tieneFoto, setTieneFoto] = useState(perfil.tieneFoto);
-  const [versionFoto, setVersionFoto] = useState(0);
+  // Foto ya guardada: la descargada del servidor o, justo después de subirla, la copia local.
+  const [fotoGuardadaUri, setFotoGuardadaUri] = useState<string | null>(null);
   const [errorFoto, setErrorFoto] = useState<string | null>(null);
   const [seGuardo, setSeGuardo] = useState(false);
 
@@ -73,9 +73,8 @@ export default function FormularioPerfil({
     onEnviar: async (valores) => {
       if (fotoElegida) {
         await subirFotoPerfil(sesion.token, fotoElegida.uri, fotoElegida.tipo);
+        setFotoGuardadaUri(fotoElegida.uri);
         setFotoElegida(null);
-        setTieneFoto(true);
-        setVersionFoto((anterior) => anterior + 1);
       }
       await actualizarPerfil(sesion.token, {
         nombre: valores.nombre.trim(),
@@ -85,6 +84,29 @@ export default function FormularioPerfil({
       setSeGuardo(true);
     },
   });
+
+  // Descarga la foto guardada al abrir la pantalla.
+  useEffect(() => {
+    if (!perfil.tieneFoto) {
+      return undefined;
+    }
+    let cancelado = false;
+    descargarFotoPerfil(sesion.token)
+      .then((uri) => {
+        if (!cancelado) {
+          setFotoGuardadaUri(uri);
+        }
+      })
+      .catch((falla: unknown) => {
+        console.warn('Foto de perfil:', falla);
+        if (!cancelado) {
+          setErrorFoto(falla instanceof Error ? falla.message : TEXTOS.errorGaleria);
+        }
+      });
+    return () => {
+      cancelado = true;
+    };
+  }, [perfil.tieneFoto, sesion.token]);
 
   // Oculta el aviso de éxito a los 3 segundos.
   useEffect(() => {
@@ -117,10 +139,10 @@ export default function FormularioPerfil({
 
   const origenFoto = fotoElegida
     ? { uri: fotoElegida.uri }
-    : tieneFoto
-      ? crearOrigenFotoPerfil(sesion.token, versionFoto)
+    : fotoGuardadaUri
+      ? { uri: fotoGuardadaUri }
       : null;
-  const mensajeError = errorFoto ?? formulario.errorEnvio;
+  const mensajeError = formulario.errorEnvio;
 
   return (
     <>
@@ -130,6 +152,7 @@ export default function FormularioPerfil({
           origen={origenFoto}
           onCambiar={manejarElegirFoto}
         />
+        {errorFoto ? <Text style={estilos.error}>{errorFoto}</Text> : null}
         <View style={estilos.campos}>
           <CampoTexto
             etiqueta={TEXTOS.etiquetaNombre}

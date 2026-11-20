@@ -213,5 +213,49 @@ export function validarPerfil(
   return errores;
 }
 
+export type CampoDatosEmpresa = 'nombre' | 'correo' | 'descripcion' | 'direccion';
+
+export const CAMPOS_DATOS_EMPRESA: readonly CampoDatosEmpresa[] = [
+  'nombre',
+  'correo',
+  'descripcion',
+  'direccion',
+];
+
+const LONGITUD_MAXIMA_NOMBRE_EMPRESA = 100;
+const LONGITUD_MAXIMA_DESCRIPCION_EMPRESA = 500;
+const LONGITUD_MAXIMA_DIRECCION_EMPRESA = 200;
+
+/**
+ * Valida los campos de los datos de la empresa. Solo el nombre es obligatorio.
+ *
+ * @param valores - Valores actuales de los campos.
+ * @returns Mensaje de error por campo; un campo sin error queda en undefined.
+ */
+export function validarDatosEmpresa(
+  valores: Record<CampoDatosEmpresa, string>,
+): Partial<Record<CampoDatosEmpresa, string>> {
+  const errores: Partial<Record<CampoDatosEmpresa, string>> = {};
+  const nombre = valores.nombre.trim();
+  const correo = valores.correo.trim();
+
+  if (!nombre) {
+    errores.nombre = 'El nombre de la empresa es requerido';
+  } else if (nombre.length > LONGITUD_MAXIMA_NOMBRE_EMPRESA) {
+    errores.nombre = 'El nombre es demasiado largo';
+  }
+  if (correo && !REGEX_CORREO.test(correo)) {
+    errores.correo = 'Correo inválido';
+  }
+  if (valores.descripcion.trim().length > LONGITUD_MAXIMA_DESCRIPCION_EMPRESA) {
+    errores.descripcion = 'La descripción es demasiado larga';
+  }
+  if (valores.direccion.trim().length > LONGITUD_MAXIMA_DIRECCION_EMPRESA) {
+    errores.direccion = 'La dirección es demasiado larga';
+  }
+
+  return errores;
+}
+
 
 

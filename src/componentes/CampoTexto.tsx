@@ -8,19 +8,21 @@
  */
 
 // 1. Importaciones
-import { type ComponentRef, type Ref, useState } from 'react';
+import { type ComponentRef, type ComponentType, type Ref, useState } from 'react';
 import {
   type KeyboardTypeOptions,
   Pressable,
   type ReturnKeyTypeOptions,
+  type StyleProp,
   StyleSheet,
   Text,
   TextInput,
   type TextInputProps,
   View,
+  type ViewStyle,
 } from 'react-native';
 
-import { IconoOjo, IconoOjoOculto } from '@/componentes/Iconos';
+import { IconoOjo, IconoOjoOculto, type IconoProps } from '@/componentes/Iconos';
 import { COLORES } from '@/constantes/colores';
 import { RADIOS, TAMANOS, TIPOGRAFIA } from '@/constantes/tema';
 
@@ -42,6 +44,8 @@ interface CampoTextoProps {
   referenciaEntrada?: Ref<CampoTextoRef>;
   esMultilinea?: boolean;
   puedeAlternarVisibilidad?: boolean;
+  Icono?: ComponentType<IconoProps>;
+  estiloCaja?: StyleProp<ViewStyle>;
   onCambiarTexto?: (texto: string) => void;
   onPerderFoco?: () => void;
   onEnviar?: () => void;
@@ -63,6 +67,8 @@ export default function CampoTexto({
   returnKeyType,
   puedeAlternarVisibilidad,
   referenciaEntrada,
+  Icono,
+  estiloCaja,
   onCambiarTexto,
   onPerderFoco,
   onEnviar,
@@ -79,13 +85,19 @@ export default function CampoTexto({
           estilos.caja,
           esCompacto && estilos.cajaCompacta,
           esMultilinea && estilos.cajaMultilinea,
+          Icono && estilos.cajaConIcono,
           error ? estilos.cajaError : null,
+          estiloCaja,
         ]}
       >
+        {Icono ? <Icono /> : null}
         <TextInput
           ref={referenciaEntrada}
-          style={[estilos.entrada, puedeAlternarVisibilidad && estilos.entradaConIcono]}
-          secureTextEntry={estaOculto}
+          style={[
+            estilos.entrada,
+            Icono && estilos.entradaFlexible,
+            puedeAlternarVisibilidad && estilos.entradaConIcono,
+          ]} secureTextEntry={estaOculto}
           value={valor}
           placeholder={textoMarcador}
           placeholderTextColor={esCompacto ? COLORES.marcador : COLORES.textoAtenuado}
@@ -164,5 +176,13 @@ const estilos = StyleSheet.create({
     bottom: 0,
     right: 16,
     justifyContent: 'center',
+  },
+    cajaConIcono: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  entradaFlexible: {
+    flex: 1,
   },
 });

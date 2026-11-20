@@ -69,5 +69,11 @@ export function useCodigosEmpresa(tokenAcceso: string, activo: boolean) {
 
   const reintentar = useCallback(() => setIntento((previo) => previo + 1), []);
 
-  return { ...estado, reintentar };
+  // Muestra los códigos nuevos sin volver a pedirlos a la API.
+  const reemplazarCodigos = useCallback(
+    (codigos: CodigosEmpresa) => setEstado({ cargando: false, codigos, error: null }),
+    [],
+  );
+
+  return { ...estado, reintentar, reemplazarCodigos };
 }

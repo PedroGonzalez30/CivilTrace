@@ -196,3 +196,21 @@ export function IconoChevronDerecha({ tamano = 18, color = COLORES.textoSutil }:
     </Svg>
   );
 }
+
+export function IconoCopiar({ tamano = 16, color = COLORES.superficie }: IconoProps) {
+  return (
+    <Svg width={tamano} height={tamano} viewBox="0 0 24 24" stroke={color} {...PROPIEDADES_TRAZO}>
+      <Rect x={9} y={9} width={13} height={13} rx={2} />
+      <Path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </Svg>
+  );
+}
+
+export function IconoUbicacion({ tamano = 18, color = COLORES.textoTenue }: IconoProps) {
+  return (
+    <Svg width={tamano} height={tamano} viewBox="0 0 24 24" stroke={color} {...PROPIEDADES_TRAZO}>
+      <Path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" />
+      <Circle cx={12} cy={10} r={3} />
+    </Svg>
+  );
+}

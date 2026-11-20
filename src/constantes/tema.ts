@@ -92,7 +92,10 @@ export const TAMANOS = {
   listaSeleccion: 260,
   avatar: 32,
   filaPersona: 50,
-    fotoPerfil: 64,
+  fotoPerfil: 64,
+  botonCodigo: 45,
+  entradaDescripcion: 120,
+  entradaUbicacion: 71,
 };
 
 export const SOMBRAS = {
@@ -173,4 +176,7 @@ export const SOMBRAS = {
     shadowRadius: 2.5,
     elevation: 2,
   },
+};
+export const OPACIDADES = {
+  deshabilitado: 0.5,
 };

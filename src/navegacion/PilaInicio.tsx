@@ -22,17 +22,18 @@ import PantallaPrincipalDueno from '@/pantallas/dueno/PantallaPrincipalDueno';
 import { crearObra } from '@/servicios/servicioObras';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
 import type { ParametrosPilaInicio } from '@/tipos/navegacion';
-
+import PantallaCodigosAcceso from '@/pantallas/dueno/PantallaCodigosAcceso';
+import PantallaDatosEmpresa from '@/pantallas/dueno/PantallaDatosEmpresa';
 // 2. Tipos e interfaces
 interface PilaInicioProps {
   sesion: SesionAutenticacion;
+  onNombreEmpresaCambiado: (nombre: string) => void;
 }
-
 // 3. Constantes del módulo
 const Pila = createNativeStackNavigator<ParametrosPilaInicio>();
 
 // 4. Componente principal
-export default function PilaInicio({ sesion }: PilaInicioProps) {
+export default function PilaInicio({ sesion, onNombreEmpresaCambiado }: PilaInicioProps) {
   const consultaObras = useObras(sesion.token);
   const obras = consultaObras.obras;
   // Los códigos solo se piden mientras la pantalla los muestra (empresa sin obras).
@@ -93,6 +94,23 @@ export default function PilaInicio({ sesion }: PilaInicioProps) {
             }}
             onIrAlPanelPrincipal={() => navigation.popToTop()}
           />)}
+      </Pila.Screen>
+      <Pila.Screen name="CodigosAcceso">
+        {() => (
+          <PantallaCodigosAcceso
+            tokenAcceso={sesion.token}
+            onCodigosCambiados={codigosEmpresa.reintentar}
+          />
+        )}
+      </Pila.Screen>
+      <Pila.Screen name="DatosEmpresa">
+        {({ navigation }) => (
+          <PantallaDatosEmpresa
+            tokenAcceso={sesion.token}
+            onAceptar={() => navigation.popToTop()}
+            onNombreCambiado={onNombreEmpresaCambiado}
+          />
+        )}
       </Pila.Screen>
     </Pila.Navigator>
   );

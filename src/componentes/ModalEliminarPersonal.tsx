@@ -20,6 +20,8 @@ import { TEXTOS_ELIMINAR_PERSONAL } from '@/constantes/textos';
 interface ModalEliminarPersonalProps {
   esVisible: boolean;
   estaCargando: boolean;
+  titulo?: string;
+  descripcion?: string;
   onCancelar: () => void;
   onAceptar: () => void;
 }
@@ -32,6 +34,8 @@ const POSICION_SUPERIOR_TARJETA = 342;
 export default function ModalEliminarPersonal({
   esVisible,
   estaCargando,
+  titulo = TEXTOS_ELIMINAR_PERSONAL.titulo,
+  descripcion = TEXTOS_ELIMINAR_PERSONAL.descripcion,
   onCancelar,
   onAceptar,
 }: ModalEliminarPersonalProps) {
@@ -50,9 +54,8 @@ export default function ModalEliminarPersonal({
           <Pressable style={estilos.cerrar} onPress={onCancelar} hitSlop={12}>
             <Text style={estilos.textoCerrar}>X</Text>
           </Pressable>
-          <Text style={estilos.titulo}>{TEXTOS_ELIMINAR_PERSONAL.titulo}</Text>
-          <Text style={estilos.descripcion}>{TEXTOS_ELIMINAR_PERSONAL.descripcion}</Text>
-          <View style={estilos.botones}>
+          <Text style={estilos.titulo}>{titulo}</Text>
+          <Text style={estilos.descripcion}>{descripcion}</Text>          <View style={estilos.botones}>
             <BotonPrincipal
               etiqueta={TEXTOS_ELIMINAR_PERSONAL.cancelar}
               variante="contorno"

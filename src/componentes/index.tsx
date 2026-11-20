@@ -37,3 +37,5 @@ export { default as ModalExito } from './ModalExito';
 export { default as ProveedorMenuDueno } from './ProveedorMenuDueno';
 export { default as FotoPerfil } from './FotoPerfil';
 export { default as FormularioPerfil } from './FormularioPerfil';
+export { default as TarjetaCodigoRegenerable } from './TarjetaCodigoRegenerable';
+export { default as FormularioDatosEmpresa } from './FormularioDatosEmpresa';

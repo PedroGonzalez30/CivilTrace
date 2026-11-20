@@ -16,29 +16,47 @@ import PilaInicio from '@/navegacion/PilaInicio';
 import PantallaMiPerfil from '@/pantallas/comunes/PantallaMiPerfil';
 import PantallaPersonal from '@/pantallas/dueno/PantallaPersonal';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
-import type { ParametrosPestanasPrincipales } from '@/tipos/navegacion';
-
+import type {
+  ParametrosPestanasPrincipales,
+  ParametrosPilaRaiz,
+} from '@/tipos/navegacion'; import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 // 2. Tipos e interfaces
 interface PestanasPrincipalesProps {
   sesion: SesionAutenticacion;
   onCerrarSesion: () => void;
+  onNombreEmpresaCambiado: (nombre: string) => void;
 }
-
 // 3. Constantes del módulo
 const Pestana = createBottomTabNavigator<ParametrosPestanasPrincipales>();
-const manejarDatosEmpresa = () => { };
-const manejarCodigoAcceso = () => { };
 
 // 4. Componente principal
-export default function PestanasPrincipales({ sesion, onCerrarSesion }: PestanasPrincipalesProps) {
+export default function PestanasPrincipales({ sesion, onCerrarSesion, onNombreEmpresaCambiado, }: PestanasPrincipalesProps) {
+  const navegacionRaiz = useNavigation<NativeStackNavigationProp<ParametrosPilaRaiz>>();
+
+  const manejarCodigoAcceso = () => {
+    navegacionRaiz.navigate('Principal', {
+      screen: 'Inicio',
+      params: { screen: 'CodigosAcceso' },
+    });
+  };
+  const manejarDatosEmpresa = () => {
+    navegacionRaiz.navigate('Principal', {
+      screen: 'Inicio',
+      params: { screen: 'DatosEmpresa' },
+    });
+  };
+
   return (
     <ProveedorMenuDueno onDatosEmpresa={manejarDatosEmpresa} onCodigoAcceso={manejarCodigoAcceso}>
       <Pestana.Navigator
         tabBar={(propiedades) => <NavegacionInferior {...propiedades} />}
         screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: COLORES.pantalla } }}
       >
-        <Pestana.Screen name="Inicio">{() => <PilaInicio sesion={sesion} />}</Pestana.Screen>
+        <Pestana.Screen name="Inicio">
+          {() => <PilaInicio sesion={sesion} onNombreEmpresaCambiado={onNombreEmpresaCambiado} />}
+        </Pestana.Screen>
         <Pestana.Screen name="Personal">
           {() => <PantallaPersonal tokenAcceso={sesion.token} />}
         </Pestana.Screen>
