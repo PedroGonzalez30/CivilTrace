@@ -3,12 +3,11 @@
  * @proyecto Civil Trace
  * @descripcion Pantalla con el detalle de una obra y los accesos a sus actividades y reportes.
  * @autor Pedro Ivan Gonzalez Valdez
- * @fecha POR_COMPLETAR
- * @version 1.0.0
+ * @fecha 20/11/2026
+ * @version 1.2.0
  * @requerimientos RF-47 Consultar detalle de obra
  */
 
-// 1. Importaciones
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import {
@@ -22,19 +21,19 @@ import { COLORES } from '@/constantes/colores';
 import { RADIOS, SOMBRAS, TAMANOS, TIPOGRAFIA } from '@/constantes/tema';
 import type { Obra } from '@/tipos/obra';
 
-// 2. Tipos e interfaces
 interface PantallaDetalleObraProps {
   obra: Obra;
   onRegresar: () => void;
+  onAbrirActividades: (idObra: string) => void;
+  onAbrirReportes: (idObra: string) => void;
 }
 
-// 3. Constantes del módulo
-// TODO(Equipo): conectar la lógica real de estas acciones.
-const manejarAbrirActividades = () => {};
-const manejarAbrirReportes = () => {};
-
-// 4. Componente principal
-export default function PantallaDetalleObra({ obra, onRegresar }: PantallaDetalleObraProps) {
+export default function PantallaDetalleObra({
+  obra,
+  onRegresar,
+  onAbrirActividades,
+  onAbrirReportes,
+}: PantallaDetalleObraProps) {
   return (
     <View style={estilos.contenedor}>
       <EncabezadoApp />
@@ -76,13 +75,13 @@ export default function PantallaDetalleObra({ obra, onRegresar }: PantallaDetall
               estilo={estilos.mitad}
               variante="marca"
               etiqueta="Actividades de la obra"
-              onPresionar={manejarAbrirActividades}
+              onPresionar={() => onAbrirActividades(obra.id)}
             />
             <BotonPrincipal
               estilo={estilos.mitad}
               variante="marca"
               etiqueta="Reportes de la obra"
-              onPresionar={manejarAbrirReportes}
+              onPresionar={() => onAbrirReportes(obra.id)}
             />
           </View>
         </View>
@@ -91,7 +90,6 @@ export default function PantallaDetalleObra({ obra, onRegresar }: PantallaDetall
   );
 }
 
-// 5. Estilos
 const estilos = StyleSheet.create({
   contenedor: {
     flex: 1,

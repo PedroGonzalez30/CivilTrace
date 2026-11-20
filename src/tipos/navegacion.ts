@@ -3,8 +3,8 @@
  * @proyecto Civil Trace
  * @descripcion Parámetros de cada pila y barra de navegación de la aplicación.
  * @autor Pedro Ivan Gonzalez Valdez
- * @fecha 16/11/2026
- * @version 1.0.0
+ * @fecha 20/11/2026
+ * @version 1.2.0
  */
 
 import type { NavigatorScreenParams } from '@react-navigation/native';
@@ -13,6 +13,9 @@ import type { NavigatorScreenParams } from '@react-navigation/native';
 export type ParametrosPilaInicio = {
   Obras: undefined;
   ObraDetalle: { idObra: string };
+  ActividadesObra: { idObra: string };
+  DetalleActividad: { idObra: string; idActividad: string };
+  ReportesObra: { idObra: string };
   NuevaObra: undefined;
   CodigosAcceso: undefined;
   DatosEmpresa: undefined;

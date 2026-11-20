@@ -2,9 +2,9 @@
  * @archivo index.tsx
  * @proyecto Civil Trace
  * @descripcion Punto único de importación de los componentes reutilizables.
- * @autor POR_COMPLETAR
- * @fecha POR_COMPLETAR
- * @version 1.0.0
+ * @autor Pedro Ivan Gonzalez Valdez
+ * @fecha 20/11/2026
+ * @version 1.1.0
  */
 
 export { default as BotonPrincipal } from './BotonPrincipal';
@@ -21,9 +21,11 @@ export { default as MosaicoIcono } from './MosaicoIcono';
 export { default as NavegacionInferior } from './NavegacionInferior';
 export { default as SelectorRol } from './SelectorRol';
 export { default as TarjetaAccion } from './TarjetaAccion';
+export { default as TarjetaActividad } from './TarjetaActividad';
 export { default as TarjetaCodigoAcceso } from './TarjetaCodigoAcceso';
 export { default as TarjetaFormulario } from './TarjetaFormulario';
 export { default as TarjetaObra } from './TarjetaObra';
+export { default as ImagenEvidencia } from './ImagenEvidencia';
 export { default as ModalObraCreada } from './ModalObraCreada';
 export { default as CampoTrabajadores } from './CampoTrabajadores';
 export { default as ModalTrabajadores } from './ModalTrabajadores';

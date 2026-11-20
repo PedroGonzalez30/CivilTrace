@@ -1,13 +1,13 @@
 /**
  * @archivo PilaInicio.tsx
  * @proyecto Civil Trace
- * @descripcion Pila de navegación de la pestaña Inicio: lista de obras, detalle y nueva obra.
+ * @descripcion Pila de navegación de la pestaña Inicio: lista de obras, detalle, actividades,
+ *              reportes y nueva obra.
  * @autor Pedro Ivan Gonzalez Valdez
- * @fecha 16/11/2026
- * @version 1.1.0
+ * @fecha 20/11/2026
+ * @version 1.3.0
  */
 
-// 1. Importaciones
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -16,30 +16,30 @@ import { COLORES } from '@/constantes/colores';
 import { TIPOGRAFIA } from '@/constantes/tema';
 import { useCodigosEmpresa } from '@/hooks/useCodigoEmpresa';
 import { useObras } from '@/hooks/useObras';
+import PantallaActividadesObra from '@/pantallas/dueno/PantallaActividadesObra';
 import PantallaAgregarObra from '@/pantallas/dueno/PantallaAgregarObra';
+import PantallaCodigosAcceso from '@/pantallas/dueno/PantallaCodigoAcceso';
+import PantallaDatosEmpresa from '@/pantallas/dueno/PantallaDatosEmpresa';
+import PantallaDetalleActividad from '@/pantallas/dueno/PantallaDetalleActividad';
 import PantallaDetalleObra from '@/pantallas/dueno/PantallaDetalleObra';
 import PantallaPrincipalDueno from '@/pantallas/dueno/PantallaPrincipalDueno';
+import PantallaReportesObra from '@/pantallas/dueno/PantallaReportesObra';
 import { crearObra } from '@/servicios/servicioObras';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
 import type { ParametrosPilaInicio } from '@/tipos/navegacion';
-import PantallaCodigosAcceso from '@/pantallas/dueno/PantallaCodigoAcceso';
-import PantallaDatosEmpresa from '@/pantallas/dueno/PantallaDatosEmpresa';
-// 2. Tipos e interfaces
+
 interface PilaInicioProps {
   sesion: SesionAutenticacion;
   onNombreEmpresaCambiado: (nombre: string) => void;
 }
-// 3. Constantes del módulo
+
 const Pila = createNativeStackNavigator<ParametrosPilaInicio>();
 
-// 4. Componente principal
 export default function PilaInicio({ sesion, onNombreEmpresaCambiado }: PilaInicioProps) {
   const consultaObras = useObras(sesion.token);
   const obras = consultaObras.obras;
-  // Los códigos solo se piden mientras la pantalla los muestra (empresa sin obras).
   const codigosEmpresa = useCodigosEmpresa(sesion.token, obras !== null && obras.length === 0);
 
-  // Solo la primera carga reemplaza la pila; las recargas conservan la lista que ya se ve.
   if (obras === null) {
     return (
       <View style={estilos.contenedor}>
@@ -81,8 +81,56 @@ export default function PilaInicio({ sesion, onNombreEmpresaCambiado }: PilaInic
       <Pila.Screen name="ObraDetalle">
         {({ navigation, route }) => {
           const obra = obras.find((elemento) => elemento.id === route.params.idObra);
-          return obra ? <PantallaDetalleObra obra={obra} onRegresar={navigation.goBack} /> : null;
+          return obra ? (
+            <PantallaDetalleObra
+              obra={obra}
+              onRegresar={navigation.goBack}
+              onAbrirActividades={(idObra) =>
+                navigation.navigate('ActividadesObra', { idObra })
+              }
+              onAbrirReportes={(idObra) =>
+                navigation.navigate('ReportesObra', { idObra })
+              }
+            />
+          ) : null;
         }}
+      </Pila.Screen>
+      <Pila.Screen name="ReportesObra">
+        {({ navigation, route }) => {
+          const obra = obras.find((elemento) => elemento.id === route.params.idObra);
+          return obra ? (
+            <PantallaReportesObra
+              tokenAcceso={sesion.token}
+              obra={obra}
+              onRegresar={navigation.goBack}
+            />
+          ) : null;
+        }}
+      </Pila.Screen>
+      <Pila.Screen name="ActividadesObra">
+        {({ navigation, route }) => (
+          <PantallaActividadesObra
+            tokenAcceso={sesion.token}
+            idObra={route.params.idObra}
+            onRegresar={navigation.goBack}
+            onAbrirActividad={(idActividad) =>
+              navigation.navigate('DetalleActividad', {
+                idObra: route.params.idObra,
+                idActividad,
+              })
+            }
+          />
+        )}
+      </Pila.Screen>
+      <Pila.Screen name="DetalleActividad">
+        {({ navigation, route }) => (
+          <PantallaDetalleActividad
+            tokenAcceso={sesion.token}
+            idObra={route.params.idObra}
+            idActividad={route.params.idActividad}
+            onRegresar={navigation.goBack}
+          />
+        )}
       </Pila.Screen>
       <Pila.Screen name="NuevaObra">
         {({ navigation }) => (
@@ -93,7 +141,8 @@ export default function PilaInicio({ sesion, onNombreEmpresaCambiado }: PilaInic
               consultaObras.recargar();
             }}
             onIrAlPanelPrincipal={() => navigation.popToTop()}
-          />)}
+          />
+        )}
       </Pila.Screen>
       <Pila.Screen name="CodigosAcceso">
         {() => (
@@ -116,7 +165,6 @@ export default function PilaInicio({ sesion, onNombreEmpresaCambiado }: PilaInic
   );
 }
 
-// 5. Estilos
 const estilos = StyleSheet.create({
   contenedor: {
     flex: 1,
