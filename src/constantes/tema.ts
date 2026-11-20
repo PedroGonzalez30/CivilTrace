@@ -92,6 +92,7 @@ export const TAMANOS = {
   listaSeleccion: 260,
   avatar: 32,
   filaPersona: 50,
+    fotoPerfil: 64,
 };
 
 export const SOMBRAS = {

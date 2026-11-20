@@ -1,11 +1,11 @@
 /**
  * @archivo EncabezadoApp.tsx
  * @proyecto Civil Trace
- * @descripcion Barra superior con el nombre de la aplicación. Muestra el botón de menú de tres
- *              rayas solo cuando la pantalla le pasa onPresionarMenu (pantallas del dueño).
+ * @descripcion Barra superior con el nombre de la aplicación. Dentro de la navegación del
+ *              dueño muestra además el botón de menú de tres rayas.
  * @autor POR_COMPLETAR
  * @fecha POR_COMPLETAR
- * @version 1.1.0
+ * @version 1.2.0
  */
 
 // 1. Importaciones
@@ -15,27 +15,25 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconoMenu } from '@/componentes/Iconos';
 import { COLORES } from '@/constantes/colores';
 import { RADIOS, SOMBRAS, TAMANOS, TIPOGRAFIA } from '@/constantes/tema';
-
-// 2. Tipos e interfaces
-interface EncabezadoAppProps {
-  onPresionarMenu?: () => void;
-  onCambiarAltura?: (altura: number) => void;
-}
+import { useMenuDueno } from '@/hooks/useMenuDueno';
 
 // 4. Componente principal
-export default function EncabezadoApp({ onPresionarMenu, onCambiarAltura }: EncabezadoAppProps) {
-  // La altura real incluye el área segura; el menú la necesita para colocarse debajo del encabezado.
+export default function EncabezadoApp() {
+  // Solo es distinto de null dentro de la navegación del dueño: eso decide si hay 3 rayas.
+  const menuDueno = useMenuDueno();
+
+  // La altura real incluye el área segura; el menú la necesita para colocarse debajo.
   const manejarDiseno = (evento: LayoutChangeEvent) => {
-    onCambiarAltura?.(evento.nativeEvent.layout.height);
+    menuDueno?.cambiarAltura(evento.nativeEvent.layout.height);
   };
 
   return (
     <SafeAreaView edges={['top']} style={estilos.contenedor} onLayout={manejarDiseno}>
-      {onPresionarMenu ? (
+      {menuDueno ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Abrir menú"
-          onPress={onPresionarMenu}
+          onPress={menuDueno.abrirMenu}
         >
           <IconoMenu />
         </Pressable>

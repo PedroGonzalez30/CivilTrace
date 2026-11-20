@@ -178,3 +178,40 @@ export function validarCambioContrasena(
   return errores;
 }
 
+export type CampoPerfil = 'nombre' | 'correo' | 'telefono';
+
+export const CAMPOS_PERFIL: readonly CampoPerfil[] = ['nombre', 'correo', 'telefono'];
+
+const REGEX_TELEFONO = /^[0-9+\-()\s]*$/;
+const LONGITUD_MAXIMA_TELEFONO = 20;
+
+/**
+ * Valida los campos del formulario del perfil. El teléfono es opcional.
+ *
+ * @param valores - Valores actuales de los campos.
+ * @returns Mensaje de error por campo; un campo sin error queda en undefined.
+ */
+export function validarPerfil(
+  valores: Record<CampoPerfil, string>,
+): Partial<Record<CampoPerfil, string>> {
+  const errores: Partial<Record<CampoPerfil, string>> = {};
+  const nombre = valores.nombre.trim();
+  const telefono = valores.telefono.trim();
+
+  if (!nombre) {
+    errores.nombre = 'El nombre es requerido';
+  } else if (nombre.length < LONGITUD_MINIMA_NOMBRE) {
+    errores.nombre = `Mínimo ${LONGITUD_MINIMA_NOMBRE} caracteres`;
+  }
+
+  errores.correo = validarCorreo(valores.correo);
+
+  if (telefono.length > LONGITUD_MAXIMA_TELEFONO || !REGEX_TELEFONO.test(telefono)) {
+    errores.telefono = 'Teléfono inválido';
+  }
+
+  return errores;
+}
+
+
+

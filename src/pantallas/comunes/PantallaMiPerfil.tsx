@@ -1,21 +1,29 @@
 /**
  * @archivo PantallaMiPerfil.tsx
  * @proyecto Civil Trace
- * @descripcion Pantalla temporal que muestra la sesión activa, permite cambiar la contraseña
- *              y cerrar sesión.
- * @autor POR_COMPLETAR
- * @fecha POR_COMPLETAR
- * @version 1.1.0
+ * @descripcion Pantalla Mi perfil, común para dueño, supervisor y trabajador: datos
+ *              personales, foto, cambio de contraseña y cierre de sesión.
+ * @autor Pedro Ivan Gonzalez Valdez
+ * @fecha 20/11/2026
+ * @version 2.0.0
  */
 
 // 1. Importaciones
-import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { BotonPrincipal, EncabezadoApp } from '@/componentes';
+import {
+  BotonPrincipal,
+  EncabezadoApp,
+  EncabezadoPantalla,
+  FormularioPerfil,
+} from '@/componentes';
+import { ErrorApi } from '@/conexion/clienteApi';
 import { COLORES } from '@/constantes/colores';
 import { TIPOGRAFIA } from '@/constantes/tema';
+import { TEXTOS_PERFIL as TEXTOS } from '@/constantes/textos';
 import PantallaCambiarContrasena from '@/pantallas/comunes/PantallaCambiarContrasena';
+import { obtenerPerfil, type PerfilUsuario } from '@/servicios/servicioPerfil';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
 
 // 2. Tipos e interfaces
@@ -25,9 +33,33 @@ interface PantallaMiPerfilProps {
 }
 
 // 4. Componente principal
-// TODO(Equipo): reemplazar esta pantalla temporal por el perfil real del usuario.
 export default function PantallaMiPerfil({ sesion, onCerrarSesion }: PantallaMiPerfilProps) {
   const [esCambioVisible, setEsCambioVisible] = useState(false);
+  const [perfil, setPerfil] = useState<PerfilUsuario | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [intento, setIntento] = useState(0);
+
+  useEffect(() => {
+    // Evita actualizar el estado si la pantalla se cerró antes de que respondiera la API.
+    let cancelado = false;
+    setError(null);
+
+    obtenerPerfil(sesion.token)
+      .then((datos) => {
+        if (!cancelado) {
+          setPerfil(datos);
+        }
+      })
+      .catch((falla: unknown) => {
+        if (!cancelado) {
+          setError(falla instanceof ErrorApi ? falla.message : TEXTOS.errorCarga);
+        }
+      });
+
+    return () => {
+      cancelado = true;
+    };
+  }, [sesion.token, intento]);
 
   if (esCambioVisible) {
     return (
@@ -38,16 +70,34 @@ export default function PantallaMiPerfil({ sesion, onCerrarSesion }: PantallaMiP
   return (
     <View style={estilos.contenedor}>
       <EncabezadoApp />
-      <View style={estilos.contenido}>
-        <Text style={estilos.texto}>Sesión activa: {sesion.usuario.nombre}</Text>
-        <Text style={estilos.texto}>Rol: {sesion.usuario.rol}</Text>
+      <ScrollView
+        contentContainerStyle={estilos.contenido}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <EncabezadoPantalla titulo={TEXTOS.titulo} subtitulo={TEXTOS.subtitulo} />
+        {perfil ? (
+          <FormularioPerfil
+            sesion={sesion}
+            perfil={perfil}
+            onCambiarContrasena={() => setEsCambioVisible(true)}
+          />
+        ) : error ? (
+          <View style={estilos.centro}>
+            <Text style={estilos.error}>{error}</Text>
+            <Pressable onPress={() => setIntento((anterior) => anterior + 1)}>
+              <Text style={estilos.reintentar}>{TEXTOS.reintentar}</Text>
+            </Pressable>
+          </View>
+        ) : (
+          <ActivityIndicator color={COLORES.marca} />
+        )}
         <BotonPrincipal
-          etiqueta="Cambiar contraseña"
+          etiqueta={TEXTOS.etiquetaCerrarSesion}
           variante="contorno"
-          onPresionar={() => setEsCambioVisible(true)}
+          onPresionar={onCerrarSesion}
         />
-        <BotonPrincipal etiqueta="Cerrar sesión" variante="contorno" onPresionar={onCerrarSesion} />
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -56,14 +106,23 @@ export default function PantallaMiPerfil({ sesion, onCerrarSesion }: PantallaMiP
 const estilos = StyleSheet.create({
   contenedor: {
     flex: 1,
-    backgroundColor: COLORES.fondo,
+    backgroundColor: COLORES.pantalla,
   },
   contenido: {
-    gap: 16,
+    gap: 12,
     padding: 24,
   },
-  texto: {
-    ...TIPOGRAFIA.subtitulo,
-    color: COLORES.texto,
+  centro: {
+    alignItems: 'center',
+    gap: 8,
+  },
+  error: {
+    ...TIPOGRAFIA.leyenda,
+    textAlign: 'center',
+    color: COLORES.error,
+  },
+  reintentar: {
+    ...TIPOGRAFIA.etiqueta,
+    color: COLORES.marca,
   },
 });

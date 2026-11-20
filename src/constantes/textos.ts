@@ -108,3 +108,22 @@ export const TEXTOS_CAMBIAR_CONTRASENA = {
   exitoDescripcion: 'Tu contraseña fue actualizada',
   etiquetaAceptar: 'Aceptar',
 };
+
+export const TEXTOS_PERFIL = {
+  titulo: 'Mi perfil',
+  subtitulo: 'Actualiza tus datos personales.',
+  cambiarFoto: 'Cambiar foto',
+  etiquetaNombre: 'Nombre completo',
+  etiquetaCorreo: 'Correo electrónico',
+  etiquetaTelefono: 'Teléfono (opcional)',
+  marcadorTelefono: '+52 55 1234 5678',
+  etiquetaRol: 'Rol de cuenta',
+  noEditable: 'No editable',
+  cambiarContrasena: 'Cambiar contraseña',
+  etiquetaGuardar: 'Guardar cambios',
+  etiquetaCerrarSesion: 'Cerrar sesión',
+  exito: 'Cambios guardados',
+  errorCarga: 'No se pudo cargar tu perfil.',
+  errorGaleria: 'No se pudo abrir la galería',
+  reintentar: 'Reintentar',
+};

@@ -96,7 +96,7 @@ const estilos = StyleSheet.create({
   },
   puntero: {
     position: 'absolute',
-    left: 18,
+    left: 13,
   },
   panel: {
     position: 'absolute',
@@ -111,8 +111,10 @@ const estilos = StyleSheet.create({
     ...SOMBRAS.desplegable,
   },
   opcion: {
-    height: TAMANOS.opcionMenu,
-    padding: 14,
+    minHeight: TAMANOS.opcionMenu,
+    justifyContent: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
     backgroundColor: COLORES.fondo,
     borderWidth: 2,
     borderColor: COLORES.borde,

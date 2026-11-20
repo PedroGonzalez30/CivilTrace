@@ -161,3 +161,38 @@ export function IconoOjoOculto({ tamano = 18, color = COLORES.textoSutil }: Icon
   );
 }
 
+export function IconoCamara({ tamano = 18, color = COLORES.textoSutil }: IconoProps) {
+  return (
+    <Svg width={tamano} height={tamano} viewBox="0 0 24 24" stroke={color} {...PROPIEDADES_TRAZO}>
+      <Path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+      <Circle cx={12} cy={13} r={3} />
+    </Svg>
+  );
+}
+
+export function IconoCandado({ tamano = 14, color = COLORES.textoSutil }: IconoProps) {
+  return (
+    <Svg width={tamano} height={tamano} viewBox="0 0 24 24" stroke={color} {...PROPIEDADES_TRAZO}>
+      <Circle cx={12} cy={16} r={1} />
+      <Rect x={3} y={10} width={18} height={12} rx={2} />
+      <Path d="M7 10V7a5 5 0 0 1 10 0v3" />
+    </Svg>
+  );
+}
+
+export function IconoLlave({ tamano = 18, color = COLORES.textoSutil }: IconoProps) {
+  return (
+    <Svg width={tamano} height={tamano} viewBox="0 0 24 24" stroke={color} {...PROPIEDADES_TRAZO}>
+      <Path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" />
+      <Circle cx={16.5} cy={7.5} r={0.5} />
+    </Svg>
+  );
+}
+
+export function IconoChevronDerecha({ tamano = 18, color = COLORES.textoSutil }: IconoProps) {
+  return (
+    <Svg width={tamano} height={tamano} viewBox="0 0 24 24" stroke={color} {...PROPIEDADES_TRAZO}>
+      <Polyline points="9 18 15 12 9 6" />
+    </Svg>
+  );
+}

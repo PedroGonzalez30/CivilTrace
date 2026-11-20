@@ -14,3 +14,9 @@ export const ROLES_DISPONIBLES: readonly RolUsuario[] = [
   RolUsuario.SUPERVISOR,
   RolUsuario.TRABAJADOR,
 ];
+
+export const ETIQUETA_ROL: Record<RolUsuario, string> = {
+  [RolUsuario.DUENO]: 'Dueño',
+  [RolUsuario.SUPERVISOR]: 'Supervisor',
+  [RolUsuario.TRABAJADOR]: 'Trabajador',
+};

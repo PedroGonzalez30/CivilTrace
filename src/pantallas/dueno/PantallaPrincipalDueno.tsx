@@ -95,7 +95,7 @@ export default function PantallaPrincipalDueno({
 
   return (
     <View style={estilos.contenedor}>
-      <EncabezadoApp onPresionarMenu={manejarAbrirMenu} onCambiarAltura={setAlturaEncabezado} />
+      <EncabezadoApp  />
       {estaVacio ? (
         <ScrollView contentContainerStyle={estilos.contenidoVacio}>
           <Text style={estilos.tituloBienvenida}>Bienvenido a {nombreMostrado}</Text>

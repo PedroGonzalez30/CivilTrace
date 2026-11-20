@@ -12,7 +12,7 @@ import { TIEMPO_ESPERA_API_MS, URL_API } from '@/conexion/configuracionApi';
 
 // 2. Tipos e interfaces
 interface OpcionesLlamada {
-    metodo?: 'GET' | 'POST' | 'DELETE';
+  metodo?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   cuerpo?: unknown;
   // Para subir un archivo tal cual (por ejemplo una foto); no se combina con "cuerpo".
   cuerpoBinario?: { datos: Blob; tipo: string };
