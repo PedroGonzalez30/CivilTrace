@@ -35,7 +35,13 @@ preguntar. Las nuevas decisiones se agregan al final con fecha.
 
 | # | Tema |
 |---|---|
-| P-01 | Si la página "Dueño" del Figma es la versión vigente de las pantallas del dueño (se asume que sí). |
-| P-02 | Cuál de las dos identidades OIDC usa el workflow actual; la otra se puede borrar. |
-| P-03 | El plan de pruebas usa una numeración de RF distinta del SRS V4.0 (ver `documentos/`). |
-| P-04 | RF-19 y RF-27 (asistencia) están como Should en el SRS V4.0 pero son parte del MVP en el Figma: proponer subirlos a Must. |
+| P-02 | Cuál de las dos identidades OIDC usa el workflow actual; la otra se puede borrar. El equipo no lo sabe: revisarlo en Azure (federated credentials de `oidc-msi-9d1d` y `oidc-msi-a92e`) con la cuenta que administra `rg-civiltrace`. |
+
+## Resueltas
+
+| # | Fecha | Decisión |
+|---|---|---|
+| P-01 | 23/11/2026 | La página "Dueño" del Figma es la versión vigente de las pantallas del dueño. |
+| P-03 | 23/11/2026 | Se usa la numeración de RF del **SRS V4.0**. Las claves del plan de pruebas se mapean a ella. |
+| P-04 | 23/11/2026 | RF-19 y RF-27 (asistencia) suben de Should a **Must**: son parte del MVP en el Figma. |
+| G-01 | 23/11/2026 | El equipo aprueba la gobernanza de la constitución: las enmiendas van por pull request con aprobación del equipo y se registran aquí; se usa versionado semántico (MAJOR / MINOR / PATCH). |
