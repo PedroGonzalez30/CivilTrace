@@ -1,22 +1,3 @@
-<!--
-Informe de impacto de sincronización (Sync Impact Report)
-- Cambio de versión: plantilla sin versión → 1.0.0 (ratificación inicial)
-- Principios definidos (antes eran marcadores de plantilla):
-  - [PRINCIPLE_1_NAME] → I. Alcance: el Figma manda
-  - [PRINCIPLE_2_NAME] → II. Estándar de codificación (ECCT v1.0) — no negociable
-  - [PRINCIPLE_3_NAME] → III. Pruebas primero, ligadas al plan de pruebas
-  - [PRINCIPLE_4_NAME] → IV. Seguridad y datos
-  - [PRINCIPLE_5_NAME] → (eliminado; el equipo definió cuatro principios técnicos y dos secciones)
-- Secciones añadidas:
-  - [SECTION_2_NAME] → V. Azure y portabilidad al cliente
-  - [SECTION_3_NAME] → VI. Forma de trabajar
-  - Gobernanza (reglas de enmienda, versionado y revisión de cumplimiento)
-- Secciones eliminadas: ninguna
-- Plantillas dependientes: no se modifican aquí; leen la constitución en tiempo de ejecución
-  (.specify/templates/plan-template.md, spec-template.md, tasks-template.md, checklist-template.md).
-- TODO diferidos: ninguno.
--->
-
 # Constitución del proyecto Civil Trace
 
 Equipo 2+2 (UABC FIAD, grupo 972). Estos principios son obligatorios para toda especificación, plan,
