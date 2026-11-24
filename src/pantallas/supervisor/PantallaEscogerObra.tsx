@@ -5,14 +5,16 @@
  *   SUP_Asistencia_EscogerObra, 96:2903).
  * @autor Emilio Manuel Esquivel
  * @fecha 23/11/2026
- * @version 1.0.0
+ * @version 1.1.0
  * @requerimientos RF-27 Registrar asistencia por el supervisor
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Creación (feature 001)
+ *   24/11/2026 - Emilio Manuel Esquivel - Subtítulo y pie configurables para reusarla como "Mis
+ *   obras" en Inicio (SUP_Trabajo_VerObras, feature 003)
  */
 
 // 1. Importaciones
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback } from 'react';
+import { type ReactNode, useCallback } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import EncabezadoApp from '@/componentes/EncabezadoApp';
@@ -27,13 +29,22 @@ import type { ObraSupervisada } from '@/tipos/asistencia';
 interface PantallaEscogerObraProps {
   sesion: SesionAutenticacion;
   onElegirObra: (obra: ObraSupervisada) => void;
+  // Inicio (feature 003) usa otro subtítulo y agrega el código de trabajadores al final.
+  subtitulo?: string;
+  pie?: ReactNode;
 }
 
 // 3. Constantes del módulo
 const MENSAJE_SIN_OBRAS = 'Todavía no supervisas ninguna obra.';
+const SUBTITULO_ASISTENCIA = 'Selecciona una de las obras en las que pasarás asistencia';
 
 // 4. Componente principal
-export default function PantallaEscogerObra({ sesion, onElegirObra }: PantallaEscogerObraProps) {
+export default function PantallaEscogerObra({
+  sesion,
+  onElegirObra,
+  subtitulo = SUBTITULO_ASISTENCIA,
+  pie,
+}: PantallaEscogerObraProps) {
   const { obras, cargando, error, recargar } = useObrasSupervisadas(sesion.token);
 
   useFocusEffect(
@@ -52,9 +63,7 @@ export default function PantallaEscogerObra({ sesion, onElegirObra }: PantallaEs
         <Text style={estilos.titulo}>
           Bienvenido{sesion.usuario.empresa ? ` a ${sesion.usuario.empresa}` : ''}
         </Text>
-        <Text style={estilos.subtitulo}>
-          Selecciona una de las obras en las que pasarás asistencia
-        </Text>
+        <Text style={estilos.subtitulo}>{subtitulo}</Text>
         {error ? <Text style={estilos.error}>{error}</Text> : null}
         {!cargando && !error && obras.length === 0 ? (
           <Text style={estilos.subtitulo}>{MENSAJE_SIN_OBRAS}</Text>
@@ -78,6 +87,7 @@ export default function PantallaEscogerObra({ sesion, onElegirObra }: PantallaEs
             </View>
           </Pressable>
         ))}
+        {pie}
       </ScrollView>
     </View>
   );

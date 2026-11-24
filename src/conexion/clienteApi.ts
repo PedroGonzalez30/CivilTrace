@@ -4,8 +4,9 @@
  * @descripcion Cliente HTTP genérico para hablar con la API de Civil Trace.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 16/11/2026
- * @version 1.1.0
+ * @version 1.2.0
  * @historial 23/11/2026 - Emilio Manuel Esquivel - ErrorSinConexion, motivo y PATCH (feature 001)
+ *   24/11/2026 - Emilio Manuel Esquivel - Encabezados extra (tipo y comentario de evidencia, feature 003)
  */
 
 // 1. Importaciones
@@ -19,6 +20,8 @@ interface OpcionesLlamada {
   cuerpoBinario?: { datos: Blob; tipo: string };
   tokenAcceso?: string;
   tiempoEsperaMs?: number;
+  // Encabezados propios de una ruta, por ejemplo el tipo de evidencia (feature 003).
+  encabezados?: Record<string, string>;
 }
 
 // 3. Constantes del módulo
@@ -92,7 +95,14 @@ export async function llamarApi(ruta: string, opciones: OpcionesLlamada = {}): P
     throw new ErrorApi(MENSAJE_SIN_CONFIGURAR, null);
   }
 
-  const { metodo = 'GET', cuerpo, cuerpoBinario, tokenAcceso, tiempoEsperaMs } = opciones;
+  const {
+    metodo = 'GET',
+    cuerpo,
+    cuerpoBinario,
+    tokenAcceso,
+    tiempoEsperaMs,
+    encabezados,
+  } = opciones;
   const controlador = new AbortController();
   const temporizador = setTimeout(
     () => controlador.abort(),
@@ -107,6 +117,7 @@ export async function llamarApi(ruta: string, opciones: OpcionesLlamada = {}): P
         ...(cuerpo === undefined ? {} : { 'Content-Type': 'application/json' }),
         ...(cuerpoBinario ? { 'Content-Type': cuerpoBinario.tipo } : {}),
         ...(tokenAcceso ? { Authorization: `Bearer ${tokenAcceso}` } : {}),
+        ...encabezados,
       },
       body: cuerpoBinario
         ? cuerpoBinario.datos

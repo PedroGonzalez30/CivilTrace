@@ -4,19 +4,20 @@
  * @descripcion Barra inferior "Trabajo / Mi asistencia / Cuenta" del trabajador, con el azul del Figma.
  * @autor Emilio Manuel Esquivel
  * @fecha 23/11/2026
- * @version 1.0.0
- * @requerimientos RF-19 Registrar asistencia propia
+ * @version 1.1.0
+ * @requerimientos RF-19 Registrar asistencia propia, CP11, CP12
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Creación (feature 001)
+ *   24/11/2026 - Emilio Manuel Esquivel - Trabajo muestra sus actividades (feature 003)
  */
 
 // 1. Importaciones
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import MarcadorPantalla from '@/componentes/MarcadorPantalla';
 import NavegacionInferior from '@/componentes/NavegacionInferior';
 import { COLORES } from '@/constantes/colores';
 import { COLORES_ASISTENCIA } from '@/constantes/textosAsistencia';
 import PilaMiAsistencia from '@/navegacion/PilaMiAsistencia';
+import PilaTrabajoTrabajador from '@/navegacion/PilaTrabajoTrabajador';
 import PantallaMiPerfil from '@/pantallas/comunes/PantallaMiPerfil';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
 import type { ParametrosPestanasTrabajador } from '@/tipos/navegacion';
@@ -40,9 +41,7 @@ export default function PestanasTrabajador({ sesion, onCerrarSesion }: PestanasT
       screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: COLORES.pantalla } }}
     >
       <Pestana.Screen name="Trabajo">
-        {() => (
-          <MarcadorPantalla titulo="Trabajo" mensaje="Tus actividades de hoy aparecerán aquí." />
-        )}
+        {() => <PilaTrabajoTrabajador sesion={sesion} />}
       </Pestana.Screen>
       <Pestana.Screen name="MiAsistencia">
         {() => <PilaMiAsistencia sesion={sesion} />}
