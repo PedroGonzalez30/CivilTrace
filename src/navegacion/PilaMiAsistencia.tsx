@@ -14,6 +14,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import MarcadorPantalla from '@/componentes/MarcadorPantalla';
 import { COLORES } from '@/constantes/colores';
+import PantallaMiAsistencia from '@/pantallas/trabajador/PantallaMiAsistencia';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
 import type { ParametrosPilaMiAsistencia } from '@/tipos/navegacion';
 
@@ -32,7 +33,15 @@ export default function PilaMiAsistencia({ sesion }: PilaMiAsistenciaProps) {
       screenOptions={{ headerShown: false, contentStyle: { backgroundColor: COLORES.pantalla } }}
     >
       <Pila.Screen name="MiAsistencia">
-        {() => <MarcadorPantalla titulo="Asistencia" mensaje={sesion.usuario.nombre} />}
+        {({ navigation }) => (
+          <PantallaMiAsistencia
+            sesion={sesion}
+            onVerHistorial={() => navigation.navigate('Historial')}
+          />
+        )}
+      </Pila.Screen>
+      <Pila.Screen name="Historial">
+        {() => <MarcadorPantalla titulo="Asistencia" mensaje="Historial del mes" />}
       </Pila.Screen>
     </Pila.Navigator>
   );
