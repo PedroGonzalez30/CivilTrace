@@ -5,6 +5,7 @@
  * @autor POR_COMPLETAR
  * @fecha POR_COMPLETAR
  * @version 1.0.0
+ * @historial 23/11/2026 - Emilio Manuel Esquivel - Íconos de asistencia (calendario, lápiz)
  */
 
 // 1. Importaciones
@@ -211,6 +212,40 @@ export function IconoUbicacion({ tamano = 18, color = COLORES.textoTenue }: Icon
     <Svg width={tamano} height={tamano} viewBox="0 0 24 24" stroke={color} {...PROPIEDADES_TRAZO}>
       <Path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" />
       <Circle cx={12} cy={10} r={3} />
+    </Svg>
+  );
+}
+
+export function IconoCalendarioCheck({ tamano = 22, color = COLORES.textoTenue }: IconoProps) {
+  return (
+    <Svg width={tamano} height={tamano} viewBox="0 0 24 24" stroke={color} {...PROPIEDADES_TRAZO}>
+      <Rect x={3} y={4} width={18} height={18} rx={2} />
+      <Path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4" />
+    </Svg>
+  );
+}
+
+export function IconoCalendario({ tamano = 20, color = COLORES.textoTenue }: IconoProps) {
+  return (
+    <Svg width={tamano} height={tamano} viewBox="0 0 24 24" stroke={color} {...PROPIEDADES_TRAZO}>
+      <Rect x={3} y={4} width={18} height={18} rx={2} />
+      <Path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01" />
+    </Svg>
+  );
+}
+
+export function IconoLapiz({ tamano = 14, color = COLORES.textoTenue }: IconoProps) {
+  return (
+    <Svg width={tamano} height={tamano} viewBox="0 0 24 24" stroke={color} {...PROPIEDADES_TRAZO}>
+      <Path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+    </Svg>
+  );
+}
+
+export function IconoChevronIzquierda({ tamano = 16, color = COLORES.textoTenue }: IconoProps) {
+  return (
+    <Svg width={tamano} height={tamano} viewBox="0 0 24 24" stroke={color} {...PROPIEDADES_TRAZO}>
+      <Path d="m15 18-6-6 6-6" />
     </Svg>
   );
 }

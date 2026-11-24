@@ -6,6 +6,7 @@
  * @autor  Pedro Iván González Valdez
  * @fecha 15/11/2026
  * @version 1.0.0
+ * @historial 23/11/2026 - Emilio Manuel Esquivel - Pestañas por rol para supervisor y trabajador (feature 001)
  */
 
 // 1. Importaciones
@@ -14,10 +15,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { COLORES } from '@/constantes/colores';
 import PestanasPrincipales from '@/navegacion/PestanasPrincipales';
+import PestanasSupervisor from '@/navegacion/PestanasSupervisor';
+import PestanasTrabajador from '@/navegacion/PestanasTrabajador';
 import PantallaInicioSesion from '@/pantallas/comunes/PantallaInicioSesion';
-import PantallaMiPerfil from '@/pantallas/comunes/PantallaMiPerfil';
 import PantallaRegistro from '@/pantallas/comunes/PantallaRegistro';
-import PantallaPrincipalSupervisor from '@/pantallas/supervisor/PantallaPrincipalSupervisor';
 import { RolUsuario, type SesionAutenticacion } from '@/tipos/autenticacion';
 import type { ParametrosPilaRaiz } from '@/tipos/navegacion';
 
@@ -56,10 +57,9 @@ export default function NavegadorRaiz({
                   onNombreEmpresaCambiado={onNombreEmpresaCambiado}
                 />
               ) : sesion.usuario.rol === RolUsuario.SUPERVISOR ? (
-                <PantallaPrincipalSupervisor sesion={sesion} onCerrarSesion={onCerrarSesion} />
+                <PestanasSupervisor sesion={sesion} onCerrarSesion={onCerrarSesion} />
               ) : (
-                // TODO(Equipo): pantalla de inicio del Trabajador.
-                <PantallaMiPerfil sesion={sesion} onCerrarSesion={onCerrarSesion} />
+                <PestanasTrabajador sesion={sesion} onCerrarSesion={onCerrarSesion} />
               )
             }
           </Pila.Screen>

@@ -37,15 +37,15 @@ description: 'Tareas del feature 001 en la app móvil: asistencia con QR, horari
 
 ## Phase 2: Foundational (bloquea todas las historias)
 
-- [ ] T006 [P] Crear `src/tipos/asistencia.ts` con los tipos de las respuestas del contrato de la API (lista en [data-model.md](./data-model.md), sección "Tipos de TypeScript"), y `src/constantes/textosAsistencia.ts` con las etiquetas de `TipoJornada`, `MotivoAsistencia`, `EfectoPago` y los mensajes de la spec.
-- [ ] T007 [P] Escribir primero `__tests__/formatoHoras-test.ts`: `"08:00"` → "8:00 am", `"16:00"` → "4:00 pm", un instante con zona `America/Tijuana` → "8:02 am", y la regla "después de las 08:15". Después implementar `src/utilidades/formatoHoras.ts` (research R-12).
-- [ ] T008 Agregar `ErrorSinConexion` en `src/conexion/clienteApi.ts`: un fallo de `fetch` sin respuesta lanza `ErrorSinConexion` en lugar de `ErrorApi`. Exponer el `motivo` de los errores 422 de la API. Prueba en `__tests__/clienteApi-test.ts`.
-- [ ] T009 Escribir primero `__tests__/repositorioAsistenciaLocal-test.ts` contra la interfaz `RepositorioLocal`, que cubra la cola, el paquete y el registro del día, con las transiciones de [data-model.md](./data-model.md) `escaneo_pendiente.estado`. Implementar después:
+- [x] T006 [P] Crear `src/tipos/asistencia.ts` con los tipos de las respuestas del contrato de la API (lista en [data-model.md](./data-model.md), sección "Tipos de TypeScript"), y `src/constantes/textosAsistencia.ts` con las etiquetas de `TipoJornada`, `MotivoAsistencia`, `EfectoPago` y los mensajes de la spec.
+- [x] T007 [P] Escribir primero `__tests__/formatoHoras-test.ts`: `"08:00"` → "8:00 am", `"16:00"` → "4:00 pm", un instante con zona `America/Tijuana` → "8:02 am", y la regla "después de las 08:15". Después implementar `src/utilidades/formatoHoras.ts` (research R-12).
+- [x] T008 Agregar `ErrorSinConexion` en `src/conexion/clienteApi.ts`: un fallo de `fetch` sin respuesta lanza `ErrorSinConexion` en lugar de `ErrorApi`. Exponer el `motivo` de los errores 422 de la API. Prueba en `__tests__/clienteApi-test.ts`.
+- [x] T009 Escribir primero `__tests__/repositorioAsistenciaLocal-test.ts` contra la interfaz `RepositorioLocal`, que cubra la cola, el paquete y el registro del día, con las transiciones de [data-model.md](./data-model.md) `escaneo_pendiente.estado`. Implementar después:
   - `src/servicios/local/baseLocal.ts`: `openDatabaseAsync('civiltrace.db')`, WAL y migración v1 con `user_version`;
   - `src/servicios/local/repositorioAsistenciaLocal.ts`: las tablas `escaneo_pendiente`, `paquete_obra`, `trabajador_paquete` y `registro_dia_local` con las columnas y reglas de [data-model.md](./data-model.md), incluidos `escaneo_pendiente.id_local`, `escaneo_pendiente.usuario_id`, `escaneo_pendiente.latitud`/`longitud` y `registro_dia_local.fecha`.
-- [ ] T010 [P] Crear `src/servicios/servicioAsistencia.ts` con `obtenerMiCredencial`, `obtenerMiDia`, `listarMisObras`, `obtenerPaquete`, `pedirVistaPrevia`, `enviarEscaneos` y `obtenerResumenDia` ([contracts/pantallas-y-servicios.md](./contracts/pantallas-y-servicios.md)).
-- [ ] T011 [P] Crear `src/hooks/useConexion.ts` sobre `useNetworkState` de `expo-network`, con `isInternetReachable` (R-07).
-- [ ] T012 Navegación por rol (R-11):
+- [x] T010 [P] Crear `src/servicios/servicioAsistencia.ts` con `obtenerMiCredencial`, `obtenerMiDia`, `listarMisObras`, `obtenerPaquete`, `pedirVistaPrevia`, `enviarEscaneos` y `obtenerResumenDia` ([contracts/pantallas-y-servicios.md](./contracts/pantallas-y-servicios.md)).
+- [x] T011 [P] Crear `src/hooks/useConexion.ts` sobre `useNetworkState` de `expo-network`, con `isInternetReachable` (R-07).
+- [x] T012 Navegación por rol (R-11):
   - crear `src/navegacion/PestanasSupervisor.tsx` ("Inicio", que usa la `PantallaPrincipalSupervisor` existente; "Asistencia"; "Cuenta") y `src/navegacion/PestanasTrabajador.tsx` ("Trabajo", con un marcador; "Mi asistencia"; "Cuenta");
   - ampliar `NavegacionInferior` con los íconos y etiquetas del Figma;
   - cambiar `src/navegacion/NavegadorRaiz.tsx` para elegir las pestañas por rol;
