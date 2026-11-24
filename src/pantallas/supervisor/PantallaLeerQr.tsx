@@ -6,10 +6,11 @@
  *   conexión con lo guardado en el teléfono.
  * @autor Emilio Manuel Esquivel
  * @fecha 23/11/2026
- * @version 1.0.0
- * @requerimientos RF-27 Registrar asistencia por el supervisor, RNF-07 Captura sin conexión
- *   (D-14)
+ * @version 1.1.0
+ * @requerimientos RF-27 Registrar asistencia por el supervisor, RF-60, RNF-07 Captura sin
+ *   conexión (D-14)
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Creación (feature 001, research R-04)
+ *   24/11/2026 - Emilio Manuel Esquivel - Botón visible "Detalles" por trabajador (D-26)
  */
 
 // 1. Importaciones
@@ -22,6 +23,7 @@ import AvisoSincronizacion from '@/componentes/AvisoSincronizacion';
 import BotonPrincipal from '@/componentes/BotonPrincipal';
 import EncabezadoApp from '@/componentes/EncabezadoApp';
 import HojaDetallesAsistencia from '@/componentes/HojaDetallesAsistencia';
+import { IconoLapiz } from '@/componentes/Iconos';
 import TarjetaHorarioDia from '@/componentes/TarjetaHorarioDia';
 import { COLORES } from '@/constantes/colores';
 import { COLORES_ASISTENCIA } from '@/constantes/textosAsistencia';
@@ -135,34 +137,51 @@ export default function PantallaLeerQr({
 
         <Text style={estilos.tituloSeccion}>Resumen de asistencia</Text>
         <Text style={estilos.ayuda}>
-          Mantén presionado a un trabajador para ver o editar sus detalles de asistencia.
+          Toca “Detalles” para justificar un retardo o una falta, o para corregir las horas.
         </Text>
-        {(resumen?.trabajadores ?? []).map((trabajador) => (
-          <Pressable
-            key={trabajador.id}
-            style={estilos.fila}
-            onLongPress={() => resumen && setSeleccionado({ trabajador, fecha: resumen.fecha })}
-            accessibilityHint="Mantén presionado para ver los detalles"
-          >
-            <Text style={estilos.nombre}>{trabajador.nombre}</Text>
-            <Text
-              style={[
-                estilos.estadoFila,
-                {
-                  color: trabajador.entrada
-                    ? COLORES_ASISTENCIA.verdeTexto
-                    : COLORES_ASISTENCIA.rojoTexto,
-                },
-              ]}
+        {(resumen?.trabajadores ?? []).map((trabajador) => {
+          const abrirDetalles = () =>
+            resumen && setSeleccionado({ trabajador, fecha: resumen.fecha });
+          return (
+            <Pressable
+              key={trabajador.id}
+              style={estilos.fila}
+              onLongPress={abrirDetalles}
+              accessibilityHint="Mantén presionado para ver los detalles"
             >
-              {trabajador.entrada
-                ? `Entrada ${formatearInstante(trabajador.entrada, lectura.zonaHoraria)}`
-                : trabajador.tipoJornada === 'FALTA'
-                  ? 'Falta'
-                  : 'Sin registrar'}
-            </Text>
-          </Pressable>
-        ))}
+              <Text style={estilos.nombre}>{trabajador.nombre}</Text>
+              <View style={estilos.ladoDerecho}>
+                <Text
+                  style={[
+                    estilos.estadoFila,
+                    {
+                      color: trabajador.entrada
+                        ? COLORES_ASISTENCIA.verdeTexto
+                        : COLORES_ASISTENCIA.rojoTexto,
+                    },
+                  ]}
+                >
+                  {trabajador.entrada
+                    ? `Entrada ${formatearInstante(trabajador.entrada, lectura.zonaHoraria)}`
+                    : trabajador.tipoJornada === 'FALTA'
+                      ? 'Falta'
+                      : 'Sin registrar'}
+                </Text>
+                {/* Botón visible (D-26): mantener presionado no se descubre a simple vista. */}
+                <Pressable
+                  style={estilos.botonDetalles}
+                  onPress={abrirDetalles}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Detalles de asistencia de ${trabajador.nombre}`}
+                  hitSlop={6}
+                >
+                  <IconoLapiz tamano={12} color={COLORES_ASISTENCIA.azul} />
+                  <Text style={estilos.textoDetalles}>Detalles</Text>
+                </Pressable>
+              </View>
+            </Pressable>
+          );
+        })}
       </ScrollView>
       {seleccionado ? (
         <HojaDetallesAsistencia
@@ -210,11 +229,25 @@ const estilos = StyleSheet.create({
   ayuda: { ...TIPOGRAFIA.leyenda, color: COLORES.textoSutil },
   fila: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
+    gap: 8,
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: COLORES.bordeModal,
   },
   nombre: { ...TIPOGRAFIA.subtitulo, color: COLORES.textoAtenuado, flexShrink: 1 },
   estadoFila: { ...TIPOGRAFIA.etiqueta },
+  ladoDerecho: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  botonDetalles: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: RADIOS.pildora,
+    borderWidth: 1,
+    borderColor: COLORES_ASISTENCIA.azul,
+  },
+  textoDetalles: { ...TIPOGRAFIA.leyenda, color: COLORES_ASISTENCIA.azul },
 });

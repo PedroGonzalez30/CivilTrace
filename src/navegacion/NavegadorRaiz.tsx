@@ -5,14 +5,16 @@
  * una sesión activa.
  * @autor  Pedro Iván González Valdez
  * @fecha 15/11/2026
- * @version 1.0.0
+ * @version 1.1.0
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Pestañas por rol para supervisor y trabajador (feature 001)
+ *   24/11/2026 - Emilio Manuel Esquivel - Logotipo de la empresa para el encabezado (D-25, feature 002)
  */
 
 // 1. Importaciones
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import ProveedorLogoEmpresa from '@/componentes/ProveedorLogoEmpresa';
 import { COLORES } from '@/constantes/colores';
 import PestanasPrincipales from '@/navegacion/PestanasPrincipales';
 import PestanasSupervisor from '@/navegacion/PestanasSupervisor';
@@ -49,19 +51,21 @@ export default function NavegadorRaiz({
       >
         {sesion ? (
           <Pila.Screen name="Principal">
-            {() =>
-              sesion.usuario.rol === RolUsuario.DUENO ? (
-                <PestanasPrincipales
-                  sesion={sesion}
-                  onCerrarSesion={onCerrarSesion}
-                  onNombreEmpresaCambiado={onNombreEmpresaCambiado}
-                />
-              ) : sesion.usuario.rol === RolUsuario.SUPERVISOR ? (
-                <PestanasSupervisor sesion={sesion} onCerrarSesion={onCerrarSesion} />
-              ) : (
-                <PestanasTrabajador sesion={sesion} onCerrarSesion={onCerrarSesion} />
-              )
-            }
+            {() => (
+              <ProveedorLogoEmpresa tokenAcceso={sesion.token}>
+                {sesion.usuario.rol === RolUsuario.DUENO ? (
+                  <PestanasPrincipales
+                    sesion={sesion}
+                    onCerrarSesion={onCerrarSesion}
+                    onNombreEmpresaCambiado={onNombreEmpresaCambiado}
+                  />
+                ) : sesion.usuario.rol === RolUsuario.SUPERVISOR ? (
+                  <PestanasSupervisor sesion={sesion} onCerrarSesion={onCerrarSesion} />
+                ) : (
+                  <PestanasTrabajador sesion={sesion} onCerrarSesion={onCerrarSesion} />
+                )}
+              </ProveedorLogoEmpresa>
+            )}
           </Pila.Screen>
         ) : (
           <>

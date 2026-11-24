@@ -4,7 +4,9 @@
  * @descripcion Tarjeta que muestra un código de acceso con un botón para copiarlo.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 16/11/2026
- * @version 1.0.0
+ * @version 1.0.1
+ * @historial 24/11/2026 - Emilio Manuel Esquivel - Quita un "|" suelto fuera de <Text> que
+ *   rompía la tarjeta (feature 002)
  */
 
 // 1. Importaciones
@@ -38,7 +40,7 @@ export default function TarjetaCodigoAcceso({
           {codigo}
         </Text>
         <Pressable style={estilos.botonCopiar} onPress={onCopiar}>
-          <Text style={estilos.etiquetaCopiar}>{copiado ? '¡Copiado!' : 'Copiar'}</Text>|
+          <Text style={estilos.etiquetaCopiar}>{copiado ? '¡Copiado!' : 'Copiar'}</Text>
         </Pressable>
       </View>
     </View>
