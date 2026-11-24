@@ -54,5 +54,7 @@ export const DATOS_NUEVA_OBRA_SIMULADOS: DatosNuevaObra = {
   direccion: 'Calle Ficticia #123, Colonia San Miguel',
   fechaInicio: '02/04/2024',
   fechaFin: '02/04/2025',
-  supervisor: 'María Castro',
+  descripcion: 'Casa habitación de dos plantas',
+  supervisorId: '',
+  trabajadoresIds: [],
 };

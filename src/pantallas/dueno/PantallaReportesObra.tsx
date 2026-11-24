@@ -123,7 +123,7 @@ export default function PantallaReportesObra({
           />
           <BotonPrincipal
             estilo={estilos.botonAccion}
-            variante="secundario"
+            variante="contorno"
             etiqueta="Vista previa"
             onPresionar={() => setVistaPreviaVisible(true)}
             deshabilitado={cargando || !reporte}
