@@ -80,26 +80,26 @@ description: 'Tareas del feature 001 en la app móvil: asistencia con QR, horari
 
 **Independent Test**: spec, US2. Manuales 2, 3 y 4 de [quickstart.md](./quickstart.md).
 
-- [ ] T017 [P] [US2] Escribir primero `__tests__/servicioEscaneo-test.ts`:
+- [x] T017 [P] [US2] Escribir primero `__tests__/servicioEscaneo-test.ts`:
   - `CP21-A1-APP`: sin conexión, el paquete en memoria da ENTRADA, luego SALIDA, y el tercer escaneo se rechaza;
   - `CP21-A2-APP`: la huella de un token conocido es igual a la de la API;
   - un QR que no está en el paquete devuelve el mensaje "No se encontró al trabajador…".
-- [ ] T018 [P] [US2] Escribir primero `__tests__/servicioSincronizacionAsistencia-test.ts`:
+- [x] T018 [P] [US2] Escribir primero `__tests__/servicioSincronizacionAsistencia-test.ts`:
   - `CP21-A3-APP`: GUARDADO y DUPLICADO se borran, RECHAZADO conserva su motivo, un error de red no borra nada y dos llamadas simultáneas hacen un solo envío;
   - `CP21-A4-APP`: 150 pendientes salen como lotes de 100 + 50, en orden;
   - `CP21-A5-APP`: solo se envían los del usuario de la sesión;
   - un 401 detiene la sincronización.
-- [ ] T019 [P] [US2] Implementar `src/servicios/local/servicioUbicacion.ts`: `obtenerUbicacionRapida()` con 4 s de límite, después la última posición conocida, si no `null` (R-08). Con su prueba.
-- [ ] T020 [US2] Implementar `src/servicios/local/servicioPaqueteObra.ts`:
+- [x] T019 [P] [US2] Implementar `src/servicios/local/servicioUbicacion.ts`: `obtenerUbicacionRapida()` con 4 s de límite, después la última posición conocida, si no `null` (R-08). Con su prueba.
+- [x] T020 [US2] Implementar `src/servicios/local/servicioPaqueteObra.ts`:
   - `actualizarPaquete(sesion, obraId)`: descarga el paquete, las fotos (con `File.createDownloadTask` y el encabezado `Authorization`, R-03) y el resumen del día hacia `registro_dia_local`;
   - `buscarPorQr(obraId, codigoQr)`: con `Crypto.digestStringAsync` SHA-256 del texto sin `ct1.` (R-05), según [data-model.md](./data-model.md) `trabajador_paquete.huella_credencial` y `trabajador_paquete.foto_local`.
-- [ ] T021 [US2] Implementar `src/servicios/local/servicioEscaneo.ts`:
+- [x] T021 [US2] Implementar `src/servicios/local/servicioEscaneo.ts`:
   - `prepararEscaneo`: con conexión pide la vista previa; si recibe `ErrorSinConexion`, usa el paquete y `registro_dia_local` (R-10);
   - `aceptarEscaneo`: arma `id_local` con `Crypto.randomUUID()` o, si no existe, con `getRandomBytes` (R-06); obtiene la ubicación; guarda en la cola **antes** de enviar; actualiza el día local y llama a `sincronizar()`.
 
   Deben pasar las pruebas de T017.
 
-- [ ] T022 [US2] Implementar `src/servicios/local/servicioSincronizacionAsistencia.ts` según R-09:
+- [x] T022 [US2] Implementar `src/servicios/local/servicioSincronizacionAsistencia.ts` según R-09:
   - `sincronizar(sesion)` con candado;
   - `iniciarSincronizacionAutomatica(sesion)` con `addNetworkStateListener`, `AppState` y una llamada al iniciar;
   - suscripción para los contadores de pendientes y rechazados.
