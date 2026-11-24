@@ -26,6 +26,9 @@ npm run verificar-formato   # Prettier check (npm run formatear to fix)
 
 Run lint, typecheck and tests before declaring any task done.
 
+- API address: copy `.env.example` to `.env.local` (git-ignored) and restart with
+  `npx expo start --clear`; otherwise the app says the server address is not configured.
+
 - Dev dependencies: `npx expo install <pkg> -- --dev` may still save them under `dependencies`;
   move them to `devDependencies` by hand.
 - Testing Library 14: `render`, `fireEvent` and `renderHook` are **async** — always `await` them.
