@@ -32,5 +32,5 @@
 ## Notes
 
 - FR-009 y FR-011 mencionan la huella SHA-256 y los lotes de 100 porque son parte del contrato ya implementado en la API, no decisiones nuevas de diseño.
-- Antes de implementar: diseñar en el Figma, con el mismo estilo, el aviso de pendientes y rechazados, el campo "Oficio" del perfil y el $ en el detalle del día (constitución I.2).
+- Propuestas de diseño ya en el Figma (`2295:254`, `2295:313`, `2295:392`); falta la aprobación del equipo antes de implementarlas.
 - El dueño no tiene pantallas de asistencia en el Figma: fuera de alcance de este feature.
