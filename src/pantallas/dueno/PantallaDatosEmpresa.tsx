@@ -10,7 +10,15 @@
 
 // 1. Importaciones
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import {
   AvisoExito,
@@ -79,44 +87,48 @@ export default function PantallaDatosEmpresa({
   return (
     <View style={estilos.contenedor}>
       <EncabezadoApp />
-      <ScrollView
-        contentContainerStyle={estilos.contenido}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        {seGuardo ? (
-          <View style={estilos.aviso}>
-            <AvisoExito mensaje={TEXTOS.exito} />
-          </View>
-        ) : null}
-        <EncabezadoPantalla titulo={TEXTOS.titulo} subtitulo={TEXTOS.subtitulo} />
-        {datos ? (
-          <FormularioDatosEmpresa
-            tokenAcceso={tokenAcceso}
-            datos={datos}
-            onGuardado={(nombre) => {
-              setSeGuardo(true);
-              onNombreCambiado(nombre);
-            }}
-            onAceptar={onAceptar}
-          />
-        ) : error ? (
-          <View style={estilos.centro}>
-            <Text style={estilos.error}>{error}</Text>
-            <Pressable onPress={() => setIntento((anterior) => anterior + 1)}>
-              <Text style={estilos.reintentar}>{TEXTOS.reintentar}</Text>
-            </Pressable>
-          </View>
-        ) : (
-          <ActivityIndicator color={COLORES.marca} />
-        )}
-      </ScrollView>
+      {/* En Android de borde a borde el sistema ya no sube la pantalla: se hace aquí (D-27). */}
+      <KeyboardAvoidingView style={estilos.teclado} behavior="padding">
+        <ScrollView
+          contentContainerStyle={estilos.contenido}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {seGuardo ? (
+            <View style={estilos.aviso}>
+              <AvisoExito mensaje={TEXTOS.exito} />
+            </View>
+          ) : null}
+          <EncabezadoPantalla titulo={TEXTOS.titulo} subtitulo={TEXTOS.subtitulo} />
+          {datos ? (
+            <FormularioDatosEmpresa
+              tokenAcceso={tokenAcceso}
+              datos={datos}
+              onGuardado={(nombre) => {
+                setSeGuardo(true);
+                onNombreCambiado(nombre);
+              }}
+              onAceptar={onAceptar}
+            />
+          ) : error ? (
+            <View style={estilos.centro}>
+              <Text style={estilos.error}>{error}</Text>
+              <Pressable onPress={() => setIntento((anterior) => anterior + 1)}>
+                <Text style={estilos.reintentar}>{TEXTOS.reintentar}</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <ActivityIndicator color={COLORES.marca} />
+          )}
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 }
 
 // 5. Estilos
 const estilos = StyleSheet.create({
+  teclado: { flex: 1 },
   contenedor: {
     flex: 1,
     backgroundColor: COLORES.pantalla,

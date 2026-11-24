@@ -12,7 +12,6 @@ import { useEffect, useRef, useState } from 'react';
 import {
   BackHandler,
   KeyboardAvoidingView,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -140,7 +139,8 @@ export default function PantallaInicioSesion({
       <EncabezadoApp />
       <KeyboardAvoidingView
         style={estilos.flexible}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        // En Android de borde a borde la ventana ya no se ajusta sola al teclado (D-27).
+        behavior="padding"
       >
         <ScrollView
           contentContainerStyle={[

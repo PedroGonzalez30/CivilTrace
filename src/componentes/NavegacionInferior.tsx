@@ -4,8 +4,9 @@
  * @descripcion Barra de navegación inferior con las pestañas Inicio, Personal y Cuenta.
  * @autor POR_COMPLETAR
  * @fecha POR_COMPLETAR
- * @version 1.0.0
+ * @version 1.1.0
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Pestañas de asistencia y color activo (feature 001)
+ *   24/11/2026 - Emilio Manuel Esquivel - Se oculta con el teclado abierto (D-27, feature 002)
  */
 
 // 1. Importaciones
@@ -23,6 +24,7 @@ import {
 } from '@/componentes/Iconos';
 import { COLORES } from '@/constantes/colores';
 import { RADIOS, SOMBRAS, TAMANOS, TIPOGRAFIA } from '@/constantes/tema';
+import { useTecladoVisible } from '@/hooks/useTecladoVisible';
 
 // 2. Tipos e interfaces
 // El supervisor y el trabajador usan el azul del Figma; el dueño conserva su color.
@@ -51,6 +53,12 @@ export default function NavegacionInferior({
   colorActivo = COLORES.marca,
 }: NavegacionInferiorProps) {
   const margenesSeguros = useSafeAreaInsets();
+  const tecladoVisible = useTecladoVisible();
+
+  // Con el teclado abierto la barra subiría con él y taparía el campo (D-27).
+  if (tecladoVisible) {
+    return null;
+  }
 
   return (
     <View style={[estilos.contenedor, { paddingBottom: margenesSeguros.bottom }]}>
