@@ -10,7 +10,7 @@
 
 // 1. Importaciones
 import { useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import {
   BotonPrincipal,
@@ -75,77 +75,82 @@ export default function PantallaCambiarContrasena({
   return (
     <View style={estilos.contenedor}>
       <EncabezadoApp />
-      <ScrollView
-        contentContainerStyle={estilos.contenido}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <Pressable style={estilos.volver} onPress={onRegresar} hitSlop={8}>
-          <IconoFlechaIzquierda tamano={TAMANO_ICONO_VOLVER} color={COLORES.marca} />
-          <Text style={estilos.textoVolver}>{TEXTOS.volver}</Text>
-        </Pressable>
-        <EncabezadoPantalla titulo={TEXTOS.titulo} subtitulo={TEXTOS.subtitulo} />
-        <TarjetaFormulario estilo={estilos.tarjeta}>
-          <CampoTexto
-            etiqueta={TEXTOS.etiquetaActual}
-            textoMarcador={TEXTOS.marcadorActual}
-            valor={formulario.valores.contrasenaActual}
-            error={formulario.obtenerError('contrasenaActual')}
-            puedeAlternarVisibilidad
-            autoCapitalize="none"
-            autoComplete="current-password"
-            returnKeyType="next"
-            onCambiarTexto={formulario.manejarCambio('contrasenaActual')}
-            onPerderFoco={formulario.manejarPerdidaFoco('contrasenaActual')}
-            onEnviar={() => referenciaNueva.current?.focus()}
-          />
-          <CampoTexto
-            etiqueta={TEXTOS.etiquetaNueva}
-            textoMarcador={TEXTOS.marcadorNueva}
-            valor={formulario.valores.contrasenaNueva}
-            error={formulario.obtenerError('contrasenaNueva')}
-            referenciaEntrada={referenciaNueva}
-            puedeAlternarVisibilidad
-            autoCapitalize="none"
-            autoComplete="new-password"
-            returnKeyType="next"
-            onCambiarTexto={formulario.manejarCambio('contrasenaNueva')}
-            onPerderFoco={formulario.manejarPerdidaFoco('contrasenaNueva')}
-            onEnviar={() => referenciaConfirmacion.current?.focus()}
-          />
-          {/* Reglas que también valida la API */}
-          <View style={estilos.requisitos}>
-            <Text style={estilos.tituloRequisitos}>{TEXTOS.tituloRequisitos}</Text>
-            <View>
-              {TEXTOS.requisitos.map((requisito) => (
-                <Text key={requisito} style={estilos.textoRequisito}>
-                  • {requisito}
-                </Text>
-              ))}
+      {/* En Android de borde a borde el sistema ya no sube la pantalla: se hace aquí (D-27). */}
+      <KeyboardAvoidingView style={estilos.teclado} behavior="padding">
+        <ScrollView
+          contentContainerStyle={estilos.contenido}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <Pressable style={estilos.volver} onPress={onRegresar} hitSlop={8}>
+            <IconoFlechaIzquierda tamano={TAMANO_ICONO_VOLVER} color={COLORES.marca} />
+            <Text style={estilos.textoVolver}>{TEXTOS.volver}</Text>
+          </Pressable>
+          <EncabezadoPantalla titulo={TEXTOS.titulo} subtitulo={TEXTOS.subtitulo} />
+          <TarjetaFormulario estilo={estilos.tarjeta}>
+            <CampoTexto
+              etiqueta={TEXTOS.etiquetaActual}
+              textoMarcador={TEXTOS.marcadorActual}
+              valor={formulario.valores.contrasenaActual}
+              error={formulario.obtenerError('contrasenaActual')}
+              puedeAlternarVisibilidad
+              autoCapitalize="none"
+              autoComplete="current-password"
+              returnKeyType="next"
+              onCambiarTexto={formulario.manejarCambio('contrasenaActual')}
+              onPerderFoco={formulario.manejarPerdidaFoco('contrasenaActual')}
+              onEnviar={() => referenciaNueva.current?.focus()}
+            />
+            <CampoTexto
+              etiqueta={TEXTOS.etiquetaNueva}
+              textoMarcador={TEXTOS.marcadorNueva}
+              valor={formulario.valores.contrasenaNueva}
+              error={formulario.obtenerError('contrasenaNueva')}
+              referenciaEntrada={referenciaNueva}
+              puedeAlternarVisibilidad
+              autoCapitalize="none"
+              autoComplete="new-password"
+              returnKeyType="next"
+              onCambiarTexto={formulario.manejarCambio('contrasenaNueva')}
+              onPerderFoco={formulario.manejarPerdidaFoco('contrasenaNueva')}
+              onEnviar={() => referenciaConfirmacion.current?.focus()}
+            />
+            {/* Reglas que también valida la API */}
+            <View style={estilos.requisitos}>
+              <Text style={estilos.tituloRequisitos}>{TEXTOS.tituloRequisitos}</Text>
+              <View>
+                {TEXTOS.requisitos.map((requisito) => (
+                  <Text key={requisito} style={estilos.textoRequisito}>
+                    • {requisito}
+                  </Text>
+                ))}
+              </View>
             </View>
-          </View>
-          <CampoTexto
-            etiqueta={TEXTOS.etiquetaConfirmacion}
-            textoMarcador={TEXTOS.marcadorConfirmacion}
-            valor={formulario.valores.confirmacion}
-            error={formulario.obtenerError('confirmacion')}
-            referenciaEntrada={referenciaConfirmacion}
-            puedeAlternarVisibilidad
-            autoCapitalize="none"
-            autoComplete="new-password"
-            returnKeyType="done"
-            onCambiarTexto={formulario.manejarCambio('confirmacion')}
-            onPerderFoco={formulario.manejarPerdidaFoco('confirmacion')}
-            onEnviar={formulario.manejarEnvio}
+            <CampoTexto
+              etiqueta={TEXTOS.etiquetaConfirmacion}
+              textoMarcador={TEXTOS.marcadorConfirmacion}
+              valor={formulario.valores.confirmacion}
+              error={formulario.obtenerError('confirmacion')}
+              referenciaEntrada={referenciaConfirmacion}
+              puedeAlternarVisibilidad
+              autoCapitalize="none"
+              autoComplete="new-password"
+              returnKeyType="done"
+              onCambiarTexto={formulario.manejarCambio('confirmacion')}
+              onPerderFoco={formulario.manejarPerdidaFoco('confirmacion')}
+              onEnviar={formulario.manejarEnvio}
+            />
+          </TarjetaFormulario>
+          {formulario.errorEnvio ? (
+            <Text style={estilos.error}>{formulario.errorEnvio}</Text>
+          ) : null}
+          <BotonPrincipal
+            etiqueta={TEXTOS.etiquetaBoton}
+            estaCargando={formulario.estaEnviando}
+            onPresionar={formulario.manejarEnvio}
           />
-        </TarjetaFormulario>
-        {formulario.errorEnvio ? <Text style={estilos.error}>{formulario.errorEnvio}</Text> : null}
-        <BotonPrincipal
-          etiqueta={TEXTOS.etiquetaBoton}
-          estaCargando={formulario.estaEnviando}
-          onPresionar={formulario.manejarEnvio}
-        />
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
       {esModalVisible ? (
         <ModalExito
           titulo={TEXTOS.exitoTitulo}
@@ -161,6 +166,7 @@ export default function PantallaCambiarContrasena({
 
 // 5. Estilos
 const estilos = StyleSheet.create({
+  teclado: { flex: 1 },
   contenedor: {
     flex: 1,
     backgroundColor: COLORES.pantalla,

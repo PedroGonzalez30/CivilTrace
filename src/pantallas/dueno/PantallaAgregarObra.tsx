@@ -13,7 +13,6 @@ import { useState } from 'react';
 import {
   type KeyboardTypeOptions,
   KeyboardAvoidingView,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -129,10 +128,12 @@ export default function PantallaAgregarObra({
 
   const supervisores = consultaPersonal.personal?.supervisores ?? [];
   const trabajadores = consultaPersonal.personal?.trabajadores ?? [];
-  const opcionesSupervisor: OpcionSelector[] = [
-    { id: '', etiqueta: 'Sin supervisor' },
-    ...supervisores.map((supervisor) => ({ id: supervisor.id, etiqueta: supervisor.nombre })),
-  ];
+  // Sin opción "Sin supervisor": la obra lo necesita para registrar asistencia (D-24).
+  const opcionesSupervisor: OpcionSelector[] = supervisores.map((supervisor) => ({
+    id: supervisor.id,
+    etiqueta: supervisor.nombre,
+  }));
+  const faltanSupervisores = consultaPersonal.personal !== null && supervisores.length === 0;
   const nombreSupervisor =
     supervisores.find((supervisor) => supervisor.id === valores.supervisorId)?.nombre ??
     NOMBRE_SIN_SUPERVISOR;
@@ -150,6 +151,7 @@ export default function PantallaAgregarObra({
 
   const manejarCambioSupervisor = (idSupervisor: string) => {
     setValores((anteriores) => ({ ...anteriores, supervisorId: idSupervisor }));
+    setErrores((anteriores) => ({ ...anteriores, supervisorId: undefined }));
   };
 
   const manejarCambioTrabajadores = (idsTrabajadores: string[]) => {
@@ -181,7 +183,8 @@ export default function PantallaAgregarObra({
       <EncabezadoApp />
       <KeyboardAvoidingView
         style={estilos.flexible}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        // En Android de borde a borde la ventana ya no se ajusta sola al teclado (D-27).
+        behavior="padding"
       >
         <ScrollView
           contentContainerStyle={[
@@ -215,8 +218,12 @@ export default function PantallaAgregarObra({
               valor={valores.supervisorId}
               textoMarcador="Selecciona un supervisor"
               opciones={opcionesSupervisor}
+              error={errores.supervisorId}
               onSeleccionar={manejarCambioSupervisor}
             />
+            {faltanSupervisores ? (
+              <Text style={estilos.ayuda}>{TEXTOS_AGREGAR_OBRA.sinSupervisores}</Text>
+            ) : null}
             <CampoTrabajadores
               trabajadores={trabajadores}
               seleccionados={valores.trabajadoresIds}
@@ -279,6 +286,10 @@ const estilos = StyleSheet.create({
   },
   boton: {
     marginTop: 9,
+  },
+  ayuda: {
+    ...TIPOGRAFIA.leyenda,
+    color: COLORES.textoSutil,
   },
   error: {
     ...TIPOGRAFIA.leyenda,

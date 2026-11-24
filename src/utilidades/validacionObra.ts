@@ -20,6 +20,7 @@ const LONGITUD_MINIMA_NOMBRE_OBRA = 3;
 const LONGITUD_MINIMA_DIRECCION = 5;
 const MENSAJE_FECHA_INVALIDA = 'Usa el formato DD/MM/AAAA';
 const LONGITUD_MINIMA_DESCRIPCION = 10;
+export const MENSAJE_SUPERVISOR_REQUERIDO = 'Selecciona un supervisor para la obra';
 
 // 4. Función principal
 /**
@@ -45,6 +46,11 @@ export function validarObra(datos: DatosNuevaObra): ErroresObra {
   }
   if (datos.direccion.trim().length < LONGITUD_MINIMA_DIRECCION) {
     errores.direccion = 'La dirección es demasiado corta';
+  }
+
+  // Toda obra necesita quien registre la asistencia (D-24); la API también lo exige.
+  if (!datos.supervisorId) {
+    errores.supervisorId = MENSAJE_SUPERVISOR_REQUERIDO;
   }
 
   const fechaInicio = convertirFechaLocalAIso(datos.fechaInicio);
