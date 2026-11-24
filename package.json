@@ -69,9 +69,34 @@
       "!src/simulados/**"
     ],
     "coverageThreshold": {
-      "global": {
+      "./src/servicios/local/**": {
+        "lines": 60
+      },
+      "./src/servicios/servicio{Asistencia,Horario,DetallesAsistencia,Calendario}.ts": {
+        "lines": 60
+      },
+      "./src/hooks/use{MiAsistencia,LecturaQr,HorarioObra,DetallesDia,Calendario,ObrasSupervisadas}.ts": {
+        "lines": 60
+      },
+      "./src/componentes/{AvisoSincronizacion,CalendarioAsistencia,HojaDetalleDia,HojaDetallesAsistencia,SelectorHora,TarjetaHorarioDia,TarjetaTrabajador}.tsx": {
+        "lines": 60
+      },
+      "./src/pantallas/supervisor/Pantalla{EscogerObra,LeerQr,ConfirmarQr,HorarioObra,CalendarioTrabajador,Rechazados}.tsx": {
+        "lines": 60
+      },
+      "./src/pantallas/trabajador/Pantalla{MiAsistencia,HistorialAsistencia}.tsx": {
+        "lines": 60
+      },
+      "./src/utilidades/formatoHoras.ts": {
+        "lines": 60
+      },
+      "./src/conexion/clienteApi.ts": {
         "lines": 60
       }
-    }
+    },
+    "setupFilesAfterEnv": [
+      "./jest.configuracionPruebas.ts"
+    ],
+    "maxWorkers": "50%"
   }
 }
