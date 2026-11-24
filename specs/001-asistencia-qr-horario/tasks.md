@@ -62,13 +62,13 @@ description: 'Tareas del feature 001 en la app móvil: asistencia con QR, horari
 
 **Independent Test**: spec, US1. CP21 manual 1 de [quickstart.md](./quickstart.md).
 
-- [ ] T013 [P] [US1] Escribir primero `__tests__/servicioQrPropio-test.ts` (guardar y leer en Secure Store por usuario) y `__tests__/PantallaMiAsistencia-test.tsx`, que cubra:
+- [x] T013 [P] [US1] Escribir primero `__tests__/servicioQrPropio-test.ts` (guardar y leer en Secure Store por usuario) y `__tests__/PantallaMiAsistencia-test.tsx`, que cubra:
   - el QR y los estados con una respuesta simulada;
   - sin conexión, el QR guardado y el aviso;
   - sin obras, el mensaje correspondiente.
-- [ ] T014 [P] [US1] Implementar `src/servicios/local/servicioQrPropio.ts` con la clave de [data-model.md](./data-model.md), sección "Secure Store".
-- [ ] T015 [US1] Implementar `src/hooks/useMiAsistencia.ts`: lee el QR guardado y luego actualiza con `obtenerMiCredencial` y `obtenerMiDia`; se actualiza al enfocar la pantalla y al deslizar.
-- [ ] T016 [US1] Implementar `src/pantallas/trabajador/PantallaMiAsistencia.tsx` según `TRA-Asistencia Dia` (96:329). Usa `react-native-qrcode-svg`, `TarjetaHorarioDia` (nuevo en `src/componentes/TarjetaHorarioDia.tsx`, compartido con US2) y el icono de calendario hacia `Historial`. Crear también `src/navegacion/PilaMiAsistencia.tsx`.
+- [x] T014 [P] [US1] Implementar `src/servicios/local/servicioQrPropio.ts` con la clave de [data-model.md](./data-model.md), sección "Secure Store".
+- [x] T015 [US1] Implementar `src/hooks/useMiAsistencia.ts`: lee el QR guardado y luego actualiza con `obtenerMiCredencial` y `obtenerMiDia`; se actualiza al enfocar la pantalla y al deslizar.
+- [x] T016 [US1] Implementar `src/pantallas/trabajador/PantallaMiAsistencia.tsx` según `TRA-Asistencia Dia` (96:329). Usa `react-native-qrcode-svg`, `TarjetaHorarioDia` (nuevo en `src/componentes/TarjetaHorarioDia.tsx`, compartido con US2) y el icono de calendario hacia `Historial`. Crear también `src/navegacion/PilaMiAsistencia.tsx`.
 
 **Checkpoint**: el trabajador ve su QR con y sin señal.
 

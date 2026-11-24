@@ -5,6 +5,7 @@
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
  * @version 1.0.0
+ * @historial 23/11/2026 - Emilio Manuel Esquivel - Oficio del perfil (D-18, feature 001)
  */
 
 // 1. Importaciones
@@ -16,9 +17,12 @@ export interface DatosPerfil {
   nombre: string;
   correo: string;
   telefono: string;
+  // Opcional al guardar: si no se envía, la API conserva el actual (D-18).
+  oficio?: string;
 }
 
 export interface PerfilUsuario extends DatosPerfil {
+  oficio: string;
   tieneFoto: boolean;
 }
 
@@ -48,7 +52,8 @@ function aPerfil(respuesta: unknown): PerfilUsuario {
     typeof perfil.nombre !== 'string' ||
     typeof perfil.correo !== 'string' ||
     typeof perfil.tieneFoto !== 'boolean' ||
-    (perfil.telefono !== null && typeof perfil.telefono !== 'string')
+    (perfil.telefono !== null && typeof perfil.telefono !== 'string') ||
+    (perfil.oficio !== undefined && perfil.oficio !== null && typeof perfil.oficio !== 'string')
   ) {
     throw new ErrorApi(MENSAJE_RESPUESTA_INVALIDA, null);
   }
@@ -56,6 +61,7 @@ function aPerfil(respuesta: unknown): PerfilUsuario {
     nombre: perfil.nombre,
     correo: perfil.correo,
     telefono: typeof perfil.telefono === 'string' ? perfil.telefono : '',
+    oficio: typeof perfil.oficio === 'string' ? perfil.oficio : '',
     tieneFoto: perfil.tieneFoto,
   };
 }
