@@ -4,7 +4,9 @@
  * @descripcion Consulta a la API los datos de la empresa del usuario.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 16/11/2026
- * @version 1.0.0
+ * @version 1.1.0
+ * @historial 24/11/2026 - Emilio Manuel Esquivel - Código de trabajadores para el supervisor
+ *   (D-23, feature 002)
  */
 
 // 1. Importaciones
@@ -50,6 +52,23 @@ function aCodigosEmpresa(respuesta: unknown): CodigosEmpresa {
 
 export async function obtenerCodigosEmpresa(tokenAcceso: string): Promise<CodigosEmpresa> {
   return aCodigosEmpresa(await llamarApi('/empresa/codigos', { tokenAcceso }));
+}
+
+/**
+ * Pide el código para unir trabajadores. Lo usan el dueño y el supervisor; al supervisor la API
+ * nunca le envía el de supervisores (D-23).
+ *
+ * @param tokenAcceso - Token de acceso de la sesión.
+ * @returns El código de trabajadores.
+ * @throws ErrorApi si no hay conexión, la sesión expiró o el rol no tiene permiso.
+ */
+export async function obtenerCodigoTrabajadores(tokenAcceso: string): Promise<string> {
+  const respuesta = await llamarApi('/empresa/codigos', { tokenAcceso });
+  const codigos = esObjeto(respuesta) ? respuesta.codigos : null;
+  if (!esObjeto(codigos) || typeof codigos.trabajadores !== 'string') {
+    throw new ErrorApi(MENSAJE_RESPUESTA_INVALIDA, null);
+  }
+  return codigos.trabajadores;
 }
 
 /**

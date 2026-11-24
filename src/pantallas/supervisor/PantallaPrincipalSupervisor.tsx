@@ -5,7 +5,9 @@
  * subida de fotos a Blob Storage.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 18/11/2026
- * @version 1.0.0
+ * @version 1.1.0
+ * @historial 24/11/2026 - Emilio Manuel Esquivel - Código de acceso para trabajadores (D-23,
+ *   feature 002)
  */
 
 // 1. Importaciones
@@ -14,6 +16,7 @@ import { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { BotonPrincipal, EncabezadoApp } from '@/componentes';
+import SeccionCodigoTrabajadores from '@/componentes/SeccionCodigoTrabajadores';
 import { COLORES } from '@/constantes/colores';
 import { TIPOGRAFIA } from '@/constantes/tema';
 import { ErrorApi } from '@/conexion/clienteApi';
@@ -91,6 +94,8 @@ export default function PantallaPrincipalSupervisor({
       <EncabezadoApp />
       <ScrollView contentContainerStyle={estilos.contenido}>
         <Text style={estilos.titulo}>Hola, {sesion.usuario.nombre}</Text>
+
+        <SeccionCodigoTrabajadores tokenAcceso={sesion.token} />
 
         {/* TODO(Equipo): sección temporal; se reemplaza por las evidencias reales. */}
         <View style={estilos.tarjeta}>
