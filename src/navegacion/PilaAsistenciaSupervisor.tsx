@@ -13,6 +13,7 @@
 // 1. Importaciones
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import MarcadorPantalla from '@/componentes/MarcadorPantalla';
 import { COLORES } from '@/constantes/colores';
 import PantallaConfirmarQr from '@/pantallas/supervisor/PantallaConfirmarQr';
 import PantallaEscogerObra from '@/pantallas/supervisor/PantallaEscogerObra';
@@ -57,6 +58,9 @@ export default function PilaAsistenciaSupervisor({ sesion }: PilaAsistenciaSuper
             }
             onEditarHorario={() => navigation.navigate('HorarioObra', route.params)}
             onVerRechazados={() => navigation.navigate('Rechazados', route.params)}
+            onVerCalendario={(trabajadorId) =>
+              navigation.navigate('CalendarioTrabajador', { ...route.params, trabajadorId })
+            }
           />
         )}
       </Pila.Screen>
@@ -80,6 +84,9 @@ export default function PilaAsistenciaSupervisor({ sesion }: PilaAsistenciaSuper
             onGuardado={() => navigation.goBack()}
           />
         )}
+      </Pila.Screen>
+      <Pila.Screen name="CalendarioTrabajador">
+        {() => <MarcadorPantalla titulo="Asistencia" mensaje="Calendario del trabajador" />}
       </Pila.Screen>
       <Pila.Screen name="Rechazados">
         {({ navigation, route }) => (

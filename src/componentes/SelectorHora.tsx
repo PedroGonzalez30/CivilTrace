@@ -23,7 +23,8 @@ import { formatearHoraCampo } from '@/utilidades/formatoHoras';
 // 2. Tipos e interfaces
 interface SelectorHoraProps {
   etiqueta: string;
-  valor: string;
+  // null = todavía sin hora (por ejemplo, salida no registrada).
+  valor: string | null;
   onCambiar: (hora: string) => void;
 }
 
@@ -31,6 +32,8 @@ interface SelectorHoraProps {
 const PRIMERA_HORA = 5;
 const ULTIMA_HORA = 22;
 const PASO_MINUTOS = 15;
+const SIN_HORA = '—';
+const INDICE_POR_DEFECTO = 12;
 const HORAS = Array.from({ length: (ULTIMA_HORA - PRIMERA_HORA + 1) * 4 }, (_, indice) => {
   const minutos = PRIMERA_HORA * 60 + indice * PASO_MINUTOS;
   return `${String(Math.floor(minutos / 60)).padStart(2, '0')}:${String(minutos % 60).padStart(2, '0')}`;
@@ -47,9 +50,9 @@ export default function SelectorHora({ etiqueta, valor, onCambiar }: SelectorHor
         style={estilos.campo}
         onPress={() => setAbierto(true)}
         accessibilityRole="button"
-        accessibilityLabel={`${etiqueta}: ${formatearHoraCampo(valor)}`}
+        accessibilityLabel={`${etiqueta}: ${valor ? formatearHoraCampo(valor) : SIN_HORA}`}
       >
-        <Text style={estilos.valor}>{formatearHoraCampo(valor)}</Text>
+        <Text style={estilos.valor}>{valor ? formatearHoraCampo(valor) : SIN_HORA}</Text>
         <Svg
           width={20}
           height={20}
@@ -74,7 +77,7 @@ export default function SelectorHora({ etiqueta, valor, onCambiar }: SelectorHor
             <FlatList
               data={HORAS}
               keyExtractor={(hora) => hora}
-              initialScrollIndex={Math.max(0, HORAS.indexOf(valor))}
+              initialScrollIndex={valor ? Math.max(0, HORAS.indexOf(valor)) : INDICE_POR_DEFECTO}
               getItemLayout={(_, indice) => ({ length: 44, offset: 44 * indice, index: indice })}
               renderItem={({ item }) => (
                 <Pressable

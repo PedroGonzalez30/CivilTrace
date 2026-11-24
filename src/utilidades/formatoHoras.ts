@@ -131,3 +131,38 @@ export function formatearHoraCampo(hora: string): string {
   const texto = formatearHora12(hora);
   return texto.length === '8:00 am'.length ? `0${texto}` : texto;
 }
+
+/**
+ * Hora local "HH:MM" de un instante (para editar horas en los detalles).
+ */
+export function obtenerHoraLocal(instante: string | Date, zona: string): string {
+  const partes = obtenerPartes(new Date(instante), zona);
+  return `${partes['hour']}:${partes['minute']}`;
+}
+
+/**
+ * Instante ISO de una fecha y hora local en la zona indicada (misma lógica que la API).
+ *
+ * @param fecha - YYYY-MM-DD.
+ * @param hora - HH:MM.
+ * @param zona - Zona IANA.
+ */
+export function construirInstanteLocal(fecha: string, hora: string, zona: string): string {
+  const [anio = 0, mes = 1, dia = 1] = fecha.split('-').map(Number);
+  const [horas = 0, minutos = 0] = hora.split(':').map(Number);
+  const comoSiFueraUtc = Date.UTC(anio, mes - 1, dia, horas, minutos);
+  // Se corrige dos veces porque el desfase puede cambiar justo en el cambio de horario.
+  let instante = comoSiFueraUtc;
+  for (let intento = 0; intento < 2; intento += 1) {
+    const partes = obtenerPartes(new Date(instante), zona);
+    const localComoUtc = Date.UTC(
+      Number(partes['year']),
+      Number(partes['month']) - 1,
+      Number(partes['day']),
+      Number(partes['hour']),
+      Number(partes['minute']),
+    );
+    instante += comoSiFueraUtc - localComoUtc;
+  }
+  return new Date(instante).toISOString();
+}
