@@ -23,18 +23,21 @@ Decisiones que aplica: D-06, D-07, D-08, D-13, D-14, D-15, D-16, D-17 y D-18.
 
 **Pantallas del Figma** (archivo `EIXrnioyKFd9EoBY5PINOV`):
 
-| Pantalla                                                           | node-id                    | Rol        |
-| ------------------------------------------------------------------ | -------------------------- | ---------- |
-| `SUP_Asistencia_EscogerObra`                                       | `96:2903`                  | Supervisor |
-| `SUP_Asistencia_LeerQr (accesos nuevos)`                           | `2272:117`                 | Supervisor |
-| `Sup_Asistencia_ConfirmarQR`                                       | `96:2228`                  | Supervisor |
-| `SUP_HorarioObra`                                                  | `2272:170`                 | Supervisor |
-| `SUP_DetallesAsistencia`                                           | `2272:250`                 | Supervisor |
-| `SUP_CalendarioTrabajador`                                         | `2272:354`                 | Supervisor |
-| `SUP_CalendarioTrabajador_DetalleDia`                              | `2272:523`                 | Supervisor |
-| `TRA-Asistencia Dia`                                               | `96:329`                   | Trabajador |
-| `TRA-HIstorial asistencia`                                         | `96:389`                   | Trabajador |
-| Barra inferior del trabajador ("Trabajo / Mi asistencia / Cuenta") | `59:819` (como referencia) | Trabajador |
+| Pantalla                                                                                  | node-id                    | Rol                     |
+| ----------------------------------------------------------------------------------------- | -------------------------- | ----------------------- |
+| `SUP_Asistencia_EscogerObra`                                                              | `96:2903`                  | Supervisor              |
+| `SUP_Asistencia_LeerQr (accesos nuevos)`                                                  | `2272:117`                 | Supervisor              |
+| `Sup_Asistencia_ConfirmarQR`                                                              | `96:2228`                  | Supervisor              |
+| `SUP_HorarioObra`                                                                         | `2272:170`                 | Supervisor              |
+| `SUP_DetallesAsistencia`                                                                  | `2272:250`                 | Supervisor              |
+| `SUP_CalendarioTrabajador`                                                                | `2272:354`                 | Supervisor              |
+| `SUP_CalendarioTrabajador_DetalleDia`                                                     | `2272:523`                 | Supervisor              |
+| `TRA-Asistencia Dia`                                                                      | `96:329`                   | Trabajador              |
+| `TRA-HIstorial asistencia`                                                                | `96:389`                   | Trabajador              |
+| Barra inferior del trabajador ("Trabajo / Mi asistencia / Cuenta")                        | `59:819` (como referencia) | Trabajador              |
+| `SUP_Asistencia_LeerQr_SinConexion (propuesta)`: avisos de pendientes y rechazados        | `2295:254`                 | Supervisor              |
+| `Cuenta_Oficio (todos los roles, propuesta)`: campo "Oficio"                              | `2295:313`                 | Todos                   |
+| `SUP_CalendarioTrabajador_DetalleDia_Descuento (propuesta)`: $ junto al efecto en el pago | `2295:392`                 | Supervisor y trabajador |
 
 ## User Scenarios & Testing _(mandatory)_
 
@@ -263,7 +266,7 @@ Las demás entidades (horario, registro, cambios, calendario) viven en la API; l
 
 - **API:** el contrato es el de `CivilTrace-API/specs/001-asistencia-qr-horario/contracts/asistencia-api.md`, ya desplegado al unir su PR. La app no agrega reglas de negocio; las del teléfono sin conexión copian las del servidor solo para mostrar la confirmación.
 - **Dueño:** el Figma no tiene pantallas de asistencia para el dueño. Aunque la API ya le permite ver calendarios y cambiar horarios, en la app eso queda fuera de este feature (constitución I.2).
-- **Pantallas sin diseño:** el Figma no muestra cómo se ven el aviso de "registros pendientes de envío", los rechazados al sincronizar, el campo "Oficio" del perfil ni el símbolo $ en el detalle del día. Hacen falta para que el sistema funcione (D-14, D-18), así que se diseñan **con el mismo estilo** y se agregan al Figma como propuesta antes de implementarlas (constitución I.2).
+- **Pantallas propuestas:** el aviso de "registros pendientes de envío", los rechazados al sincronizar, el campo "Oficio" del perfil y el símbolo $ en el detalle del día no estaban en el Figma. Hacen falta para que el sistema funcione (D-14, D-18, D-13). Se diseñaron con el mismo estilo en la sección "Pantallas nuevas — propuesta" (`2295:254`, `2295:313`, `2295:392`, 23/11/2026) y **el equipo debe aprobarlas** antes de implementarlas (constitución I.2).
 - **Inicio del supervisor y Trabajo del trabajador:** sus contenidos son de otros features. Aquí solo se crea la barra inferior que los contiene.
 - **Lectura del QR:** se usa la cámara trasera, como pide el SRS en las interfaces de hardware (no se usan sensores biométricos).
 - **Paquete sin conexión:** se usa mientras la API acepte los escaneos (hasta 7 días). No hay otro límite en la app.
