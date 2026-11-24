@@ -4,7 +4,8 @@
  * @descripcion Textos fijos de las pantallas de inicio de sesión y registro.
  * @autor POR_COMPLETAR
  * @fecha POR_COMPLETAR
- * @version 1.0.0
+ * @version 1.1.0
+ * @historial 23/11/2026 - Emilio Manuel Esquivel - Oficio del perfil (D-18, feature 001)
  */
 
 export const TEXTOS_INICIO_SESION = {
@@ -117,6 +118,8 @@ export const TEXTOS_PERFIL = {
   etiquetaCorreo: 'Correo electrónico',
   etiquetaTelefono: 'Teléfono (opcional)',
   marcadorTelefono: '+52 55 1234 5678',
+  etiquetaOficio: 'Oficio (opcional)',
+  marcadorOficio: 'Plomero',
   etiquetaRol: 'Rol de cuenta',
   noEditable: 'No editable',
   cambiarContrasena: 'Cambiar contraseña',

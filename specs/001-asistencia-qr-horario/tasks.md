@@ -164,8 +164,8 @@ description: 'Tareas del feature 001 en la app móvil: asistencia con QR, horari
 
 ## Phase 8: User Story 6: Oficio en el perfil (P3)
 
-- [ ] T037 [P] [US6] Escribir primero `__tests__/FormularioPerfil-test.tsx`: `CP06-A1-APP` (el oficio se envía en `PUT /perfil`) y el error de más de 60 caracteres.
-- [ ] T038 [US6] Agregar `oficio` a `src/servicios/servicioPerfil.ts` y al tipo del perfil, y el campo "Oficio (opcional)" en `src/componentes/FormularioPerfil.tsx` según `2295:313`.
+- [x] T037 [P] [US6] Escribir primero `__tests__/FormularioPerfil-test.tsx`: `CP06-A1-APP` (el oficio se envía en `PUT /perfil`) y el error de más de 60 caracteres.
+- [x] T038 [US6] Agregar `oficio` a `src/servicios/servicioPerfil.ts` y al tipo del perfil, y el campo "Oficio (opcional)" en `src/componentes/FormularioPerfil.tsx` según `2295:313`.
 
 ---
 

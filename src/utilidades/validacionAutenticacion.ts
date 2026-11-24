@@ -4,7 +4,8 @@
  * @descripcion Reglas de validación de los formularios de inicio de sesión y registro.
  * @autor POR_COMPLETAR
  * @fecha POR_COMPLETAR
- * @version 1.0.0
+ * @version 1.1.0
+ * @historial 23/11/2026 - Emilio Manuel Esquivel - Oficio del perfil (D-18, feature 001)
  */
 
 import { RolUsuario } from '@/tipos/autenticacion';
@@ -178,12 +179,13 @@ export function validarCambioContrasena(
   return errores;
 }
 
-export type CampoPerfil = 'nombre' | 'correo' | 'telefono';
+export type CampoPerfil = 'nombre' | 'correo' | 'telefono' | 'oficio';
 
-export const CAMPOS_PERFIL: readonly CampoPerfil[] = ['nombre', 'correo', 'telefono'];
+export const CAMPOS_PERFIL: readonly CampoPerfil[] = ['nombre', 'correo', 'telefono', 'oficio'];
 
 const REGEX_TELEFONO = /^[0-9+\-()\s]*$/;
 const LONGITUD_MAXIMA_TELEFONO = 20;
+const LONGITUD_MAXIMA_OFICIO = 60;
 
 /**
  * Valida los campos del formulario del perfil. El teléfono es opcional.
@@ -208,6 +210,10 @@ export function validarPerfil(
 
   if (telefono.length > LONGITUD_MAXIMA_TELEFONO || !REGEX_TELEFONO.test(telefono)) {
     errores.telefono = 'Teléfono inválido';
+  }
+
+  if (valores.oficio.trim().length > LONGITUD_MAXIMA_OFICIO) {
+    errores.oficio = 'El oficio es demasiado largo';
   }
 
   return errores;
