@@ -21,8 +21,8 @@ confirmó el equipo); no se cambian.
 
 ## Criterios de aceptación (pruebas)
 
-- `__tests__/correccionesRevision-test.tsx`: CP04-A10/A11-APP (supervisor obligatorio),
-  CP02-A10 a A13-APP (código de trabajadores y tarjeta), CP03-A10/A11-APP (logotipo) y
+- `__tests__/correccionesRevision-test.tsx`: CP08-A10/A11-APP (supervisor obligatorio),
+  CP04-A10 a A13-APP (código de trabajadores y tarjeta), CP05-A10/A11-APP (logotipo) y
   CP00-A10/A11-APP (teclado y barra inferior).
 - `__tests__/PantallasEscaneo-test.tsx`: CP21-A40-APP (el botón "Detalles" abre la hoja).
 - Prueba manual en el celular (Expo Go, Android): escribir en Inicio de sesión, Registro, Agregar

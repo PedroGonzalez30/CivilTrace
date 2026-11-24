@@ -72,14 +72,14 @@ function simularTeclado() {
 afterEach(() => jest.restoreAllMocks());
 
 describe('Supervisor obligatorio en una obra nueva (D-24)', () => {
-  it('CP04-A10-APP sin supervisor la validación lo pide; con supervisor no hay error', () => {
+  it('CP08-A10-APP sin supervisor la validación lo pide; con supervisor no hay error', () => {
     expect(validarObra({ ...OBRA_VALIDA, supervisorId: '' }).supervisorId).toBe(
       MENSAJE_SUPERVISOR_REQUERIDO,
     );
     expect(validarObra(OBRA_VALIDA)).toEqual({});
   });
 
-  it('CP04-A11-APP al presionar Agregar sin supervisor se muestra el mensaje y no se envía', async () => {
+  it('CP08-A11-APP al presionar Agregar sin supervisor se muestra el mensaje y no se envía', async () => {
     jest
       .spyOn(servicioEmpresa, 'obtenerPersonalEmpresa')
       .mockResolvedValue({ supervisores: [], trabajadores: [] });
@@ -103,7 +103,7 @@ describe('Supervisor obligatorio en una obra nueva (D-24)', () => {
 });
 
 describe('Código de trabajadores para el supervisor (D-23)', () => {
-  it('CP02-A10-APP pide /empresa/codigos y usa solo el de trabajadores', async () => {
+  it('CP04-A10-APP pide /empresa/codigos y usa solo el de trabajadores', async () => {
     const llamar = jest
       .spyOn(clienteApi, 'llamarApi')
       .mockResolvedValue({ codigos: { trabajadores: 'T-123' } });
@@ -117,7 +117,7 @@ describe('Código de trabajadores para el supervisor (D-23)', () => {
     );
   });
 
-  it('CP02-A11-APP el inicio del supervisor muestra el código y lo copia', async () => {
+  it('CP04-A11-APP el inicio del supervisor muestra el código y lo copia', async () => {
     jest.spyOn(servicioEmpresa, 'obtenerCodigoTrabajadores').mockResolvedValue('T-123');
     await render(<SeccionCodigoTrabajadores tokenAcceso="tkn" />);
 
@@ -128,7 +128,7 @@ describe('Código de trabajadores para el supervisor (D-23)', () => {
     expect(await screen.findByText('¡Copiado!')).toBeTruthy();
   });
 
-  it('CP02-A12-APP si falla deja reintentar', async () => {
+  it('CP04-A12-APP si falla deja reintentar', async () => {
     const obtener = jest
       .spyOn(servicioEmpresa, 'obtenerCodigoTrabajadores')
       .mockRejectedValueOnce(new clienteApi.ErrorApi('Sin permiso', 403))
@@ -140,7 +140,7 @@ describe('Código de trabajadores para el supervisor (D-23)', () => {
     expect(obtener).toHaveBeenCalledTimes(2);
   });
 
-  it('CP02-A13-APP la tarjeta de código se muestra sin texto suelto fuera de <Text>', async () => {
+  it('CP04-A13-APP la tarjeta de código se muestra sin texto suelto fuera de <Text>', async () => {
     await render(
       <TarjetaCodigoAcceso titulo="Código" descripcion="Desc" codigo="T-1" onCopiar={jest.fn()} />,
     );
@@ -149,7 +149,7 @@ describe('Código de trabajadores para el supervisor (D-23)', () => {
 });
 
 describe('Logotipo de la empresa en el encabezado (D-25)', () => {
-  it('CP03-A10-APP con logotipo se muestra a la derecha', async () => {
+  it('CP05-A10-APP con logotipo se muestra a la derecha', async () => {
     jest
       .spyOn(servicioEmpresa, 'descargarLogoEmpresa')
       .mockResolvedValue('data:image/png;base64,AA');
@@ -162,7 +162,7 @@ describe('Logotipo de la empresa en el encabezado (D-25)', () => {
     expect(screen.getByText('Civil Trace')).toBeTruthy();
   });
 
-  it('CP03-A11-APP sin logotipo (404) solo queda el nombre de la app', async () => {
+  it('CP05-A11-APP sin logotipo (404) solo queda el nombre de la app', async () => {
     const descargar = jest
       .spyOn(servicioEmpresa, 'descargarLogoEmpresa')
       .mockRejectedValue(new clienteApi.ErrorApi('Sin logo', 404));
