@@ -123,3 +123,11 @@ export function moverMes(mes: string, desplazamiento: number): string {
   const fecha = new Date(Date.UTC(anio, numero - 1 + desplazamiento, 1));
   return `${fecha.getUTCFullYear()}-${String(fecha.getUTCMonth() + 1).padStart(2, '0')}`;
 }
+
+/**
+ * "08:00" → "08:00 am", como se ve en los campos de hora del Figma (SUP_HorarioObra).
+ */
+export function formatearHoraCampo(hora: string): string {
+  const texto = formatearHora12(hora);
+  return texto.length === '8:00 am'.length ? `0${texto}` : texto;
+}
