@@ -13,7 +13,12 @@ import * as Sharing from 'expo-sharing';
 
 import { ErrorApi, llamarApi } from '@/conexion/clienteApi';
 import { construirUrlFotoAvance } from '@/servicios/servicioActividades';
-import type { ActividadDetalle, AvanceActividad, EstadoActividad, EstadoAvance } from '@/tipos/actividad';
+import type {
+  ActividadDetalle,
+  AvanceActividad,
+  EstadoActividad,
+  EstadoAvance,
+} from '@/tipos/actividad';
 import type { Obra } from '@/tipos/obra';
 import { convertirFechaLocalAIso, convertirIsoAFechaLocal } from '@/utilidades/formatearFecha';
 
@@ -117,7 +122,9 @@ export async function cargarDatosReporteObra(
   fechaFinFiltro: string,
 ): Promise<DatosReporteObra> {
   const params = new URLSearchParams();
-  const inicioIso = fechaInicioFiltro.trim() ? convertirFechaLocalAIso(fechaInicioFiltro.trim()) : null;
+  const inicioIso = fechaInicioFiltro.trim()
+    ? convertirFechaLocalAIso(fechaInicioFiltro.trim())
+    : null;
   const finIso = fechaFinFiltro.trim() ? convertirFechaLocalAIso(fechaFinFiltro.trim()) : null;
 
   if (inicioIso) {

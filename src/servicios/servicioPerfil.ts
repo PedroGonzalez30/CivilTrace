@@ -148,7 +148,10 @@ export function crearOrigenFotoPerfil(tokenAcceso: string, version: number): Ori
  * @returns La imagen como url de datos.
  * @throws ErrorApi con el código HTTP en el mensaje si la API no la entrega.
  */
-export async function descargarFotoPerfil(tokenAcceso: string,ruta: string = RUTA_FOTO,): Promise<string> {
+export async function descargarFotoPerfil(
+  tokenAcceso: string,
+  ruta: string = RUTA_FOTO,
+): Promise<string> {
   let respuesta: Response;
   try {
     respuesta = await fetch(`${URL_API}${ruta}`, {
@@ -158,7 +161,10 @@ export async function descargarFotoPerfil(tokenAcceso: string,ruta: string = RUT
     throw new ErrorApi(MENSAJE_SIN_CONEXION, null);
   }
   if (!respuesta.ok) {
-    throw new ErrorApi(`${MENSAJE_FOTO_NO_DISPONIBLE} (error ${respuesta.status})`, respuesta.status);
+    throw new ErrorApi(
+      `${MENSAJE_FOTO_NO_DISPONIBLE} (error ${respuesta.status})`,
+      respuesta.status,
+    );
   }
   return leerComoUrlDatos(await respuesta.blob());
 }

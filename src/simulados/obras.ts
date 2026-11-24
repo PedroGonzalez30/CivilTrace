@@ -46,7 +46,6 @@ export function obtenerObras(idUsuario: string): Obra[] {
   return idUsuario === CUENTA_SIMULADA.usuario.id ? OBRAS_SIMULADAS : [];
 }
 
-
 export const DATOS_NUEVA_OBRA_SIMULADOS: DatosNuevaObra = {
   nombre: 'Construcción de casa',
   cliente: 'Ramón',

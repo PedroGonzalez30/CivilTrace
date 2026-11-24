@@ -256,6 +256,3 @@ export function validarDatosEmpresa(
 
   return errores;
 }
-
-
-

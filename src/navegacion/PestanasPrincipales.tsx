@@ -16,10 +16,8 @@ import PilaInicio from '@/navegacion/PilaInicio';
 import PantallaMiPerfil from '@/pantallas/comunes/PantallaMiPerfil';
 import PantallaPersonal from '@/pantallas/dueno/PantallaPersonal';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
-import type {
-  ParametrosPestanasPrincipales,
-  ParametrosPilaRaiz,
-} from '@/tipos/navegacion'; import { useNavigation } from '@react-navigation/native';
+import type { ParametrosPestanasPrincipales, ParametrosPilaRaiz } from '@/tipos/navegacion';
+import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 // 2. Tipos e interfaces
@@ -32,7 +30,11 @@ interface PestanasPrincipalesProps {
 const Pestana = createBottomTabNavigator<ParametrosPestanasPrincipales>();
 
 // 4. Componente principal
-export default function PestanasPrincipales({ sesion, onCerrarSesion, onNombreEmpresaCambiado, }: PestanasPrincipalesProps) {
+export default function PestanasPrincipales({
+  sesion,
+  onCerrarSesion,
+  onNombreEmpresaCambiado,
+}: PestanasPrincipalesProps) {
   const navegacionRaiz = useNavigation<NativeStackNavigationProp<ParametrosPilaRaiz>>();
 
   const manejarCodigoAcceso = () => {
