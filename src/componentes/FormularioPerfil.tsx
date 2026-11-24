@@ -5,7 +5,8 @@
  *              de guardar. Es común para los tres roles.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
- * @version 1.0.0
+ * @version 1.1.0
+ * @historial 23/11/2026 - Emilio Manuel Esquivel - Oficio del perfil (D-18, feature 001)
  */
 
 // 1. Importaciones
@@ -68,6 +69,7 @@ export default function FormularioPerfil({
       nombre: perfil.nombre,
       correo: perfil.correo,
       telefono: perfil.telefono,
+      oficio: perfil.oficio,
     },
     validar: validarPerfil,
     onEnviar: async (valores) => {
@@ -80,6 +82,7 @@ export default function FormularioPerfil({
         nombre: valores.nombre.trim(),
         correo: valores.correo.trim(),
         telefono: valores.telefono.trim(),
+        oficio: valores.oficio.trim(),
       });
       setSeGuardo(true);
     },
@@ -181,9 +184,19 @@ export default function FormularioPerfil({
             error={formulario.obtenerError('telefono')}
             keyboardType="phone-pad"
             autoComplete="tel"
-            returnKeyType="done"
+            returnKeyType="next"
             onCambiarTexto={formulario.manejarCambio('telefono')}
             onPerderFoco={formulario.manejarPerdidaFoco('telefono')}
+          />
+          <CampoTexto
+            etiqueta={TEXTOS.etiquetaOficio}
+            textoMarcador={TEXTOS.marcadorOficio}
+            valor={formulario.valores.oficio}
+            error={formulario.obtenerError('oficio')}
+            autoCapitalize="sentences"
+            returnKeyType="done"
+            onCambiarTexto={formulario.manejarCambio('oficio')}
+            onPerderFoco={formulario.manejarPerdidaFoco('oficio')}
             onEnviar={formulario.manejarEnvio}
           />
         </View>

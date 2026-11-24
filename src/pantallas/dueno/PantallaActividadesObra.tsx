@@ -33,7 +33,8 @@ type PestanaActividades = 'ACTIVA' | 'TERMINADA';
 
 // 3. Constantes del módulo
 const TITULO_PANTALLA = 'Actividades';
-const SUBTITULO_PANTALLA = 'Consulta los avances de las actividades activas y terminadas de la obra';
+const SUBTITULO_PANTALLA =
+  'Consulta los avances de las actividades activas y terminadas de la obra';
 const ETIQUETA_ACTIVOS = 'Activos';
 const ETIQUETA_TERMINADOS = 'Terminados';
 const MENSAJE_SIN_ACTIVOS = 'No hay actividades activas en esta obra.';
@@ -77,10 +78,7 @@ export default function PantallaActividadesObra({
             onPress={() => setPestana('ACTIVA')}
           >
             <Text
-              style={[
-                estilos.textoPestana,
-                pestana === 'ACTIVA' && estilos.textoPestanaActiva,
-              ]}
+              style={[estilos.textoPestana, pestana === 'ACTIVA' && estilos.textoPestanaActiva]}
             >
               {ETIQUETA_ACTIVOS}
             </Text>
@@ -90,10 +88,7 @@ export default function PantallaActividadesObra({
             onPress={() => setPestana('TERMINADA')}
           >
             <Text
-              style={[
-                estilos.textoPestana,
-                pestana === 'TERMINADA' && estilos.textoPestanaActiva,
-              ]}
+              style={[estilos.textoPestana, pestana === 'TERMINADA' && estilos.textoPestanaActiva]}
             >
               {ETIQUETA_TERMINADOS}
             </Text>

@@ -115,11 +115,7 @@ export default function PantallaPrincipalSupervisor({
           ) : null}
         </View>
 
-        <BotonPrincipal
-          etiqueta="Cerrar sesión"
-          variante="contorno"
-          onPresionar={onCerrarSesion}
-        />
+        <BotonPrincipal etiqueta="Cerrar sesión" variante="contorno" onPresionar={onCerrarSesion} />
       </ScrollView>
     </View>
   );

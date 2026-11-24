@@ -5,6 +5,7 @@
  * @autor POR_COMPLETAR
  * @fecha POR_COMPLETAR
  * @version 1.0.0
+ * @historial 23/11/2026 - Emilio Manuel Esquivel - Pestañas de asistencia y color activo (feature 001)
  */
 
 // 1. Importaciones
@@ -13,11 +14,20 @@ import type { ComponentType } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { IconoInicio, type IconoProps, IconoTarjetaId, IconoUsuario } from '@/componentes/Iconos';
+import {
+  IconoCalendarioCheck,
+  IconoInicio,
+  type IconoProps,
+  IconoTarjetaId,
+  IconoUsuario,
+} from '@/componentes/Iconos';
 import { COLORES } from '@/constantes/colores';
 import { RADIOS, SOMBRAS, TAMANOS, TIPOGRAFIA } from '@/constantes/tema';
 
 // 2. Tipos e interfaces
+// El supervisor y el trabajador usan el azul del Figma; el dueño conserva su color.
+type NavegacionInferiorProps = BottomTabBarProps & { colorActivo?: string };
+
 interface ElementoNavegacion {
   etiqueta: string;
   Icono: ComponentType<IconoProps>;
@@ -28,10 +38,18 @@ const ELEMENTOS_NAVEGACION: Record<string, ElementoNavegacion> = {
   Inicio: { etiqueta: 'Inicio', Icono: IconoInicio },
   Personal: { etiqueta: 'Personal', Icono: IconoTarjetaId },
   Cuenta: { etiqueta: 'Cuenta', Icono: IconoUsuario },
+  // Supervisor y trabajador (feature 001).
+  Asistencia: { etiqueta: 'Asistencia', Icono: IconoCalendarioCheck },
+  Trabajo: { etiqueta: 'Trabajo', Icono: IconoInicio },
+  MiAsistencia: { etiqueta: 'Mi asistencia', Icono: IconoTarjetaId },
 };
 
 // 4. Componente principal
-export default function NavegacionInferior({ state, navigation }: BottomTabBarProps) {
+export default function NavegacionInferior({
+  state,
+  navigation,
+  colorActivo = COLORES.marca,
+}: NavegacionInferiorProps) {
   const margenesSeguros = useSafeAreaInsets();
 
   return (
@@ -39,7 +57,7 @@ export default function NavegacionInferior({ state, navigation }: BottomTabBarPr
       {state.routes.map((ruta, indice) => {
         const estaEnfocado = state.index === indice;
         const { etiqueta, Icono } = ELEMENTOS_NAVEGACION[ruta.name];
-        const color = estaEnfocado ? COLORES.marca : COLORES.textoTenue;
+        const color = estaEnfocado ? colorActivo : COLORES.textoTenue;
 
         const manejarPresion = () => {
           const evento = navigation.emit({

@@ -97,7 +97,8 @@ export default function CampoTexto({
             estilos.entrada,
             Icono && estilos.entradaFlexible,
             puedeAlternarVisibilidad && estilos.entradaConIcono,
-          ]} secureTextEntry={estaOculto}
+          ]}
+          secureTextEntry={estaOculto}
           value={valor}
           placeholder={textoMarcador}
           placeholderTextColor={esCompacto ? COLORES.marcador : COLORES.textoAtenuado}
@@ -177,7 +178,7 @@ const estilos = StyleSheet.create({
     right: 16,
     justifyContent: 'center',
   },
-    cajaConIcono: {
+  cajaConIcono: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,

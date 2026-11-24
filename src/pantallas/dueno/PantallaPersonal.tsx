@@ -52,7 +52,7 @@ export default function PantallaPersonal({ tokenAcceso }: PantallaPersonalProps)
     const temporizador = setTimeout(() => setSeElimino(false), DURACION_AVISO_MS);
     return () => clearTimeout(temporizador);
   }, [seElimino]);
-  
+
   const manejarPedirEliminar = (persona: PersonaEmpresa) => {
     setSeElimino(false);
     setErrorEliminar(null);
