@@ -12,8 +12,8 @@
 // 1. Importaciones
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import MarcadorPantalla from '@/componentes/MarcadorPantalla';
 import { COLORES } from '@/constantes/colores';
+import PantallaHistorialAsistencia from '@/pantallas/trabajador/PantallaHistorialAsistencia';
 import PantallaMiAsistencia from '@/pantallas/trabajador/PantallaMiAsistencia';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
 import type { ParametrosPilaMiAsistencia } from '@/tipos/navegacion';
@@ -41,7 +41,9 @@ export default function PilaMiAsistencia({ sesion }: PilaMiAsistenciaProps) {
         )}
       </Pila.Screen>
       <Pila.Screen name="Historial">
-        {() => <MarcadorPantalla titulo="Asistencia" mensaje="Historial del mes" />}
+        {({ navigation }) => (
+          <PantallaHistorialAsistencia sesion={sesion} onRegresar={() => navigation.goBack()} />
+        )}
       </Pila.Screen>
     </Pila.Navigator>
   );
