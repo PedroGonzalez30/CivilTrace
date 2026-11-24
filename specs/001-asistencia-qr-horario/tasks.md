@@ -25,11 +25,11 @@ description: 'Tareas del feature 001 en la app móvil: asistencia con QR, horari
 
 ## Phase 1: Setup (módulo 00 de la app)
 
-- [ ] T001 Instalar las pruebas con `npx expo install jest-expo jest @types/jest @testing-library/react-native "--" --dev` (jest 30, research R-13). Agregar `"jest": { "preset": "jest-expo", "collectCoverageFrom": ["src/**/*.{ts,tsx}", "!src/simulados/**"], "coverageThreshold": { "global": { "lines": 60 } } }` y los scripts `test` (`jest`) y `test:cobertura` en `package.json`. Agregar `"jest"` a `compilerOptions.types` en `tsconfig.json`.
-- [ ] T002 [P] Configurar el lint con `npx expo lint`, que crea `eslint.config.js` con `eslint-config-expo/flat`. Agregar `eslint-config-prettier` y un `.prettierrc` igual al de la API, y los scripts `lint`, `formatear` y `verificar-formato`. Corregir los errores de `src/` sin cambiar comportamiento; si hay commits de solo formato, van aparte.
-- [ ] T003 [P] Instalar `expo-sqlite`, `expo-file-system`, `expo-crypto` y `expo-network` con `npx expo install`. Agregar `"expo-sqlite"` a `plugins` en `app.json`, más los textos de permisos de `expo-camera` y `expo-location` en español.
-- [ ] T004 Crear `jest.setup.ts`, registrado en `setupFiles`, con dobles de `expo-sqlite`, `expo-file-system`, `expo-network`, `expo-location`, `expo-camera` y `expo-secure-store`. Crear también `__tests__/dobles/repositorioEnMemoria.ts`, con la interfaz `RepositorioLocal` en memoria que se usará desde T009. Escribir una prueba humo `__tests__/humo-test.tsx` que renderice `<BotonPrincipal>`.
-- [ ] T005 Verificar `npx tsc --noEmit && npm run lint && npm test`.
+- [x] T001 Instalar las pruebas con `npx expo install jest-expo jest @types/jest @testing-library/react-native "--" --dev` (jest 30, research R-13). Agregar `"jest": { "preset": "jest-expo", "collectCoverageFrom": ["src/**/*.{ts,tsx}", "!src/simulados/**"], "coverageThreshold": { "global": { "lines": 60 } } }` y los scripts `test` (`jest`) y `test:cobertura` en `package.json`. Agregar `"jest"` a `compilerOptions.types` en `tsconfig.json`.
+- [x] T002 [P] Configurar el lint con `npx expo lint`, que crea `eslint.config.js` con `eslint-config-expo/flat`. Agregar `eslint-config-prettier` y un `.prettierrc` igual al de la API, y los scripts `lint`, `formatear` y `verificar-formato`. Corregir los errores de `src/` sin cambiar comportamiento; si hay commits de solo formato, van aparte.
+- [x] T003 [P] Instalar `expo-sqlite`, `expo-file-system`, `expo-crypto` y `expo-network` con `npx expo install`. Agregar `"expo-sqlite"` a `plugins` en `app.json`, más los textos de permisos de `expo-camera` y `expo-location` en español.
+- [x] T004 Crear `jest.setup.ts`, registrado en `setupFiles`, con dobles de `expo-sqlite`, `expo-file-system`, `expo-network`, `expo-location`, `expo-camera` y `expo-secure-store`. Crear también `__tests__/dobles/repositorioEnMemoria.ts`, con la interfaz `RepositorioLocal` en memoria que se usará desde T009. Escribir una prueba humo `__tests__/humo-test.tsx` que renderice `<BotonPrincipal>`.
+- [x] T005 Verificar `npx tsc --noEmit && npm run lint && npm test`.
 
 **Checkpoint**: la puerta de calidad de la app funciona.
 
