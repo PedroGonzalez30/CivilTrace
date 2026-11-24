@@ -15,6 +15,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import MarcadorPantalla from '@/componentes/MarcadorPantalla';
 import { COLORES } from '@/constantes/colores';
+import PantallaConfirmarQr from '@/pantallas/supervisor/PantallaConfirmarQr';
+import PantallaEscogerObra from '@/pantallas/supervisor/PantallaEscogerObra';
+import PantallaLeerQr from '@/pantallas/supervisor/PantallaLeerQr';
+import PantallaRechazados from '@/pantallas/supervisor/PantallaRechazados';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
 import type { ParametrosPilaAsistenciaSupervisor } from '@/tipos/navegacion';
 
@@ -33,10 +37,48 @@ export default function PilaAsistenciaSupervisor({ sesion }: PilaAsistenciaSuper
       screenOptions={{ headerShown: false, contentStyle: { backgroundColor: COLORES.pantalla } }}
     >
       <Pila.Screen name="EscogerObra">
-        {() => (
-          <MarcadorPantalla
-            titulo="Asistencia"
-            mensaje={`Hola, ${sesion.usuario.nombre}. Aquí pasarás asistencia.`}
+        {({ navigation }) => (
+          <PantallaEscogerObra
+            sesion={sesion}
+            onElegirObra={(obra) =>
+              navigation.navigate('LeerQr', { obraId: obra.id, obraNombre: obra.nombre })
+            }
+          />
+        )}
+      </Pila.Screen>
+      <Pila.Screen name="LeerQr">
+        {({ navigation, route }) => (
+          <PantallaLeerQr
+            sesion={sesion}
+            obraId={route.params.obraId}
+            obraNombre={route.params.obraNombre}
+            onEscaneado={(codigoQr) =>
+              navigation.navigate('ConfirmarQr', { ...route.params, codigoQr })
+            }
+            onEditarHorario={() => navigation.navigate('HorarioObra', route.params)}
+            onVerRechazados={() => navigation.navigate('Rechazados', route.params)}
+          />
+        )}
+      </Pila.Screen>
+      <Pila.Screen name="ConfirmarQr" options={{ presentation: 'modal' }}>
+        {({ navigation, route }) => (
+          <PantallaConfirmarQr
+            sesion={sesion}
+            obraId={route.params.obraId}
+            codigoQr={route.params.codigoQr}
+            onTerminar={() => navigation.goBack()}
+          />
+        )}
+      </Pila.Screen>
+      <Pila.Screen name="HorarioObra">
+        {() => <MarcadorPantalla titulo="Horario de la obra" mensaje="Próximamente" />}
+      </Pila.Screen>
+      <Pila.Screen name="Rechazados">
+        {({ navigation, route }) => (
+          <PantallaRechazados
+            sesion={sesion}
+            obraId={route.params.obraId}
+            onRegresar={() => navigation.goBack()}
           />
         )}
       </Pila.Screen>

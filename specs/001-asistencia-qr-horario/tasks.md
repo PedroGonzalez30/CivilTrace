@@ -106,9 +106,9 @@ description: 'Tareas del feature 001 en la app móvil: asistencia con QR, horari
 
   Arrancarla al iniciar sesión como SUPERVISOR en `NavegadorRaiz`. Deben pasar las pruebas de T018.
 
-- [ ] T023 [P] [US2] Implementar `src/hooks/useObrasSupervisadas.ts` y `src/pantallas/supervisor/PantallaEscogerObra.tsx` según `96:2903`, reutilizando `TarjetaObra` si se ajusta. Al elegir una obra se llama a `actualizarPaquete` en segundo plano.
-- [ ] T024 [US2] Implementar `src/hooks/useLecturaQr.ts` (resumen, horario, pendientes y rechazados; con conexión usa el servidor y sin ella, lo local) y `src/componentes/AvisoSincronizacion.tsx` según `2295:254`.
-- [ ] T025 [US2] Implementar `src/pantallas/supervisor/PantallaLeerQr.tsx` según `2272:117` y `2295:254`:
+- [x] T023 [P] [US2] Implementar `src/hooks/useObrasSupervisadas.ts` y `src/pantallas/supervisor/PantallaEscogerObra.tsx` según `96:2903`, reutilizando `TarjetaObra` si se ajusta. Al elegir una obra se llama a `actualizarPaquete` en segundo plano.
+- [x] T024 [US2] Implementar `src/hooks/useLecturaQr.ts` (resumen, horario, pendientes y rechazados; con conexión usa el servidor y sin ella, lo local) y `src/componentes/AvisoSincronizacion.tsx` según `2295:254`.
+- [x] T025 [US2] Implementar `src/pantallas/supervisor/PantallaLeerQr.tsx` según `2272:117` y `2295:254`:
   - `CameraView` con `barcodeScannerSettings={{ barcodeTypes: ['qr'] }}`, montada solo con el foco (`useIsFocused`) y en pausa mientras hay una confirmación abierta (R-04);
   - la pantalla de permiso de cámara;
   - `TarjetaHorarioDia` con "Editar horario de la obra";
@@ -116,7 +116,7 @@ description: 'Tareas del feature 001 en la app móvil: asistencia con QR, horari
 
   Crear `src/navegacion/PilaAsistenciaSupervisor.tsx`. Prueba de render con datos simulados: aviso de pendientes y rechazados, y el mensaje de permiso.
 
-- [ ] T026 [US2] Implementar `src/pantallas/supervisor/PantallaConfirmarQr.tsx` según `96:2228`, como modal: foto (remota o local), nombre, oficio, hora, ubicación, "Sin faltas este mes" o N faltas, y los botones "Rechazar" y "Aceptar". Implementar también `src/pantallas/supervisor/PantallaRechazados.tsx`, una lista con el estilo de `2295:254` y la opción de descartar. Pruebas de render y de los botones en `__tests__/PantallaConfirmarQr-test.tsx`.
+- [x] T026 [US2] Implementar `src/pantallas/supervisor/PantallaConfirmarQr.tsx` según `96:2228`, como modal: foto (remota o local), nombre, oficio, hora, ubicación, "Sin faltas este mes" o N faltas, y los botones "Rechazar" y "Aceptar". Implementar también `src/pantallas/supervisor/PantallaRechazados.tsx`, una lista con el estilo de `2295:254` y la opción de descartar. Pruebas de render y de los botones en `__tests__/PantallaConfirmarQr-test.tsx`.
 
 **Checkpoint**: el escaneo funciona con y sin señal, y los pendientes se envían solos.
 
