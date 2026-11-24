@@ -168,3 +168,90 @@ describe('Base SQLite', () => {
     expect(db.getAllAsync).toHaveBeenCalledWith(expect.stringContaining('LIMIT ?'), ['maria', 100]);
   });
 });
+
+describe('Repositorio SQLite: todas las operaciones generan su SQL', () => {
+  it('CP21-A40-APP ejecuta cada operación contra la base con sus parámetros', async () => {
+    const llamadas: string[] = [];
+    const db = {
+      execAsync: jest.fn(async () => undefined),
+      runAsync: jest.fn(async (sql: string) => {
+        llamadas.push(sql.replace(/\s+/g, ' ').trim().slice(0, 30));
+        return { changes: 1, lastInsertRowId: 1 };
+      }),
+      getAllAsync: jest.fn(async () => []),
+      getFirstAsync: jest.fn(async (sql: string) =>
+        sql.includes('COUNT')
+          ? { total: 3 }
+          : sql.includes('paquete_obra')
+            ? {
+                obra_id: 'o1',
+                usuario_id: 'maria',
+                zona_horaria: 'America/Tijuana',
+                horario_json: '{"general":null,"excepcionHoy":null}',
+                generado_en: 'g',
+              }
+            : null,
+      ),
+      withTransactionAsync: jest.fn(async (tarea: () => Promise<void>) => tarea()),
+    } as unknown as SQLiteDatabase;
+    const repo = crearRepositorioSqlite(db);
+    const registro = {
+      obraId: 'o1',
+      trabajadorId: 'ana',
+      fecha: '2026-11-20',
+      tieneEntrada: true,
+      tieneSalida: false,
+      horaEntrada: null,
+    };
+
+    await repo.guardarEscaneo(escaneo());
+    await repo.borrarEscaneos([]);
+    await repo.borrarEscaneos(['a', 'b']);
+    await repo.marcarRechazado('a', 'NO_ASIGNADO', 'm');
+    await repo.guardarPaquete(
+      {
+        obraId: 'o1',
+        usuarioId: 'maria',
+        zonaHoraria: 'America/Tijuana',
+        horario: { general: null, excepcionHoy: null },
+        generadoEn: 'g',
+      },
+      [
+        {
+          obraId: 'o1',
+          trabajadorId: 'ana',
+          nombre: 'Ana',
+          oficio: null,
+          huellaCredencial: 'h',
+          fotoLocal: null,
+          faltasMes: 0,
+        },
+      ],
+    );
+    await repo.reemplazarRegistrosDia('o1', '2026-11-20', [registro]);
+    await repo.guardarRegistroDia(registro);
+
+    expect(await repo.contarPendientes('maria', 'o1')).toBe(3);
+    expect(await repo.obtenerPaquete('o1')).toMatchObject({
+      zonaHoraria: 'America/Tijuana',
+      horario: { general: null },
+    });
+    expect(await repo.listarRechazados('maria', 'o1')).toEqual([]);
+    expect(await repo.listarTrabajadoresPaquete('o1')).toEqual([]);
+    expect(await repo.buscarTrabajadorPorHuella('o1', 'h')).toBeNull();
+    expect(await repo.obtenerRegistroDia('o1', 'ana', '2026-11-20')).toBeNull();
+    expect(await repo.listarRegistrosDia('o1', '2026-11-20')).toEqual([]);
+    expect(llamadas).toEqual([
+      'INSERT OR REPLACE INTO escaneo',
+      'DELETE FROM escaneo_pendiente ',
+      'UPDATE escaneo_pendiente SET e',
+      'INSERT OR REPLACE INTO paquete',
+      'DELETE FROM trabajador_paquete',
+      'INSERT INTO trabajador_paquete',
+      'DELETE FROM registro_dia_local',
+      'DELETE FROM registro_dia_local',
+      'INSERT OR REPLACE INTO registr',
+      'INSERT OR REPLACE INTO registr',
+    ]);
+  });
+});

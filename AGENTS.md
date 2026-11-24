@@ -19,9 +19,21 @@ npx expo lint               # lint
 npx tsc --noEmit            # typecheck
 npx expo-doctor             # diagnose dependency and config issues
 npx expo install --fix      # fix incompatible package versions
+npm test                    # jest-expo + React Native Testing Library (__tests__/*-test.ts(x))
+npm run test:cobertura      # coverage; 60 % per feature file (thresholds in package.json)
+npm run verificar-formato   # Prettier check (npm run formatear to fix)
 ```
 
-Run lint and typecheck before declaring any task done.
+Run lint, typecheck and tests before declaring any task done.
+
+- Dev dependencies: `npx expo install <pkg> -- --dev` may still save them under `dependencies`;
+  move them to `devDependencies` by hand.
+- Testing Library 14: `render`, `fireEvent` and `renderHook` are **async** — always `await` them.
+- Native modules (SQLite, camera, network, location, file system, secure store, crypto) are
+  replaced in `jest.setup.ts`. Use `jest.clearAllMocks()` (not `resetAllMocks`, which wipes those
+  doubles). Local storage in tests: `__tests__/dobles/repositorioEnMemoria.ts`.
+- Offline attendance code lives in `src/servicios/local/` (SQLite queue, offline package, sync).
+- Jest runs with `maxWorkers: 50%`; on low-memory machines use `--maxWorkers=2`.
 
 ## Navigation & Routing
 
