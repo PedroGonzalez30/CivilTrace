@@ -153,12 +153,12 @@ description: 'Tareas del feature 001 en la app móvil: asistencia con QR, horari
 
 **Goal**: los calendarios del supervisor (2272:354) y del trabajador (96:389), y el detalle del día (2272:523 con el $ de 2295:392) (D-08, D-13, D-16, RF-56, RF-58).
 
-- [ ] T033 [P] [US5] Escribir primero `__tests__/CalendarioAsistencia-test.tsx` y `__tests__/HojaDetalleDia-test.tsx`:
+- [x] T033 [P] [US5] Escribir primero `__tests__/CalendarioAsistencia-test.tsx` y `__tests__/HojaDetalleDia-test.tsx`:
   - `CP19-A1-APP`: los colores, el $, las flechas de mes y la alerta solo con `faltas >= 1`;
   - el detalle muestra "Modificado: entrada original 8:20 → 8:00 (olvidó registrarse)".
-- [ ] T034 [P] [US5] Implementar `src/servicios/servicioCalendario.ts` y `src/hooks/useCalendario.ts`.
-- [ ] T035 [US5] Implementar `src/componentes/CalendarioAsistencia.tsx` (rejilla propia con días de colores y la insignia $ como en el Figma) y `src/componentes/HojaDetalleDia.tsx`.
-- [ ] T036 [US5] Implementar `src/pantallas/supervisor/PantallaCalendarioTrabajador.tsx`, con el resumen del mes y la tarjeta del trabajador, y `src/pantallas/trabajador/PantallaHistorialAsistencia.tsx`, con la alerta y el recordatorio de D-16.
+- [x] T034 [P] [US5] Implementar `src/servicios/servicioCalendario.ts` y `src/hooks/useCalendario.ts`.
+- [x] T035 [US5] Implementar `src/componentes/CalendarioAsistencia.tsx` (rejilla propia con días de colores y la insignia $ como en el Figma) y `src/componentes/HojaDetalleDia.tsx`.
+- [x] T036 [US5] Implementar `src/pantallas/supervisor/PantallaCalendarioTrabajador.tsx`, con el resumen del mes y la tarjeta del trabajador, y `src/pantallas/trabajador/PantallaHistorialAsistencia.tsx`, con la alerta y el recordatorio de D-16.
 
 ---
 
