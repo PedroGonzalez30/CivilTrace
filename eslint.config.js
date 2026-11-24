@@ -19,6 +19,8 @@ const prettierConfig = require('eslint-config-prettier');
 module.exports = defineConfig([
   globalIgnores(['dist/*', 'coverage/*', '.expo/*', 'android/*', 'ios/*']),
   expoConfig,
+  // Prettier va antes de las reglas del ECCT: si va después, apaga 'curly'.
+  prettierConfig,
   {
     rules: {
       // Reglas del ECCT que se pueden automatizar.
@@ -31,5 +33,4 @@ module.exports = defineConfig([
       'react-hooks/set-state-in-effect': 'warn',
     },
   },
-  prettierConfig,
 ]);

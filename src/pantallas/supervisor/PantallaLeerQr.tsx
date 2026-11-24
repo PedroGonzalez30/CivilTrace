@@ -21,6 +21,7 @@ import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'r
 import AvisoSincronizacion from '@/componentes/AvisoSincronizacion';
 import BotonPrincipal from '@/componentes/BotonPrincipal';
 import EncabezadoApp from '@/componentes/EncabezadoApp';
+import HojaDetallesAsistencia from '@/componentes/HojaDetallesAsistencia';
 import TarjetaHorarioDia from '@/componentes/TarjetaHorarioDia';
 import { COLORES } from '@/constantes/colores';
 import { COLORES_ASISTENCIA } from '@/constantes/textosAsistencia';
@@ -38,7 +39,7 @@ interface PantallaLeerQrProps {
   onEscaneado: (codigoQr: string) => void;
   onEditarHorario: () => void;
   onVerRechazados: () => void;
-  onMantenerTrabajador?: (trabajador: TrabajadorResumen, fecha: string) => void;
+  onVerCalendario: (trabajadorId: string) => void;
 }
 
 // 3. Constantes del módulo
@@ -54,12 +55,17 @@ export default function PantallaLeerQr({
   onEscaneado,
   onEditarHorario,
   onVerRechazados,
-  onMantenerTrabajador,
+  onVerCalendario,
 }: PantallaLeerQrProps) {
   const lectura = useLecturaQr(sesion, obraId);
   const { recargar } = lectura;
   const [permiso, pedirPermiso] = useCameraPermissions();
   const [pausado, setPausado] = useState(false);
+  // Trabajador cuya hoja de detalles está abierta (al mantenerlo presionado).
+  const [seleccionado, setSeleccionado] = useState<{
+    trabajador: TrabajadorResumen;
+    fecha: string;
+  } | null>(null);
   // Solo puede haber una vista de cámara activa: se monta únicamente con la pantalla al frente.
   const estaEnfocada = useIsFocused();
 
@@ -135,7 +141,7 @@ export default function PantallaLeerQr({
           <Pressable
             key={trabajador.id}
             style={estilos.fila}
-            onLongPress={() => resumen && onMantenerTrabajador?.(trabajador, resumen.fecha)}
+            onLongPress={() => resumen && setSeleccionado({ trabajador, fecha: resumen.fecha })}
             accessibilityHint="Mantén presionado para ver los detalles"
           >
             <Text style={estilos.nombre}>{trabajador.nombre}</Text>
@@ -158,6 +164,25 @@ export default function PantallaLeerQr({
           </Pressable>
         ))}
       </ScrollView>
+      {seleccionado ? (
+        <HojaDetallesAsistencia
+          visible
+          sesion={sesion}
+          obraId={obraId}
+          trabajadorId={seleccionado.trabajador.id}
+          fecha={seleccionado.fecha}
+          zonaHoraria={lectura.zonaHoraria}
+          onCerrar={() => setSeleccionado(null)}
+          onGuardado={() => {
+            setSeleccionado(null);
+            void recargar();
+          }}
+          onVerCalendario={() => {
+            setSeleccionado(null);
+            onVerCalendario(seleccionado.trabajador.id);
+          }}
+        />
+      ) : null}
     </View>
   );
 }

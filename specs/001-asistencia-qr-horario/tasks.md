@@ -139,13 +139,13 @@ description: 'Tareas del feature 001 en la app móvil: asistencia con QR, horari
 
 **Goal**: la hoja `SUP_DetallesAsistencia` (2272:250) al mantener presionado (D-07, RF-60).
 
-- [ ] T030 [P] [US4] Escribir primero `__tests__/HojaDetallesAsistencia-test.tsx`:
+- [x] T030 [P] [US4] Escribir primero `__tests__/HojaDetallesAsistencia-test.tsx`:
   - `CP19-E3-APP`: "Retardo" sin observación muestra el error sin llamar a la API;
   - muestra los valores actuales;
   - el error del servidor se muestra sin cerrar la hoja;
   - sin conexión, el aviso correspondiente.
-- [ ] T031 [P] [US4] Implementar `src/servicios/servicioDetallesAsistencia.ts` y `src/hooks/useDetallesDia.ts`.
-- [ ] T032 [US4] Implementar `src/componentes/HojaDetallesAsistencia.tsx` (un `Modal` que se desliza desde abajo, con chips de tipo y de motivo, el segmento de efecto, las anotaciones y "Editar horas") y conectarla al mantener presionado en el resumen de `PantallaLeerQr`. El icono de calendario lleva a `CalendarioTrabajador`.
+- [x] T031 [P] [US4] Implementar `src/servicios/servicioDetallesAsistencia.ts` y `src/hooks/useDetallesDia.ts`.
+- [x] T032 [US4] Implementar `src/componentes/HojaDetallesAsistencia.tsx` (un `Modal` que se desliza desde abajo, con chips de tipo y de motivo, el segmento de efecto, las anotaciones y "Editar horas") y conectarla al mantener presionado en el resumen de `PantallaLeerQr`. El icono de calendario lleva a `CalendarioTrabajador`.
 
 ---
 

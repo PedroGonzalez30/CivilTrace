@@ -112,6 +112,7 @@ describe('PantallaLeerQr', () => {
     onEscaneado: jest.fn(),
     onEditarHorario: jest.fn(),
     onVerRechazados: jest.fn(),
+    onVerCalendario: jest.fn(),
   };
 
   beforeEach(() => {

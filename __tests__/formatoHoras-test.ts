@@ -45,3 +45,18 @@ describe('formatoHoras', () => {
     expect(formatearFechaLarga('2026-05-19')).toBe('Martes 19 de mayo');
   });
 });
+
+describe('horas locales para editar', () => {
+  it('CP19-A6-APP convierte entre instante y hora local en ambos sentidos', () => {
+    const { construirInstanteLocal, obtenerHoraLocal } = jest.requireActual(
+      '@/utilidades/formatoHoras',
+    );
+    expect(obtenerHoraLocal('2026-11-20T16:20:00.000Z', 'America/Tijuana')).toBe('08:20');
+    expect(construirInstanteLocal('2026-11-20', '08:00', 'America/Tijuana')).toBe(
+      '2026-11-20T16:00:00.000Z',
+    );
+    expect(construirInstanteLocal('2026-05-19', '08:00', 'America/Tijuana')).toBe(
+      '2026-05-19T15:00:00.000Z',
+    );
+  });
+});
