@@ -56,8 +56,8 @@ export default function NavegadorRaiz({
                   onNombreEmpresaCambiado={onNombreEmpresaCambiado}
                 />
               ) : sesion.usuario.rol === RolUsuario.SUPERVISOR ? (
-                  <PantallaPrincipalSupervisor sesion={sesion} onCerrarSesion={onCerrarSesion} />
-                ) : (
+                <PantallaPrincipalSupervisor sesion={sesion} onCerrarSesion={onCerrarSesion} />
+              ) : (
                 // TODO(Equipo): pantalla de inicio del Trabajador.
                 <PantallaMiPerfil sesion={sesion} onCerrarSesion={onCerrarSesion} />
               )

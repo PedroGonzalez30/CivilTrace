@@ -88,9 +88,7 @@ export default function SelectorRol<T extends string>({
                     {indice > 0 && <View style={estilos.divisor} />}
                     <Pressable style={estilos.opcion} onPress={() => manejarSeleccion(opcion)}>
                       {({ pressed }) => (
-                        <Text
-                          style={pressed ? estilos.textoOpcionPresionada : estilos.textoOpcion}
-                        >
+                        <Text style={pressed ? estilos.textoOpcionPresionada : estilos.textoOpcion}>
                           {opcion}
                         </Text>
                       )}

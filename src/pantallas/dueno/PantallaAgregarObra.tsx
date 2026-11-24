@@ -49,13 +49,7 @@ interface PantallaAgregarObraProps {
 }
 
 type CampoTextoObra =
-  | 'nombre'
-  | 'descripcion'
-  | 'cliente'
-  | 'correoCliente'
-  | 'direccion'
-  | 'fechaInicio'
-  | 'fechaFin';
+  'nombre' | 'descripcion' | 'cliente' | 'correoCliente' | 'direccion' | 'fechaInicio' | 'fechaFin';
 
 interface ConfiguracionCampo {
   clave: CampoTextoObra;
@@ -143,14 +137,16 @@ export default function PantallaAgregarObra({
     supervisores.find((supervisor) => supervisor.id === valores.supervisorId)?.nombre ??
     NOMBRE_SIN_SUPERVISOR;
 
-  const manejarCambioTexto = (clave: CampoTextoObra, esFecha = false) => (texto: string) => {
-    setValores((anteriores) => ({
-      ...anteriores,
-      [clave]: esFecha ? aplicarMascaraFecha(texto) : texto,
-    }));
-    setErrores((anteriores) => ({ ...anteriores, [clave]: undefined }));
-    setMensajeError(null);
-  };
+  const manejarCambioTexto =
+    (clave: CampoTextoObra, esFecha = false) =>
+    (texto: string) => {
+      setValores((anteriores) => ({
+        ...anteriores,
+        [clave]: esFecha ? aplicarMascaraFecha(texto) : texto,
+      }));
+      setErrores((anteriores) => ({ ...anteriores, [clave]: undefined }));
+      setMensajeError(null);
+    };
 
   const manejarCambioSupervisor = (idSupervisor: string) => {
     setValores((anteriores) => ({ ...anteriores, supervisorId: idSupervisor }));

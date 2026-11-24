@@ -1,5 +1,5 @@
 ---
-description: "Tareas del feature 001 en la app móvil: asistencia con QR, horario por obra y calendario"
+description: 'Tareas del feature 001 en la app móvil: asistencia con QR, horario por obra y calendario'
 ---
 
 # Tasks: Asistencia con QR, horario por obra y calendario (app móvil)

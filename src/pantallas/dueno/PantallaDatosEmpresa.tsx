@@ -35,7 +35,11 @@ interface PantallaDatosEmpresaProps {
 const DURACION_AVISO_MS = 3000;
 
 // 4. Componente principal
-export default function PantallaDatosEmpresa({ tokenAcceso, onAceptar, onNombreCambiado, }: PantallaDatosEmpresaProps) {
+export default function PantallaDatosEmpresa({
+  tokenAcceso,
+  onAceptar,
+  onNombreCambiado,
+}: PantallaDatosEmpresaProps) {
   const [datos, setDatos] = useState<DatosEmpresa | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [intento, setIntento] = useState(0);
@@ -93,7 +97,8 @@ export default function PantallaDatosEmpresa({ tokenAcceso, onAceptar, onNombreC
             onGuardado={(nombre) => {
               setSeGuardo(true);
               onNombreCambiado(nombre);
-            }} onAceptar={onAceptar}
+            }}
+            onAceptar={onAceptar}
           />
         ) : error ? (
           <View style={estilos.centro}>

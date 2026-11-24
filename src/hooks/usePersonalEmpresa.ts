@@ -59,9 +59,9 @@ export function usePersonalEmpresa(tokenAcceso: string) {
       previo === null
         ? previo
         : {
-          supervisores: previo.supervisores.filter((persona) => persona.id !== idPersona),
-          trabajadores: previo.trabajadores.filter((persona) => persona.id !== idPersona),
-        },
+            supervisores: previo.supervisores.filter((persona) => persona.id !== idPersona),
+            trabajadores: previo.trabajadores.filter((persona) => persona.id !== idPersona),
+          },
     );
   }, []);
 

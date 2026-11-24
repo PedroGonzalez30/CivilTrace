@@ -12,12 +12,7 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import {
-  BotonPrincipal,
-  EncabezadoApp,
-  EncabezadoPantalla,
-  FormularioPerfil,
-} from '@/componentes';
+import { BotonPrincipal, EncabezadoApp, EncabezadoPantalla, FormularioPerfil } from '@/componentes';
 import { ErrorApi } from '@/conexion/clienteApi';
 import { COLORES } from '@/constantes/colores';
 import { TIPOGRAFIA } from '@/constantes/tema';
