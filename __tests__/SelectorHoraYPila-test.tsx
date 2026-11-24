@@ -60,18 +60,16 @@ describe('PilaAsistenciaSupervisor', () => {
         empresaId: 'e1',
       },
     };
-    jest
-      .spyOn(asistencia, 'listarMisObras')
-      .mockResolvedValue([
-        {
-          id: 'o1',
-          nombre: 'Hospital',
-          descripcion: '',
-          direccion: '',
-          fechaInicio: '2026-01-01',
-          fechaFinal: '2026-12-31',
-        },
-      ]);
+    jest.spyOn(asistencia, 'listarMisObras').mockResolvedValue([
+      {
+        id: 'o1',
+        nombre: 'Hospital',
+        descripcion: '',
+        direccion: '',
+        fechaInicio: '2026-01-01',
+        fechaFinal: '2026-12-31',
+      },
+    ]);
     jest.spyOn(useLecturaQrModulo, 'useLecturaQr').mockReturnValue({
       resumen: null,
       zonaHoraria: 'America/Tijuana',
