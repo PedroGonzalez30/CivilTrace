@@ -4,11 +4,14 @@
  * @descripcion Pantalla de actividades de una obra con pestañas Activos y Terminados.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
- * @version 1.0.0
+ * @version 1.1.0
+ * @historial 24/11/2026 - Emilio Manuel Esquivel - Botón "+" opcional para el supervisor, mensaje
+ *   vacío del Figma y recarga al volver a la pantalla (feature 003)
  */
 
 // 1. Importaciones
-import { useMemo, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import {
@@ -17,6 +20,7 @@ import {
   TarjetaActividad,
   TarjetaFormulario,
 } from '@/componentes';
+import BotonFlotante from '@/componentes/BotonFlotante';
 import { COLORES } from '@/constantes/colores';
 import { RADIOS, SOMBRAS, TAMANOS, TIPOGRAFIA } from '@/constantes/tema';
 import { useActividadesObra } from '@/hooks/useActividadesObra';
@@ -27,6 +31,8 @@ interface PantallaActividadesObraProps {
   idObra: string;
   onRegresar: () => void;
   onAbrirActividad: (idActividad: string) => void;
+  // Solo el supervisor agrega actividades (feature 003); el dueño no ve el botón.
+  onAgregar?: () => void;
 }
 
 type PestanaActividades = 'ACTIVA' | 'TERMINADA';
@@ -40,6 +46,8 @@ const ETIQUETA_TERMINADOS = 'Terminados';
 const MENSAJE_SIN_ACTIVOS = 'No hay actividades activas en esta obra.';
 const MENSAJE_SIN_TERMINADOS = 'No hay actividades terminadas en esta obra.';
 const ETIQUETA_REINTENTAR = 'Reintentar';
+const TITULO_SIN_ACTIVIDADES = 'No hay actividades por realizar';
+const MENSAJE_AGREGA_ACTIVIDADES = 'Agrega nuevas actividades a tu equipo y las verás aquí.';
 
 // 4. Componente principal
 export default function PantallaActividadesObra({
@@ -47,9 +55,21 @@ export default function PantallaActividadesObra({
   idObra,
   onRegresar,
   onAbrirActividad,
+  onAgregar,
 }: PantallaActividadesObraProps) {
   const [pestana, setPestana] = useState<PestanaActividades>('ACTIVA');
   const { actividades, cargando, error, recargar } = useActividadesObra(tokenAcceso, idObra);
+
+  // Al volver de agregar una actividad o de revisar un avance se ve la lista al día.
+  const yaEnfocada = useRef(false);
+  useFocusEffect(
+    useCallback(() => {
+      if (yaEnfocada.current) {
+        recargar();
+      }
+      yaEnfocada.current = true;
+    }, [recargar]),
+  );
 
   const actividadesFiltradas = useMemo(() => {
     if (!actividades) {
@@ -108,7 +128,14 @@ export default function PantallaActividadesObra({
           </TarjetaFormulario>
         ) : actividadesFiltradas.length === 0 ? (
           <TarjetaFormulario estilo={estilos.tarjetaVacia}>
-            <Text style={estilos.textoVacio}>{mensajeVacio}</Text>
+            {onAgregar && pestana === 'ACTIVA' ? (
+              <>
+                <Text style={estilos.tituloVacio}>{TITULO_SIN_ACTIVIDADES}</Text>
+                <Text style={estilos.textoVacio}>{MENSAJE_AGREGA_ACTIVIDADES}</Text>
+              </>
+            ) : (
+              <Text style={estilos.textoVacio}>{mensajeVacio}</Text>
+            )}
           </TarjetaFormulario>
         ) : (
           <View style={estilos.lista}>
@@ -122,6 +149,7 @@ export default function PantallaActividadesObra({
           </View>
         )}
       </ScrollView>
+      {onAgregar ? <BotonFlotante etiqueta="Agregar actividad" onPresionar={onAgregar} /> : null}
     </View>
   );
 }
@@ -133,7 +161,8 @@ const estilos = StyleSheet.create({
     backgroundColor: COLORES.pantalla,
   },
   contenido: {
-    paddingBottom: 28,
+    // Deja espacio para que el botón "+" no tape la última tarjeta.
+    paddingBottom: TAMANOS.botonFlotante + 48,
   },
   bloqueTitulo: {
     alignItems: 'center',
@@ -203,6 +232,11 @@ const estilos = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     gap: 8,
+  },
+  tituloVacio: {
+    ...TIPOGRAFIA.titulo4,
+    color: COLORES.texto,
+    textAlign: 'center',
   },
   textoVacio: {
     ...TIPOGRAFIA.leyenda,

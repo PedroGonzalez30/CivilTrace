@@ -101,6 +101,18 @@
       },
       "./src/utilidades/validacionObra.ts": {
         "lines": 60
+      },
+      "./src/utilidades/{validacionActividad,diasRestantes}.ts": {
+        "lines": 60
+      },
+      "./src/servicios/servicioActividades.ts": {
+        "lines": 60
+      },
+      "./src/pantallas/{comunes/PantallaSubirEvidencia,supervisor/PantallaAgregarActividad,supervisor/PantallaRevisarAvance,trabajador/PantallaMisActividades,trabajador/PantallaActividadTrabajador}.tsx": {
+        "lines": 60
+      },
+      "./src/componentes/BotonFlotante.tsx": {
+        "lines": 60
       }
     },
     "setupFilesAfterEnv": [
