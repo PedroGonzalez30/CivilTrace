@@ -8,6 +8,7 @@
  * @version 1.0.0
  * @requerimientos RF-27 Registrar asistencia por el supervisor, RNF-07 Captura sin conexión
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Creación (feature 001)
+ *   24/11/2026 - Emilio Manuel Esquivel - Botón visible "Detalles" (D-26, feature 002)
  */
 
 // 1. Importaciones
@@ -33,6 +34,11 @@ jest.mock('expo-camera', () => {
 });
 jest.mock('@/hooks/useLecturaQr');
 jest.mock('@/servicios/local/servicioEscaneo');
+// La hoja de detalles pide el día a la API; en esta prueba solo importa que se abra.
+jest.mock('@/servicios/servicioDetallesAsistencia', () => ({
+  obtenerDetalleDia: jest.fn(() => new Promise(() => undefined)),
+  editarDetalleDia: jest.fn(),
+}));
 jest.mock('@/servicios/local/servicioUbicacion', () => ({
   obtenerUbicacionRapida: jest.fn(async () => ({ latitud: 32.6245, longitud: -115.4523 })),
 }));
@@ -131,6 +137,15 @@ describe('PantallaLeerQr', () => {
     expect(screen.getByText('Sin registrar')).toBeTruthy();
     await fireEvent.press(screen.getByText('Editar horario de la obra'));
     expect(props.onEditarHorario).toHaveBeenCalled();
+  });
+
+  it('CP21-A40-APP el botón visible "Detalles" abre los detalles del trabajador (D-26)', async () => {
+    simularLectura();
+    await render(enPila(<PantallaLeerQr {...props} />));
+
+    expect(screen.queryByLabelText('Cerrar detalles')).toBeNull();
+    await fireEvent.press(screen.getByLabelText('Detalles de asistencia de Luis Pérez'));
+    expect(screen.getByLabelText('Cerrar detalles')).toBeTruthy();
   });
 
   it('CP21-A30-APP sin conexión avisa los pendientes y los rechazados', async () => {
