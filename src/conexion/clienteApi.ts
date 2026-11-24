@@ -4,7 +4,8 @@
  * @descripcion Cliente HTTP genérico para hablar con la API de Civil Trace.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 16/11/2026
- * @version 1.0.0
+ * @version 1.1.0
+ * @historial 23/11/2026 - Emilio Manuel Esquivel - ErrorSinConexion, motivo y PATCH (feature 001)
  */
 
 // 1. Importaciones
@@ -12,7 +13,7 @@ import { TIEMPO_ESPERA_API_MS, URL_API } from '@/conexion/configuracionApi';
 
 // 2. Tipos e interfaces
 interface OpcionesLlamada {
-  metodo?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  metodo?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   cuerpo?: unknown;
   // Para subir un archivo tal cual (por ejemplo una foto); no se combina con "cuerpo".
   cuerpoBinario?: { datos: Blob; tipo: string };
@@ -32,11 +33,25 @@ const MENSAJE_INESPERADO = 'Ocurrió un error inesperado';
  */
 export class ErrorApi extends Error {
   readonly estado: number | null;
+  // Clave estable que manda la API en algunos errores (por ejemplo "NO_ASIGNADO").
+  readonly motivo: string | null;
 
-  constructor(mensaje: string, estado: number | null) {
+  constructor(mensaje: string, estado: number | null, motivo: string | null = null) {
     super(mensaje);
     this.name = 'ErrorApi';
     this.estado = estado;
+    this.motivo = motivo;
+  }
+}
+
+/**
+ * No hubo respuesta del servidor (sin internet, servidor apagado o tiempo agotado). Se distingue
+ * para que asistencia pueda trabajar sin conexión (RNF-07).
+ */
+export class ErrorSinConexion extends ErrorApi {
+  constructor() {
+    super(MENSAJE_SIN_CONEXION, null);
+    this.name = 'ErrorSinConexion';
   }
 }
 
@@ -46,6 +61,13 @@ function leerJson(texto: string): unknown {
   } catch {
     return null;
   }
+}
+
+function leerMotivo(datos: unknown): string | null {
+  if (typeof datos === 'object' && datos !== null && 'motivo' in datos) {
+    return typeof datos.motivo === 'string' ? datos.motivo : null;
+  }
+  return null;
 }
 
 function leerMensaje(datos: unknown): string {
@@ -100,14 +122,14 @@ export async function llamarApi(ruta: string, opciones: OpcionesLlamada = {}): P
 
     const datos = leerJson(await respuesta.text());
     if (!respuesta.ok) {
-      throw new ErrorApi(leerMensaje(datos), respuesta.status);
+      throw new ErrorApi(leerMensaje(datos), respuesta.status, leerMotivo(datos));
     }
     return datos;
   } catch (error) {
     if (error instanceof ErrorApi) {
       throw error;
     }
-    throw new ErrorApi(MENSAJE_SIN_CONEXION, null);
+    throw new ErrorSinConexion();
   } finally {
     clearTimeout(temporizador);
   }
