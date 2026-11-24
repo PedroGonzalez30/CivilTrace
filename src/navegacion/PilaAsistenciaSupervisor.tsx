@@ -13,10 +13,10 @@
 // 1. Importaciones
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import MarcadorPantalla from '@/componentes/MarcadorPantalla';
 import { COLORES } from '@/constantes/colores';
 import PantallaConfirmarQr from '@/pantallas/supervisor/PantallaConfirmarQr';
 import PantallaEscogerObra from '@/pantallas/supervisor/PantallaEscogerObra';
+import PantallaHorarioObra from '@/pantallas/supervisor/PantallaHorarioObra';
 import PantallaLeerQr from '@/pantallas/supervisor/PantallaLeerQr';
 import PantallaRechazados from '@/pantallas/supervisor/PantallaRechazados';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
@@ -71,7 +71,15 @@ export default function PilaAsistenciaSupervisor({ sesion }: PilaAsistenciaSuper
         )}
       </Pila.Screen>
       <Pila.Screen name="HorarioObra">
-        {() => <MarcadorPantalla titulo="Horario de la obra" mensaje="Próximamente" />}
+        {({ navigation, route }) => (
+          <PantallaHorarioObra
+            sesion={sesion}
+            obraId={route.params.obraId}
+            obraNombre={route.params.obraNombre}
+            onRegresar={() => navigation.goBack()}
+            onGuardado={() => navigation.goBack()}
+          />
+        )}
       </Pila.Screen>
       <Pila.Screen name="Rechazados">
         {({ navigation, route }) => (

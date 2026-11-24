@@ -126,12 +126,12 @@ description: 'Tareas del feature 001 en la app móvil: asistencia con QR, horari
 
 **Goal**: `SUP_HorarioObra` (2272:170) con guardado (D-06).
 
-- [ ] T027 [P] [US3] Escribir primero `__tests__/PantallaHorarioObra-test.tsx`:
+- [x] T027 [P] [US3] Escribir primero `__tests__/PantallaHorarioObra-test.tsx`:
   - `CP22-A1-APP`: el texto de la regla cambia con la tolerancia; una salida antes de la entrada o sin días laborales muestra el error y no llama a la API;
   - los valores por defecto cuando `general` es `null`;
   - sin conexión aparece "Necesitas conexión para guardar el horario".
-- [ ] T028 [P] [US3] Implementar `src/servicios/servicioHorario.ts` (`obtenerHorario` y `guardarHorario`) y `src/hooks/useHorarioObra.ts`.
-- [ ] T029 [US3] Implementar `src/pantallas/supervisor/PantallaHorarioObra.tsx`: selectores de hora, chips de tolerancia, días L a D y el segmento "Todos los días / Solo hoy". Al guardar, regresa y actualiza la lectura de QR y el paquete.
+- [x] T028 [P] [US3] Implementar `src/servicios/servicioHorario.ts` (`obtenerHorario` y `guardarHorario`) y `src/hooks/useHorarioObra.ts`.
+- [x] T029 [US3] Implementar `src/pantallas/supervisor/PantallaHorarioObra.tsx`: selectores de hora, chips de tolerancia, días L a D y el segmento "Todos los días / Solo hoy". Al guardar, regresa y actualiza la lectura de QR y el paquete.
 
 ---
 
