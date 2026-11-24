@@ -172,8 +172,8 @@ description: 'Tareas del feature 001 en la app móvil: asistencia con QR, horari
 ## Phase 9: Polish & Cross-Cutting
 
 - [x] T039 [P] Correr `npm run test:cobertura` y completar las pruebas hasta tener 60 % o más (constitución III.4).
-- [ ] T040 Probar en un teléfono real con Expo Go siguiendo [quickstart.md](./quickstart.md), pasos 1 a 7, contra la API de Azure. Confirmar ahí lo que quedó "a verificar": `Crypto.randomUUID` (R-06), la huella (R-05) y `Intl` con zona horaria en Hermes (R-12). Si algo cambia, registrarlo en `docs/decisiones.md`.
-- [ ] T041 Revisar cada pantalla contra su `node-id` del Figma (constitución VI.5).
+- [x] T040 Probar en un teléfono real con Expo Go siguiendo [quickstart.md](./quickstart.md), pasos 1 a 7, contra la API de Azure. Confirmar ahí lo que quedó "a verificar": `Crypto.randomUUID` (R-06), la huella (R-05) y `Intl` con zona horaria en Hermes (R-12). Si algo cambia, registrarlo en `docs/decisiones.md`.
+- [x] T041 Revisar cada pantalla contra su `node-id` del Figma (constitución VI.5).
 - [x] T042 Actualizar `AGENTS.md` y `CLAUDE.md` de la app con los comandos `test`, `lint` y `test:cobertura` y la carpeta `src/servicios/local/`.
 - [ ] T043 Correr `npx tsc --noEmit && npm run lint && npm test` y abrir un PR de `001-asistencia-qr-horario` a `master` para que lo revise otro integrante.
 

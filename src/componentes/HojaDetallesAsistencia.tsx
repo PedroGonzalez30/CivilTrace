@@ -6,7 +6,8 @@
  *   mantener presionado a un trabajador en el resumen del día.
  * @autor Emilio Manuel Esquivel
  * @fecha 23/11/2026
- * @version 1.0.0
+ * @version 1.1.0
+ * @historial 23/11/2026 - Emilio Manuel Esquivel - El teclado ya no tapa las anotaciones
  * @requerimientos RF-60 Registrar retardo o salida anticipada, D-07
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Creación (feature 001)
  */
@@ -15,6 +16,7 @@
 import { useState } from 'react';
 import {
   ActivityIndicator,
+  KeyboardAvoidingView,
   Modal,
   Pressable,
   ScrollView,
@@ -93,126 +95,134 @@ export default function HojaDetallesAsistencia(props: HojaDetallesAsistenciaProp
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onCerrar}>
-      <Pressable style={estilos.fondo} onPress={onCerrar} accessibilityLabel="Cerrar detalles" />
-      <View style={estilos.hoja}>
-        <View style={estilos.agarradera} />
-        {!detalle || !formulario ? (
-          error ? (
-            <Text style={estilos.error}>{error}</Text>
+      {/* Sube la hoja sobre el teclado al escribir las anotaciones. */}
+      <KeyboardAvoidingView style={estilos.teclado} behavior="padding">
+        <Pressable style={estilos.fondo} onPress={onCerrar} accessibilityLabel="Cerrar detalles" />
+        <View style={estilos.hoja}>
+          <View style={estilos.agarradera} />
+          {!detalle || !formulario ? (
+            error ? (
+              <Text style={estilos.error}>{error}</Text>
+            ) : (
+              <ActivityIndicator color={COLORES_ASISTENCIA.azul} />
+            )
           ) : (
-            <ActivityIndicator color={COLORES_ASISTENCIA.azul} />
-          )
-        ) : (
-          <ScrollView contentContainerStyle={estilos.contenido}>
-            <View style={estilos.cabecera}>
-              <View style={estilos.avatar}>
-                <Text style={estilos.iniciales}>{obtenerIniciales(detalle.trabajador.nombre)}</Text>
-              </View>
-              <View style={estilos.datos}>
-                <Text style={estilos.nombre}>{detalle.trabajador.nombre}</Text>
-                <Text style={estilos.subtitulo}>
-                  {[detalle.trabajador.oficio, detalle.obra.nombre, `${dia}/${mes}/${anio}`]
-                    .filter(Boolean)
-                    .join(' · ')}
-                </Text>
-              </View>
-              <Pressable
-                style={estilos.botonCalendario}
-                onPress={onVerCalendario}
-                accessibilityLabel="Ver calendario de asistencia"
-              >
-                <IconoCalendario color={COLORES_ASISTENCIA.azul} />
-              </Pressable>
-            </View>
-
-            <View style={estilos.horas}>
-              <Text style={estilos.textoHoras}>
-                Entrada {textoHora(formulario.horaEntrada)} · Salida{' '}
-                {textoHora(formulario.horaSalida)}
-              </Text>
-              <Pressable onPress={() => setEditandoHoras((previo) => !previo)}>
-                <Text style={estilos.enlace}>Editar horas</Text>
-              </Pressable>
-            </View>
-            {editandoHoras ? (
-              <View style={estilos.filaHoras}>
-                <SelectorHora
-                  etiqueta="Entrada"
-                  valor={formulario.horaEntrada}
-                  onCambiar={(hora) => cambiar({ horaEntrada: hora })}
-                />
-                <SelectorHora
-                  etiqueta="Salida"
-                  valor={formulario.horaSalida}
-                  onCambiar={(hora) => cambiar({ horaSalida: hora })}
-                />
-              </View>
-            ) : null}
-
-            <Text style={estilos.seccion}>Tipo de jornada</Text>
-            <Chips
-              opciones={TIPOS}
-              etiquetas={ETIQUETAS_TIPO_JORNADA}
-              grupo="Tipo de jornada"
-              seleccion={formulario.tipoJornada}
-              onElegir={(tipoJornada) => cambiar({ tipoJornada })}
-            />
-            <Text style={estilos.seccion}>Motivo</Text>
-            <Chips
-              opciones={MOTIVOS}
-              etiquetas={ETIQUETAS_MOTIVO}
-              grupo="Motivo"
-              seleccion={formulario.motivo}
-              // Tocar el motivo elegido lo quita: el motivo es opcional.
-              onElegir={(motivo) =>
-                cambiar({ motivo: motivo === formulario.motivo ? null : motivo })
-              }
-            />
-            <Text style={estilos.seccion}>Efecto en el pago</Text>
-            <View style={estilos.segmento}>
-              {EFECTOS.map((efecto) => (
-                <Pressable
-                  key={efecto}
-                  style={[
-                    estilos.opcionSegmento,
-                    formulario.efectoPago === efecto && estilos.opcionActiva,
-                  ]}
-                  onPress={() => cambiar({ efectoPago: efecto })}
-                >
-                  <Text
-                    style={[
-                      estilos.textoSegmento,
-                      formulario.efectoPago === efecto && estilos.textoActivo,
-                    ]}
-                  >
-                    {ETIQUETAS_EFECTO_PAGO[efecto]}
+            <ScrollView
+              contentContainerStyle={estilos.contenido}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={estilos.cabecera}>
+                <View style={estilos.avatar}>
+                  <Text style={estilos.iniciales}>
+                    {obtenerIniciales(detalle.trabajador.nombre)}
                   </Text>
+                </View>
+                <View style={estilos.datos}>
+                  <Text style={estilos.nombre}>{detalle.trabajador.nombre}</Text>
+                  <Text style={estilos.subtitulo}>
+                    {[detalle.trabajador.oficio, detalle.obra.nombre, `${dia}/${mes}/${anio}`]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </Text>
+                </View>
+                <Pressable
+                  style={estilos.botonCalendario}
+                  onPress={onVerCalendario}
+                  accessibilityLabel="Ver calendario de asistencia"
+                >
+                  <IconoCalendario color={COLORES_ASISTENCIA.azul} />
                 </Pressable>
-              ))}
-            </View>
-            <Text style={estilos.seccion}>Anotaciones</Text>
-            <TextInput
-              style={estilos.anotacion}
-              value={formulario.anotacion}
-              onChangeText={(anotacion) => cambiar({ anotacion })}
-              multiline
-              accessibilityLabel="Anotaciones"
-              placeholder="Escribe una observación"
-              placeholderTextColor={COLORES.marcador}
-            />
-            <Text style={estilos.nota}>
-              Se guarda quién hizo el cambio, la fecha, la hora y el valor anterior.
-            </Text>
-            {error ? <Text style={estilos.error}>{error}</Text> : null}
-            <BotonPrincipal
-              etiqueta="Guardar detalles"
-              estaCargando={guardando}
-              onPresionar={() => void manejarGuardar()}
-              estilo={estilos.boton}
-            />
-          </ScrollView>
-        )}
-      </View>
+              </View>
+
+              <View style={estilos.horas}>
+                <Text style={estilos.textoHoras}>
+                  Entrada {textoHora(formulario.horaEntrada)} · Salida{' '}
+                  {textoHora(formulario.horaSalida)}
+                </Text>
+                <Pressable onPress={() => setEditandoHoras((previo) => !previo)}>
+                  <Text style={estilos.enlace}>Editar horas</Text>
+                </Pressable>
+              </View>
+              {editandoHoras ? (
+                <View style={estilos.filaHoras}>
+                  <SelectorHora
+                    etiqueta="Entrada"
+                    valor={formulario.horaEntrada}
+                    onCambiar={(hora) => cambiar({ horaEntrada: hora })}
+                  />
+                  <SelectorHora
+                    etiqueta="Salida"
+                    valor={formulario.horaSalida}
+                    onCambiar={(hora) => cambiar({ horaSalida: hora })}
+                  />
+                </View>
+              ) : null}
+
+              <Text style={estilos.seccion}>Tipo de jornada</Text>
+              <Chips
+                opciones={TIPOS}
+                etiquetas={ETIQUETAS_TIPO_JORNADA}
+                grupo="Tipo de jornada"
+                seleccion={formulario.tipoJornada}
+                onElegir={(tipoJornada) => cambiar({ tipoJornada })}
+              />
+              <Text style={estilos.seccion}>Motivo</Text>
+              <Chips
+                opciones={MOTIVOS}
+                etiquetas={ETIQUETAS_MOTIVO}
+                grupo="Motivo"
+                seleccion={formulario.motivo}
+                // Tocar el motivo elegido lo quita: el motivo es opcional.
+                onElegir={(motivo) =>
+                  cambiar({ motivo: motivo === formulario.motivo ? null : motivo })
+                }
+              />
+              <Text style={estilos.seccion}>Efecto en el pago</Text>
+              <View style={estilos.segmento}>
+                {EFECTOS.map((efecto) => (
+                  <Pressable
+                    key={efecto}
+                    style={[
+                      estilos.opcionSegmento,
+                      formulario.efectoPago === efecto && estilos.opcionActiva,
+                    ]}
+                    onPress={() => cambiar({ efectoPago: efecto })}
+                  >
+                    <Text
+                      style={[
+                        estilos.textoSegmento,
+                        formulario.efectoPago === efecto && estilos.textoActivo,
+                      ]}
+                    >
+                      {ETIQUETAS_EFECTO_PAGO[efecto]}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+              <Text style={estilos.seccion}>Anotaciones</Text>
+              <TextInput
+                style={estilos.anotacion}
+                value={formulario.anotacion}
+                onChangeText={(anotacion) => cambiar({ anotacion })}
+                multiline
+                accessibilityLabel="Anotaciones"
+                placeholder="Escribe una observación"
+                placeholderTextColor={COLORES.marcador}
+              />
+              <Text style={estilos.nota}>
+                Se guarda quién hizo el cambio, la fecha, la hora y el valor anterior.
+              </Text>
+              {error ? <Text style={estilos.error}>{error}</Text> : null}
+              <BotonPrincipal
+                etiqueta="Guardar detalles"
+                estaCargando={guardando}
+                onPresionar={() => void manejarGuardar()}
+                estilo={estilos.boton}
+              />
+            </ScrollView>
+          )}
+        </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -254,6 +264,7 @@ function Chips<T extends string>({
 
 // 5. Estilos
 const estilos = StyleSheet.create({
+  teclado: { flex: 1 },
   fondo: { flex: 1, backgroundColor: COLORES_ASISTENCIA.fondoOscuro },
   hoja: {
     backgroundColor: COLORES.superficie,
