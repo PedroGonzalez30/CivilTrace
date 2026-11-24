@@ -92,6 +92,15 @@
       },
       "./src/conexion/clienteApi.ts": {
         "lines": 60
+      },
+      "./src/componentes/{SeccionCodigoTrabajadores,ProveedorLogoEmpresa,NavegacionInferior,EncabezadoApp,TarjetaCodigoAcceso}.tsx": {
+        "lines": 60
+      },
+      "./src/hooks/use{TecladoVisible,LogoEmpresa}.ts": {
+        "lines": 60
+      },
+      "./src/utilidades/validacionObra.ts": {
+        "lines": 60
       }
     },
     "setupFilesAfterEnv": [
