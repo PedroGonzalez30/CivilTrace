@@ -5,19 +5,23 @@
  *              personales, foto, cambio de contraseña y cierre de sesión.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
- * @version 2.0.0
+ * @version 2.1.0
+ * @historial 23/11/2026 - Emilio Manuel Esquivel - El teclado ya no tapa los campos (campo Oficio, feature 001)
  */
 
 // 1. Importaciones
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-
 import {
-  BotonPrincipal,
-  EncabezadoApp,
-  EncabezadoPantalla,
-  FormularioPerfil,
-} from '@/componentes';
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+
+import { BotonPrincipal, EncabezadoApp, EncabezadoPantalla, FormularioPerfil } from '@/componentes';
 import { ErrorApi } from '@/conexion/clienteApi';
 import { COLORES } from '@/constantes/colores';
 import { TIPOGRAFIA } from '@/constantes/tema';
@@ -70,40 +74,44 @@ export default function PantallaMiPerfil({ sesion, onCerrarSesion }: PantallaMiP
   return (
     <View style={estilos.contenedor}>
       <EncabezadoApp />
-      <ScrollView
-        contentContainerStyle={estilos.contenido}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <EncabezadoPantalla titulo={TEXTOS.titulo} subtitulo={TEXTOS.subtitulo} />
-        {perfil ? (
-          <FormularioPerfil
-            sesion={sesion}
-            perfil={perfil}
-            onCambiarContrasena={() => setEsCambioVisible(true)}
+      {/* En Android de borde a borde el sistema ya no sube la pantalla: se hace aquí. */}
+      <KeyboardAvoidingView style={estilos.teclado} behavior="padding">
+        <ScrollView
+          contentContainerStyle={estilos.contenido}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <EncabezadoPantalla titulo={TEXTOS.titulo} subtitulo={TEXTOS.subtitulo} />
+          {perfil ? (
+            <FormularioPerfil
+              sesion={sesion}
+              perfil={perfil}
+              onCambiarContrasena={() => setEsCambioVisible(true)}
+            />
+          ) : error ? (
+            <View style={estilos.centro}>
+              <Text style={estilos.error}>{error}</Text>
+              <Pressable onPress={() => setIntento((anterior) => anterior + 1)}>
+                <Text style={estilos.reintentar}>{TEXTOS.reintentar}</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <ActivityIndicator color={COLORES.marca} />
+          )}
+          <BotonPrincipal
+            etiqueta={TEXTOS.etiquetaCerrarSesion}
+            variante="contorno"
+            onPresionar={onCerrarSesion}
           />
-        ) : error ? (
-          <View style={estilos.centro}>
-            <Text style={estilos.error}>{error}</Text>
-            <Pressable onPress={() => setIntento((anterior) => anterior + 1)}>
-              <Text style={estilos.reintentar}>{TEXTOS.reintentar}</Text>
-            </Pressable>
-          </View>
-        ) : (
-          <ActivityIndicator color={COLORES.marca} />
-        )}
-        <BotonPrincipal
-          etiqueta={TEXTOS.etiquetaCerrarSesion}
-          variante="contorno"
-          onPresionar={onCerrarSesion}
-        />
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 }
 
 // 5. Estilos
 const estilos = StyleSheet.create({
+  teclado: { flex: 1 },
   contenedor: {
     flex: 1,
     backgroundColor: COLORES.pantalla,

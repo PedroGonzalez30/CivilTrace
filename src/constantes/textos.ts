@@ -4,7 +4,8 @@
  * @descripcion Textos fijos de las pantallas de inicio de sesión y registro.
  * @autor POR_COMPLETAR
  * @fecha POR_COMPLETAR
- * @version 1.0.0
+ * @version 1.1.0
+ * @historial 23/11/2026 - Emilio Manuel Esquivel - Oficio del perfil (D-18, feature 001)
  */
 
 export const TEXTOS_INICIO_SESION = {
@@ -117,6 +118,8 @@ export const TEXTOS_PERFIL = {
   etiquetaCorreo: 'Correo electrónico',
   etiquetaTelefono: 'Teléfono (opcional)',
   marcadorTelefono: '+52 55 1234 5678',
+  etiquetaOficio: 'Oficio (opcional)',
+  marcadorOficio: 'Plomero',
   etiquetaRol: 'Rol de cuenta',
   noEditable: 'No editable',
   cambiarContrasena: 'Cambiar contraseña',
@@ -134,14 +137,17 @@ export const TEXTOS_CODIGOS_ACCESO = {
     'Comparte cada código con supervisores o trabajadores para que accedan a la información ' +
     'de la empresa. Los códigos se mantendrán vigentes hasta que se regeneren',
   tituloSupervisor: 'Código del supervisor',
-  descripcionSupervisor: 'Solo tú, como dueño, puedes regenerarlo. El código del trabajador no cambia.',
+  descripcionSupervisor:
+    'Solo tú, como dueño, puedes regenerarlo. El código del trabajador no cambia.',
   tituloTrabajador: 'Código del trabajador',
-  descripcionTrabajador: 'Solo tú, como dueño, puedes regenerarlo. El código del supervisor no cambia.',
+  descripcionTrabajador:
+    'Solo tú, como dueño, puedes regenerarlo. El código del supervisor no cambia.',
   regenerar: 'Regenerar código',
   codigoCopiado: 'Código copiado',
   codigoCambiado: 'Código cambiado correctamente',
   confirmarTitulo: '¿Seguro de que quieres cambiar el código de ingreso?',
-  confirmarDescripcion: 'Si cambias el código los trabajadores ya no podrán acceder con el anterior.',
+  confirmarDescripcion:
+    'Si cambias el código los trabajadores ya no podrán acceder con el anterior.',
   errorRegenerar: 'No se pudo cambiar el código. Intente de nuevo',
   errorCopiar: 'No se pudo copiar el código',
   reintentar: 'Reintentar',

@@ -46,11 +46,7 @@ export default function TarjetaObra({ obra, onPresionar }: TarjetaObraProps) {
             etiqueta="Fecha de inicio"
             valor={obra.fechaInicio}
           />
-          <CampoEtiquetado
-            estilo={estilos.fecha}
-            etiqueta="Fecha de fin"
-            valor={obra.fechaFinal}
-          />
+          <CampoEtiquetado estilo={estilos.fecha} etiqueta="Fecha de fin" valor={obra.fechaFinal} />
         </View>
       </TarjetaFormulario>
     </Pressable>

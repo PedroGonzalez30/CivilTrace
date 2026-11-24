@@ -76,7 +76,11 @@ function aPersonas(valor: unknown): PersonaEmpresa[] {
     throw new ErrorApi(MENSAJE_RESPUESTA_INVALIDA, null);
   }
   return valor.map((elemento: unknown) => {
-    if (!esObjeto(elemento) || typeof elemento.id !== 'string' || typeof elemento.nombre !== 'string') {
+    if (
+      !esObjeto(elemento) ||
+      typeof elemento.id !== 'string' ||
+      typeof elemento.nombre !== 'string'
+    ) {
       throw new ErrorApi(MENSAJE_RESPUESTA_INVALIDA, null);
     }
     return { id: elemento.id, nombre: elemento.nombre };
@@ -134,7 +138,11 @@ function aTexto(valor: unknown): string {
 
 function aDatosEmpresa(respuesta: unknown): DatosEmpresa {
   const datos = esObjeto(respuesta) ? respuesta.datos : null;
-  if (!esObjeto(datos) || typeof datos.nombre !== 'string' || typeof datos.tieneLogo !== 'boolean') {
+  if (
+    !esObjeto(datos) ||
+    typeof datos.nombre !== 'string' ||
+    typeof datos.tieneLogo !== 'boolean'
+  ) {
     throw new ErrorApi(MENSAJE_RESPUESTA_INVALIDA, null);
   }
   return {

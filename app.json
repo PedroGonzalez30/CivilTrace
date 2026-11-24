@@ -24,7 +24,21 @@
     "plugins": [
       "expo-sharing",
       "expo-font",
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-sqlite",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Civil Trace usa la cámara para escanear el QR de asistencia y tomar fotos de evidencia.",
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Civil Trace guarda la ubicación de cada registro de asistencia y de cada evidencia."
+        }
+      ]
     ]
   }
 }

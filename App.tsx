@@ -4,7 +4,8 @@
  * @descripcion Componente raíz: carga las fuentes, restaura la sesión y muestra la navegación.
  * @autor POR_COMPLETAR
  * @fecha POR_COMPLETAR
- * @version 1.0.0
+ * @version 1.1.0
+ * @historial 23/11/2026 - Emilio Manuel Esquivel - Configura la base local de asistencia (feature 001)
  */
 
 // 1. Importaciones
@@ -21,12 +22,16 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { ErrorApi } from '@/conexion/clienteApi';
 import NavegadorRaiz from '@/navegacion/NavegadorRaiz';
+import { configurarBaseLocal } from '@/servicios/local/baseLocal';
 import { cerrarSesionRemota, refrescarSesion } from '@/servicios/servicioAutenticacion';
 import { guardarSesion, limpiarSesion, restaurarSesion } from '@/servicios/servicioSesion';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
 
 // 3. Constantes del módulo
 const CODIGO_NO_AUTORIZADO = 401;
+
+// La base SQLite de asistencia se abre la primera vez que se usa (escaneos sin conexión).
+configurarBaseLocal();
 // Si al token de acceso le queda menos que esto, se renueva antes de usarlo.
 const MARGEN_RENOVACION_MS = 60 * 1000;
 

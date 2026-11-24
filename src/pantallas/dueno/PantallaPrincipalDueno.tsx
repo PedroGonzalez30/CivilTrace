@@ -46,10 +46,10 @@ const TAMANO_ICONO_BOTON_FLOTANTE = 24;
 const DURACION_AVISO_COPIADO_MS = 2000;
 
 // TODO(Equipo): conectar la lógica real de estas acciones.
-const manejarCompartirCodigoAcceso = () => { };
+const manejarCompartirCodigoAcceso = () => {};
 
 // TODO(Equipo): abrir la pantalla de datos de la empresa.
-const manejarDatosEmpresa = () => { };
+const manejarDatosEmpresa = () => {};
 
 // 4. Componente principal
 export default function PantallaPrincipalDueno({
@@ -95,7 +95,7 @@ export default function PantallaPrincipalDueno({
 
   return (
     <View style={estilos.contenedor}>
-      <EncabezadoApp  />
+      <EncabezadoApp />
       {estaVacio ? (
         <ScrollView contentContainerStyle={estilos.contenidoVacio}>
           <Text style={estilos.tituloBienvenida}>Bienvenido a {nombreMostrado}</Text>

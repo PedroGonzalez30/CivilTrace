@@ -55,7 +55,8 @@ export default function ModalEliminarPersonal({
             <Text style={estilos.textoCerrar}>X</Text>
           </Pressable>
           <Text style={estilos.titulo}>{titulo}</Text>
-          <Text style={estilos.descripcion}>{descripcion}</Text>          <View style={estilos.botones}>
+          <Text style={estilos.descripcion}>{descripcion}</Text>{' '}
+          <View style={estilos.botones}>
             <BotonPrincipal
               etiqueta={TEXTOS_ELIMINAR_PERSONAL.cancelar}
               variante="contorno"

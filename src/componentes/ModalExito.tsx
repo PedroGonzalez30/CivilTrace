@@ -43,7 +43,12 @@ export default function ModalExito({
     >
       <BlurView intensity={TAMANOS.desenfoque} tint="light" style={StyleSheet.absoluteFill} />
       <View style={estilos.tarjeta}>
-        <Pressable accessibilityLabel="Cerrar" style={estilos.cerrar} onPress={onCerrar} hitSlop={12}>
+        <Pressable
+          accessibilityLabel="Cerrar"
+          style={estilos.cerrar}
+          onPress={onCerrar}
+          hitSlop={12}
+        >
           <Text style={estilos.textoCerrar}>X</Text>
         </Pressable>
         <Text style={estilos.titulo}>{titulo}</Text>

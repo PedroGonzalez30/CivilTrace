@@ -46,7 +46,9 @@ export function convertirFechaLocalAIso(fechaLocal: string): string | null {
   // Date corrige fechas imposibles (31/02 pasa a marzo); si cambió, la fecha no existe.
   const fecha = new Date(Date.UTC(anio, mes - 1, dia));
   const esFechaReal =
-    fecha.getUTCFullYear() === anio && fecha.getUTCMonth() === mes - 1 && fecha.getUTCDate() === dia;
+    fecha.getUTCFullYear() === anio &&
+    fecha.getUTCMonth() === mes - 1 &&
+    fecha.getUTCDate() === dia;
 
   return esFechaReal ? `${textoAnio}-${textoMes}-${textoDia}` : null;
 }

@@ -97,7 +97,9 @@ export default function PantallaDetalleActividad({
 
   const esTerminada = detalle?.estado === 'TERMINADA';
   const subtitulo = esTerminada ? SUBTITULO_TERMINADA : SUBTITULO_ACTIVA;
-  const estadoAvance = detalle ? etiquetaEstadoAvance(detalle.avances[0]?.estado ?? 'APROBADO') : null;
+  const estadoAvance = detalle
+    ? etiquetaEstadoAvance(detalle.avances[0]?.estado ?? 'APROBADO')
+    : null;
 
   return (
     <View style={estilos.contenedor}>
