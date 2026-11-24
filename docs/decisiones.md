@@ -42,12 +42,13 @@ preguntar. Las nuevas decisiones se agregan al final con fecha.
 | T-08 | 23/11/2026 | Las pruebas usan una base PostgreSQL aparte (`baseDatosPruebas` en `docker-compose`, puerto 5434, en memoria). Se preparan con `prisma migrate deploy` y se vacían con TRUNCATE entre archivos; no se usa `migrate reset`. |
 | T-09 | 23/11/2026 | La foto del trabajador en asistencia se sirve **a través de la API** (`GET /obras/:obraId/asistencia/trabajadores/:id/foto`), igual que `GET /perfil/foto`, en lugar de URL SAS. |
 | T-10 | 23/11/2026 | El workflow de la API tiene un job `calidad` (tipos, lint, formato y pruebas con PostgreSQL de servicio) que corre en cada PR y antes de desplegar; si falla, no se despliega. El build de producción ya no corre `npm run test` (usaba `--omit=dev`). |
+| T-11 | 23/11/2026 | `Actividad`, `AvanceActividad` y los datos de empresa estaban en `schema.prisma` sin migración versionada (solo había una vacía en `migraciones.zip`). Se versionaron en `20261120101700_actividades_y_datos_empresa` y se restauró `20261120101600_actividades`. Desde ahora todo cambio de esquema va con su migración en el repo; no usar `prisma db push` contra Azure. |
 
 ## Pendientes de confirmar
 
 | # | Tema |
 |---|---|
-| P-05 | Antes de unir el feature 001 a `main`: aplicar la migración `asistencia_qr_horario` a la base de Azure (`prisma migrate deploy`). El workflow no aplica migraciones; sin ella, `GET /perfil` y la asistencia fallan en producción. |
+| P-05 | Antes de unir el feature 001 a `main`, en la base de Azure: (1) `prisma migrate status`; (2) marcar como aplicadas `20261120101600_actividades` (si aparece pendiente) y `20261120101700_actividades_y_datos_empresa` con `prisma migrate resolve --applied`, porque esas tablas ya existen allá; (3) `prisma migrate deploy` para crear lo de asistencia. Es solo aditiva. |
 
 ## Resueltas
 
