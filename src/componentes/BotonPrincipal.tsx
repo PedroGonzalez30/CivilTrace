@@ -4,7 +4,8 @@
  * @descripcion Botón reutilizable con variantes principal, contorno y marca, y estado de carga.
  * @autor POR_COMPLETAR
  * @fecha POR_COMPLETAR
- * @version 1.0.0
+ * @version 1.1.0
+ * @historial 23/11/2026 - Emilio Manuel Esquivel - Prop deshabilitado (la usaba Reportes sin existir)
  */
 
 // 1. Importaciones
@@ -26,6 +27,8 @@ interface BotonPrincipalProps {
   onPresionar?: () => void;
   variante?: 'principal' | 'contorno' | 'marca';
   estaCargando?: boolean;
+  // Desactiva el botón sin mostrar el indicador de carga.
+  deshabilitado?: boolean;
   estilo?: StyleProp<ViewStyle>;
 }
 
@@ -35,6 +38,7 @@ export default function BotonPrincipal({
   onPresionar,
   variante = 'principal',
   estaCargando = false,
+  deshabilitado = false,
   estilo,
 }: BotonPrincipalProps) {
   const colorContenido = variante === 'contorno' ? COLORES.primario : COLORES.superficie;
@@ -49,8 +53,8 @@ export default function BotonPrincipal({
   return (
     <Pressable
       onPress={onPresionar}
-      disabled={estaCargando}
-      style={[estilos.base, estiloVariante, estilo]}
+      disabled={estaCargando || deshabilitado}
+      style={[estilos.base, estiloVariante, deshabilitado && estilos.deshabilitado, estilo]}
     >
       {estaCargando ? (
         <ActivityIndicator color={colorContenido} />
@@ -87,5 +91,8 @@ const estilos = StyleSheet.create({
   },
   etiquetaPequena: {
     ...TIPOGRAFIA.botonPequeno,
+  },
+  deshabilitado: {
+    opacity: 0.5,
   },
 });
