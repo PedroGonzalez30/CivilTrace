@@ -5,12 +5,15 @@
  *              trabajadores; al terminar muestra el modal de confirmación.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 16/11/2026
- * @version 1.2.0
+ * @version 1.3.0
+ * @historial 24/11/2026 - Emilio Manuel Esquivel - Aviso si no salió el enlace del portal
+ *   (feature 004, RF-65 Enviar enlace del portal al cliente)
  */
 
 // 1. Importaciones
 import { useState } from 'react';
 import {
+  Alert,
   type KeyboardTypeOptions,
   KeyboardAvoidingView,
   Pressable,
@@ -36,6 +39,7 @@ import { COLORES } from '@/constantes/colores';
 import { TIPOGRAFIA } from '@/constantes/tema';
 import { TEXTOS_AGREGAR_OBRA } from '@/constantes/textos';
 import { usePersonalEmpresa } from '@/hooks/usePersonalEmpresa';
+import type { ResultadoEnlacePortal } from '@/tipos/entrega';
 import type { DatosNuevaObra } from '@/tipos/obra';
 import { aplicarMascaraFecha } from '@/utilidades/formatearFecha';
 import { type ErroresObra, validarObra } from '@/utilidades/validacionObra';
@@ -43,7 +47,8 @@ import { type ErroresObra, validarObra } from '@/utilidades/validacionObra';
 // 2. Tipos e interfaces
 interface PantallaAgregarObraProps {
   tokenAcceso: string;
-  onAgregar: (datos: DatosNuevaObra) => Promise<void>;
+  // Devuelve si salió el correo con el enlace del portal del cliente (RF-65, feature 004).
+  onAgregar: (datos: DatosNuevaObra) => Promise<ResultadoEnlacePortal | null | void>;
   onIrAlPanelPrincipal: () => void;
 }
 
@@ -168,8 +173,14 @@ export default function PantallaAgregarObra({
     setEstaEnviando(true);
     setMensajeError(null);
     try {
-      await onAgregar(valores);
+      const enlacePortal = await onAgregar(valores);
       setEsModalVisible(true);
+      if (enlacePortal === 'FALLIDO') {
+        Alert.alert(
+          'Obra creada',
+          'No se pudo enviar al cliente el enlace del portal. Puedes reenviarlo desde el detalle de la obra.',
+        );
+      }
     } catch (error) {
       // Los mensajes de ErrorApi ya vienen en español; cualquier otro error es genérico.
       setMensajeError(error instanceof ErrorApi ? error.message : TEXTOS_AGREGAR_OBRA.errorEnvio);

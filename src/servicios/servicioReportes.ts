@@ -34,7 +34,7 @@ export interface AvanceReporte extends Omit<
 
 export interface ActividadReporte extends Omit<
   ActividadDetalle,
-  'avances' | 'descripcion' | 'fechaInicio' | 'responsableId' | 'enRevision'
+  'avances' | 'descripcion' | 'fechaInicio' | 'responsableId' | 'enRevision' | 'bloqueada'
 > {
   avances: AvanceReporte[];
 }

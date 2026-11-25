@@ -22,6 +22,7 @@ import PantallaCodigosAcceso from '@/pantallas/dueno/PantallaCodigoAcceso';
 import PantallaDatosEmpresa from '@/pantallas/dueno/PantallaDatosEmpresa';
 import PantallaDetalleActividad from '@/pantallas/dueno/PantallaDetalleActividad';
 import PantallaDetalleObra from '@/pantallas/dueno/PantallaDetalleObra';
+import { reenviarEnlacePortal } from '@/servicios/servicioEntregas';
 import PantallaPrincipalDueno from '@/pantallas/dueno/PantallaPrincipalDueno';
 import PantallaReportesObra from '@/pantallas/dueno/PantallaReportesObra';
 import { crearObra } from '@/servicios/servicioObras';
@@ -87,6 +88,7 @@ export default function PilaInicio({ sesion, onNombreEmpresaCambiado }: PilaInic
               onRegresar={navigation.goBack}
               onAbrirActividades={(idObra) => navigation.navigate('ActividadesObra', { idObra })}
               onAbrirReportes={(idObra) => navigation.navigate('ReportesObra', { idObra })}
+              onReenviarEnlace={() => reenviarEnlacePortal(sesion.token, obra.id)}
             />
           ) : null;
         }}
@@ -133,8 +135,9 @@ export default function PilaInicio({ sesion, onNombreEmpresaCambiado }: PilaInic
           <PantallaAgregarObra
             tokenAcceso={sesion.token}
             onAgregar={async (datos) => {
-              await crearObra(sesion.token, datos);
+              const { enlacePortal } = await crearObra(sesion.token, datos);
               consultaObras.recargar();
+              return enlacePortal;
             }}
             onIrAlPanelPrincipal={() => navigation.popToTop()}
           />

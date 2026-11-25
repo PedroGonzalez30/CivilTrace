@@ -4,11 +4,14 @@
  * @descripcion Pantalla con el detalle de una obra y los accesos a sus actividades y reportes.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
- * @version 1.2.0
- * @requerimientos RF-47 Consultar detalle de obra
+ * @version 1.3.0
+ * @requerimientos RF-47 Consultar detalle de obra, RF-65 Enviar enlace del portal al cliente
+ * @historial 24/11/2026 - Emilio Manuel Esquivel - "Reenviar enlace al cliente" para el dueño
+ *   (feature 004)
  */
 
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import {
   BotonPrincipal,
@@ -19,6 +22,7 @@ import {
 } from '@/componentes';
 import { COLORES } from '@/constantes/colores';
 import { RADIOS, SOMBRAS, TAMANOS, TIPOGRAFIA } from '@/constantes/tema';
+import { ErrorApi } from '@/conexion/clienteApi';
 import type { Obra } from '@/tipos/obra';
 
 interface PantallaDetalleObraProps {
@@ -26,6 +30,8 @@ interface PantallaDetalleObraProps {
   onRegresar: () => void;
   onAbrirActividades: (idObra: string) => void;
   onAbrirReportes: (idObra: string) => void;
+  // Solo la pila del dueño lo manda: el supervisor no reenvía el enlace del portal.
+  onReenviarEnlace?: () => Promise<void>;
 }
 
 export default function PantallaDetalleObra({
@@ -33,7 +39,31 @@ export default function PantallaDetalleObra({
   onRegresar,
   onAbrirActividades,
   onAbrirReportes,
+  onReenviarEnlace,
 }: PantallaDetalleObraProps) {
+  const [estaReenviando, setEstaReenviando] = useState(false);
+
+  const manejarReenviarEnlace = async () => {
+    if (!onReenviarEnlace) {
+      return;
+    }
+    setEstaReenviando(true);
+    try {
+      await onReenviarEnlace();
+      Alert.alert(
+        'Enlace enviado',
+        'El cliente recibirá en su correo el enlace del portal de la obra.',
+      );
+    } catch (error) {
+      Alert.alert(
+        'No se pudo enviar',
+        error instanceof ErrorApi ? error.message : 'Inténtalo de nuevo más tarde.',
+      );
+    } finally {
+      setEstaReenviando(false);
+    }
+  };
+
   return (
     <View style={estilos.contenedor}>
       <EncabezadoApp />
@@ -84,6 +114,15 @@ export default function PantallaDetalleObra({
               onPresionar={() => onAbrirReportes(obra.id)}
             />
           </View>
+          {onReenviarEnlace ? (
+            <BotonPrincipal
+              estilo={estilos.botonEnlace}
+              variante="contorno"
+              etiqueta={estaReenviando ? 'Enviando...' : 'Reenviar enlace al cliente'}
+              onPresionar={() => void manejarReenviarEnlace()}
+              deshabilitado={estaReenviando}
+            />
+          ) : null}
         </View>
       </ScrollView>
     </View>
@@ -142,6 +181,9 @@ const estilos = StyleSheet.create({
   acciones: {
     marginTop: 18,
     paddingHorizontal: 16,
+  },
+  botonEnlace: {
+    marginTop: 12,
   },
   tituloAcciones: {
     paddingLeft: 3,

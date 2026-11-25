@@ -4,10 +4,12 @@
  * @descripcion Muestra los datos de una actividad activa o terminada y su historial de avances.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
- * @version 1.1.0
+ * @version 1.2.0
  * @historial 24/11/2026 - Emilio Manuel Esquivel - Estado y motivo de rechazo por evidencia, botón
  *   "Revisar" en las pendientes y "+" para subir evidencia (supervisor), recarga al volver a la
  *   pantalla (feature 003, D-10)
+ *   24/11/2026 - Emilio Manuel Esquivel - Aviso y sin "Revisar" si la actividad ya la aceptó el
+ *   cliente (feature 004, RF-17 Bloquear entrega aceptada, D-31)
  */
 
 // 1. Importaciones
@@ -44,6 +46,7 @@ interface PantallaDetalleActividadProps {
 // 3. Constantes del módulo
 const SUBTITULO_ACTIVA = 'Avances de actividad activa';
 const SUBTITULO_TERMINADA = 'Avances de actividad terminada';
+const AVISO_BLOQUEADA = 'El cliente aceptó esta actividad: ya no se puede modificar.';
 const ETIQUETA_RESPONSABLE = 'Responsable';
 const ETIQUETA_SUPERVISOR = 'Supervisor';
 const ETIQUETA_ESTADO = 'Estado';
@@ -134,6 +137,9 @@ export default function PantallaDetalleActividad({
           </Pressable>
           <Text style={estilos.titulo}>{detalle?.nombre ?? ''}</Text>
           {detalle ? <Text style={estilos.subtitulo}>{subtitulo}</Text> : null}
+          {detalle?.bloqueada ? (
+            <Text style={estilos.avisoBloqueada}>{AVISO_BLOQUEADA}</Text>
+          ) : null}
         </View>
 
         {cargando && !detalle ? (
@@ -219,7 +225,7 @@ export default function PantallaDetalleActividad({
                     {avance.estado === 'RECHAZADO' && avance.observacion ? (
                       <Text style={estilos.motivoRechazo}>Motivo: {avance.observacion}</Text>
                     ) : null}
-                    {avance.estado === 'PENDIENTE' && onRevisarAvance ? (
+                    {avance.estado === 'PENDIENTE' && onRevisarAvance && !detalle.bloqueada ? (
                       <Pressable
                         style={estilos.botonRevisar}
                         onPress={() => onRevisarAvance(avance.id)}
@@ -388,6 +394,12 @@ const estilos = StyleSheet.create({
   motivoRechazo: {
     ...TIPOGRAFIA.leyenda,
     color: COLORES_ASISTENCIA.rojoTexto,
+  },
+  avisoBloqueada: {
+    marginTop: 6,
+    ...TIPOGRAFIA.leyenda,
+    color: COLORES.exitoTexto,
+    textAlign: 'center',
   },
   botonRevisar: {
     alignSelf: 'flex-start',
