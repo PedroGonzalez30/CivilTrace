@@ -36,6 +36,9 @@ Run lint, typecheck and tests before declaring any task done.
   replaced in `jest.setup.ts`. Use `jest.clearAllMocks()` (not `resetAllMocks`, which wipes those
   doubles). Local storage in tests: `__tests__/dobles/repositorioEnMemoria.ts`.
 - Offline attendance code lives in `src/servicios/local/` (SQLite queue, offline package, sync).
+- Feature 004: deliveries to the client in `src/servicios/servicioEntregas.ts` (send by date range,
+  list, download report/acta PDF with `File.downloadFileAsync` + `expo-sharing`, resend portal
+  link). The client's web portal lives in the separate `CivilTrace-Portal` repo.
 - Jest runs with `maxWorkers: 50%`; on low-memory machines use `--maxWorkers=2`.
 
 ## Navigation & Routing
