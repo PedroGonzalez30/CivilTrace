@@ -97,7 +97,11 @@ export default function PantallaReportesObra({
     setGenerandoPdf(true);
     try {
       await generarYCompartirPdfReporte(reporte);
-    } catch {
+    } catch (errorPdf) {
+      // Solo en desarrollo: el error real sale en la terminal de Expo para poder corregirlo (P-18).
+      if (__DEV__) {
+        console.warn('[PDF reporte]', errorPdf);
+      }
       Alert.alert('Error', 'No se pudo generar el archivo PDF del reporte.');
     } finally {
       setGenerandoPdf(false);

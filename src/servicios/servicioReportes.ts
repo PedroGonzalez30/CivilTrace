@@ -372,6 +372,10 @@ export function construirHtmlReporteObra(reporte: DatosReporteObra): string {
 
 export async function generarYCompartirPdfReporte(reporte: DatosReporteObra): Promise<string> {
   const html = construirHtmlReporteObra(reporte);
+  if (__DEV__) {
+    // Diagnóstico P-18: las fotos van dentro del HTML; un HTML enorme puede hacer fallar la impresión.
+    console.info(`[PDF reporte] HTML de ${(html.length / 1024 / 1024).toFixed(1)} MB`);
+  }
   const { uri } = await Print.printToFileAsync({ html });
   if (await Sharing.isAvailableAsync()) {
     await Sharing.shareAsync(uri, {
