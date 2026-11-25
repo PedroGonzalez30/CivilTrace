@@ -12,10 +12,10 @@ preguntar al equipo.
    "Page 1", "Page 2", "Dueño" y la sección "Pantallas nuevas — propuesta (20/11/2026)").
 2. Lo que no está en el Figma **no se desarrolla**. Si una función hace falta para que el sistema
    funcione, se propone al equipo con su justificación y, si se aprueba, se diseña con el mismo estilo.
-3. El SRS V4.0 (ISO/IEC/IEEE 29148) da los requerimientos y criterios de aceptación. Cuando el SRS y
+3. El SRS (ISO/IEC/IEEE 29148) da los requerimientos y criterios de aceptación. Desde el feature 004 rige el **SRS v5.0** (`SRS_Civil_Trace_v5.0_con_cambios.docx`, D-28); los features 001 a 003 conservan la numeración de la V4.0. Cuando el SRS y
    el Figma no coinciden, manda el Figma y el ajuste se DEBE registrar en `docs/decisiones.md`.
 4. Cada artefacto (spec, plan, tarea, archivo) DEBE citar los requerimientos que atiende con su clave
-   del **SRS V4.0** (por ejemplo `RF-55 Aprobar avances de trabajadores`).
+   del **SRS vigente** (v5.0 desde el feature 004; por ejemplo `RF-55 Aprobar avances de trabajadores`).
 
 **Justificación**: el Figma es el acuerdo visible con el cliente; limitar el alcance a él evita
 trabajo no solicitado y la trazabilidad al SRS permite verificar cada entrega.
@@ -135,4 +135,4 @@ aislamiento por empresa y la inmutabilidad de la evidencia son condiciones de co
 - Revisión de cumplimiento: cada pull request y cada `plan.md` (sección "Constitution Check") verifica
   los principios I–VI; cualquier excepción se justifica por escrito y la aprueba el equipo.
 
-**Version**: 1.0.0 | **Ratified**: 2026-11-20 | **Last Amended**: 2026-11-20
+**Version**: 1.1.0 | **Ratified**: 2026-11-20 | **Last Amended**: 2026-11-24
