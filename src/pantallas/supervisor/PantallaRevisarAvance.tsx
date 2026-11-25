@@ -29,6 +29,7 @@ import BotonPrincipal from '@/componentes/BotonPrincipal';
 import EncabezadoApp from '@/componentes/EncabezadoApp';
 import { IconoCheck, IconoChevronIzquierda } from '@/componentes/Iconos';
 import ImagenEvidencia from '@/componentes/ImagenEvidencia';
+import TextoUbicacion from '@/componentes/TextoUbicacion';
 import { ErrorApi } from '@/conexion/clienteApi';
 import { COLORES } from '@/constantes/colores';
 import { COLORES_ASISTENCIA } from '@/constantes/textosAsistencia';
@@ -181,6 +182,7 @@ export default function PantallaRevisarAvance({
                 {avance.comentario ? (
                   <Text style={estilos.comentario}>“{avance.comentario}”</Text>
                 ) : null}
+                <TextoUbicacion datos={avance} />
                 <Text style={estilos.leyenda}>
                   {avance.tipo === 'TERMINADO'
                     ? 'El responsable indica que terminó la actividad.'
@@ -364,6 +366,7 @@ function Confirmacion({
             <View style={estilos.columnaFoto}>
               <Text style={estilos.etiquetaFila}>Evidencia del avance</Text>
               <Text style={estilos.leyenda}>{avance.fechaRegistro}</Text>
+              <TextoUbicacion datos={avance} />
               <Text style={aprobada ? estilos.textoAprobado : estilos.textoRechazado}>
                 {aprobada ? 'Aprobado' : 'Rechazado'} por{' '}
                 {avance.revisadoPor ?? actividad.supervisor}

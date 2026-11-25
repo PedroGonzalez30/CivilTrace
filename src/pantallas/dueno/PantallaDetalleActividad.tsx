@@ -25,6 +25,7 @@ import {
   TarjetaFormulario,
 } from '@/componentes';
 import BotonFlotante from '@/componentes/BotonFlotante';
+import TextoUbicacion from '@/componentes/TextoUbicacion';
 import { ErrorApi } from '@/conexion/clienteApi';
 import { COLORES } from '@/constantes/colores';
 import { COLORES_ASISTENCIA } from '@/constantes/textosAsistencia';
@@ -222,6 +223,7 @@ export default function PantallaDetalleActividad({
                         {etiquetaEstadoAvance(avance.estado).texto}
                       </Text>
                     </View>
+                    <TextoUbicacion datos={avance} />
                     {avance.estado === 'RECHAZADO' && avance.observacion ? (
                       <Text style={estilos.motivoRechazo}>Motivo: {avance.observacion}</Text>
                     ) : null}

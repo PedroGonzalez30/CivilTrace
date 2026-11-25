@@ -4,9 +4,10 @@
  * @descripcion Tipos de actividades de obra y sus avances con evidencia fotográfica.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
- * @version 1.1.0
+ * @version 1.2.0
  * @historial 24/11/2026 - Emilio Manuel Esquivel - Tipo de avance, revisión, descripción, mis
  *   actividades y datos para crear actividades y subir evidencias (feature 003)
+ *   25/11/2026 - Emilio Manuel Esquivel - Ubicación de cada evidencia (feature 007, RF-08)
  */
 
 export type EstadoActividad = 'ACTIVA' | 'TERMINADA';
@@ -17,6 +18,14 @@ export type EstadoAvance = 'PENDIENTE' | 'APROBADO' | 'RECHAZADO';
 export type TipoAvance = 'DIARIO' | 'TERMINADO';
 
 export type DecisionRevision = 'APROBAR' | 'RECHAZAR';
+
+// Feature 007 (RF-08): coordenadas del teléfono al tomar la foto.
+export interface UbicacionEvidencia {
+  latitud: number;
+  longitud: number;
+  // Radio de error que reporta el teléfono; null si no lo dio.
+  precisionMetros: number | null;
+}
 
 export interface AvanceActividad {
   id: string;
@@ -29,6 +38,10 @@ export interface AvanceActividad {
   // Motivo del rechazo u observación del supervisor (D-10).
   observacion: string | null;
   revisadoPor: string | null;
+  // Sin señal GPS, la ubicación es null y queda la referencia escrita; las fotos anteriores al
+  // feature 007 no tienen ninguna de las dos.
+  ubicacion: UbicacionEvidencia | null;
+  referenciaUbicacion: string | null;
 }
 
 export interface ActividadResumen {
@@ -72,6 +85,9 @@ export interface EvidenciaNueva {
   tipoImagen: string;
   tipo: TipoAvance;
   comentario: string;
+  // Una de las dos es obligatoria (RF-08): coordenadas o, sin GPS, la referencia escrita.
+  ubicacion: UbicacionEvidencia | null;
+  referenciaUbicacion: string;
 }
 
 export interface ResultadoRevision {
