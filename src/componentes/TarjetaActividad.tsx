@@ -4,7 +4,9 @@
  * @descripcion Tarjeta que muestra una actividad activa o terminada dentro de una obra.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
- * @version 1.0.0
+ * @version 1.1.0
+ * @historial 24/11/2026 - Emilio Manuel Esquivel - Aviso "Pendiente de aprobación" cuando hay una
+ *   entrega en revisión; el cálculo de días restantes pasa a utilidades (feature 003)
  */
 
 // 1. Importaciones
@@ -12,8 +14,10 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import TarjetaFormulario from '@/componentes/TarjetaFormulario';
 import { COLORES } from '@/constantes/colores';
-import { TIPOGRAFIA } from '@/constantes/tema';
+import { COLORES_ASISTENCIA } from '@/constantes/textosAsistencia';
+import { RADIOS, TIPOGRAFIA } from '@/constantes/tema';
 import type { ActividadResumen } from '@/tipos/actividad';
+import { calcularTextoRestante } from '@/utilidades/diasRestantes';
 
 // 2. Tipos e interfaces
 interface TarjetaActividadProps {
@@ -22,44 +26,9 @@ interface TarjetaActividadProps {
 }
 
 // 3. Constantes del módulo
-const MS_POR_DIA = 1000 * 60 * 60 * 24;
 const ETIQUETA_RESPONSABLE = 'Responsable: ';
 const ETIQUETA_ENTREGA = 'Entrega: ';
 const ETIQUETA_TERMINADA = 'Terminada: ';
-
-// 4. Funciones auxiliares
-function calcularTextoRestante(fechaEntregaLocal: string): { texto: string; esVencida: boolean } {
-  const partes = fechaEntregaLocal.split('/');
-  if (partes.length !== 3) {
-    return { texto: '', esVencida: false };
-  }
-  const dia = Number(partes[0]);
-  const mes = Number(partes[1]);
-  const anio = Number(partes[2]);
-  if (!dia || !mes || !anio) {
-    return { texto: '', esVencida: false };
-  }
-
-  const hoy = new Date();
-  const inicioHoyUtc = Date.UTC(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-  const entregaUtc = Date.UTC(anio, mes - 1, dia);
-  const dias = Math.round((entregaUtc - inicioHoyUtc) / MS_POR_DIA);
-
-  if (dias < 0) {
-    const absDias = Math.abs(dias);
-    return {
-      texto: absDias === 1 ? 'Vencida hace 1 día' : `Vencida hace ${absDias} días`,
-      esVencida: true,
-    };
-  }
-  if (dias === 0) {
-    return { texto: 'Vence hoy', esVencida: false };
-  }
-  if (dias === 1) {
-    return { texto: '1 día restante', esVencida: false };
-  }
-  return { texto: `${dias} días restantes`, esVencida: false };
-}
 
 // 5. Componente principal
 export default function TarjetaActividad({ actividad, onPresionar }: TarjetaActividadProps) {
@@ -74,6 +43,9 @@ export default function TarjetaActividad({ actividad, onPresionar }: TarjetaActi
     <Pressable onPress={manejarPresion}>
       <TarjetaFormulario estilo={estilos.tarjeta}>
         <Text style={estilos.titulo}>{actividad.nombre}</Text>
+        {actividad.enRevision && !esTerminada ? (
+          <Text style={estilos.enRevision}>Pendiente de aprobación</Text>
+        ) : null}
         <View style={estilos.meta}>
           <Text style={estilos.lineaSecundaria}>
             {ETIQUETA_RESPONSABLE}
@@ -125,6 +97,16 @@ const estilos = StyleSheet.create({
   restante: {
     ...TIPOGRAFIA.etiqueta,
     color: COLORES.marca,
+  },
+  enRevision: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    borderRadius: RADIOS.pildora,
+    overflow: 'hidden',
+    backgroundColor: COLORES_ASISTENCIA.chipPendienteFondo,
+    ...TIPOGRAFIA.leyenda,
+    color: COLORES_ASISTENCIA.chipPendienteTexto,
   },
   restanteVencida: {
     color: COLORES.error,

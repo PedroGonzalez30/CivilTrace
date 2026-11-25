@@ -4,8 +4,9 @@
  * @descripcion Parámetros de cada pila y barra de navegación de la aplicación.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
- * @version 1.3.0
+ * @version 1.4.0
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Pestañas y pilas de supervisor y trabajador (feature 001)
+ *   24/11/2026 - Emilio Manuel Esquivel - Pilas de trabajo del supervisor y del trabajador (feature 003)
  */
 
 import type { NavigatorScreenParams } from '@react-navigation/native';
@@ -44,8 +45,20 @@ export type ParametrosPilaAsistenciaSupervisor = {
   Rechazados: { obraId: string; obraNombre: string };
 };
 
+// Supervisor (feature 003: obras, actividades y evidencias en Inicio).
+export type ParametrosPilaTrabajoSupervisor = {
+  Obras: undefined;
+  ObraDetalle: { idObra: string };
+  ReportesObra: { idObra: string };
+  ActividadesObra: { idObra: string; obraNombre: string };
+  AgregarActividad: { idObra: string; obraNombre: string };
+  DetalleActividad: { idObra: string; idActividad: string };
+  RevisarAvance: { idObra: string; idActividad: string; idAvance: string };
+  SubirEvidencia: { idObra: string; idActividad: string; nombreActividad: string };
+};
+
 export type ParametrosPestanasSupervisor = {
-  Inicio: undefined;
+  Inicio: NavigatorScreenParams<ParametrosPilaTrabajoSupervisor> | undefined;
   Asistencia: NavigatorScreenParams<ParametrosPilaAsistenciaSupervisor> | undefined;
   Cuenta: undefined;
 };
@@ -56,8 +69,15 @@ export type ParametrosPilaMiAsistencia = {
   Historial: undefined;
 };
 
+// Trabajador (feature 003: sus actividades y evidencias).
+export type ParametrosPilaTrabajoTrabajador = {
+  MisActividades: undefined;
+  Actividad: { idObra: string; idActividad: string; evidenciaAgregada?: boolean };
+  SubirEvidencia: { idObra: string; idActividad: string; nombreActividad: string };
+};
+
 export type ParametrosPestanasTrabajador = {
-  Trabajo: undefined;
+  Trabajo: NavigatorScreenParams<ParametrosPilaTrabajoTrabajador> | undefined;
   MiAsistencia: NavigatorScreenParams<ParametrosPilaMiAsistencia> | undefined;
   Cuenta: undefined;
 };

@@ -1,10 +1,13 @@
 /**
  * @archivo servicioActividades.ts
  * @proyecto Civil Trace
- * @descripcion Consulta actividades y avances de una obra desde la API.
+ * @descripcion Consulta, crea y revisa actividades y avances de una obra desde la API, y sube
+ *              evidencias fotográficas.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
- * @version 1.0.0
+ * @version 2.0.0
+ * @historial 24/11/2026 - Emilio Manuel Esquivel - Crear actividad, subir evidencia, revisar
+ *   avance y mis actividades; campos nuevos de la API (feature 003)
  */
 
 // 1. Importaciones
@@ -14,15 +17,22 @@ import type {
   ActividadDetalle,
   ActividadResumen,
   AvanceActividad,
+  DatosNuevaActividad,
+  DecisionRevision,
   EstadoActividad,
   EstadoAvance,
+  EvidenciaNueva,
+  MiActividad,
+  ResultadoRevision,
 } from '@/tipos/actividad';
-import { convertirIsoAFechaLocal } from '@/utilidades/formatearFecha';
+import { convertirFechaLocalAIso, convertirIsoAFechaLocal } from '@/utilidades/formatearFecha';
 
 // 3. Constantes del módulo
 const MENSAJE_RESPUESTA_INVALIDA = 'El servidor envió una respuesta inesperada';
 const SIN_DATO = '—';
 const LONGITUD_FECHA_ISO = 10;
+const TIEMPO_ESPERA_SUBIDA_MS = 60000;
+const MENSAJE_FOTO_ILEGIBLE = 'No se pudo leer la foto seleccionada';
 
 // 4. Funciones privadas
 function esObjeto(valor: unknown): valor is Record<string, unknown> {
@@ -71,6 +81,9 @@ function aAvance(valor: unknown): AvanceActividad {
     fechaRegistro: formatearFechaAvance(valor.fechaRegistro),
     registradoPor: textoOSinDato(valor.registradoPor),
     tieneFoto: valor.tieneFoto === true,
+    tipo: valor.tipo === 'TERMINADO' ? 'TERMINADO' : 'DIARIO',
+    observacion: typeof valor.observacion === 'string' ? valor.observacion : null,
+    revisadoPor: typeof valor.revisadoPor === 'string' ? valor.revisadoPor : null,
   };
 }
 
@@ -98,6 +111,13 @@ function aActividadResumen(valor: unknown): ActividadResumen {
     fechaTerminada: fechaTerminadaLocal,
     responsable: textoOSinDato(valor.responsable),
     supervisor: textoOSinDato(valor.supervisor),
+    descripcion: typeof valor.descripcion === 'string' ? valor.descripcion : '',
+    fechaInicio:
+      typeof valor.fechaInicio === 'string'
+        ? (convertirIsoAFechaLocal(valor.fechaInicio) ?? valor.fechaInicio)
+        : null,
+    responsableId: typeof valor.responsableId === 'string' ? valor.responsableId : null,
+    enRevision: valor.enRevision === true,
   };
 }
 
@@ -173,4 +193,134 @@ export function construirUrlFotoAvance(
     `${URL_API}/obras/${encodeURIComponent(idObra)}/actividades/` +
     `${encodeURIComponent(idActividad)}/avances/${encodeURIComponent(idAvance)}/foto`
   );
+}
+
+function rutaActividades(idObra: string): string {
+  return `/obras/${encodeURIComponent(idObra)}/actividades`;
+}
+
+function rutaActividad(idObra: string, idActividad: string): string {
+  return `${rutaActividades(idObra)}/${encodeURIComponent(idActividad)}`;
+}
+
+/**
+ * Crea una actividad en la obra (supervisor de la obra o dueño).
+ *
+ * @param tokenAcceso - Token JWT de la sesión.
+ * @param idObra - Obra donde se agrega.
+ * @param datos - Datos capturados; las fechas en DD/MM/AAAA.
+ * @returns La actividad creada.
+ * @throws ErrorApi si los datos no son válidos, no hay permiso o falla la red.
+ */
+export async function crearActividad(
+  tokenAcceso: string,
+  idObra: string,
+  datos: DatosNuevaActividad,
+): Promise<ActividadDetalle> {
+  const fechaInicio = convertirFechaLocalAIso(datos.fechaInicio);
+  const respuesta = await llamarApi(rutaActividades(idObra), {
+    metodo: 'POST',
+    tokenAcceso,
+    cuerpo: {
+      nombre: datos.nombre.trim(),
+      descripcion: datos.descripcion.trim(),
+      responsableId: datos.responsableId,
+      fechaEntrega: convertirFechaLocalAIso(datos.fechaEntrega),
+      ...(fechaInicio ? { fechaInicio } : {}),
+    },
+  });
+  if (!esObjeto(respuesta) || !esObjeto(respuesta.actividad)) {
+    throw new ErrorApi(MENSAJE_RESPUESTA_INVALIDA, null);
+  }
+  return aActividadDetalle(respuesta.actividad);
+}
+
+/**
+ * Sube una foto de evidencia. La del trabajador queda pendiente de revisión; la del supervisor,
+ * aprobada (D-10).
+ *
+ * @param tokenAcceso - Token JWT de la sesión.
+ * @param idObra - Obra de la actividad.
+ * @param idActividad - Actividad.
+ * @param evidencia - Foto local, tipo de avance y comentario opcional.
+ * @returns El avance registrado.
+ * @throws ErrorApi si no se puede leer la foto, no hay permiso o la actividad ya terminó.
+ */
+export async function subirEvidencia(
+  tokenAcceso: string,
+  idObra: string,
+  idActividad: string,
+  evidencia: EvidenciaNueva,
+): Promise<AvanceActividad> {
+  let datos: Blob;
+  try {
+    datos = await (await fetch(evidencia.uri)).blob();
+  } catch {
+    throw new ErrorApi(MENSAJE_FOTO_ILEGIBLE, null);
+  }
+  const respuesta = await llamarApi(`${rutaActividad(idObra, idActividad)}/avances`, {
+    metodo: 'POST',
+    tokenAcceso,
+    cuerpoBinario: { datos, tipo: evidencia.tipoImagen },
+    encabezados: {
+      'x-tipo-avance': evidencia.tipo,
+      'x-comentario-avance': encodeURIComponent(evidencia.comentario.trim()),
+    },
+    tiempoEsperaMs: TIEMPO_ESPERA_SUBIDA_MS,
+  });
+  if (!esObjeto(respuesta)) {
+    throw new ErrorApi(MENSAJE_RESPUESTA_INVALIDA, null);
+  }
+  return aAvance(respuesta.avance);
+}
+
+/**
+ * Aprueba o rechaza un avance pendiente. Al rechazar, la observación es obligatoria.
+ *
+ * @returns El avance revisado y la actividad actualizada.
+ * @throws ErrorApi si falta la observación, ya se revisó o no hay permiso.
+ */
+export async function revisarAvance(
+  tokenAcceso: string,
+  idObra: string,
+  idActividad: string,
+  idAvance: string,
+  decision: DecisionRevision,
+  observacion: string,
+): Promise<ResultadoRevision> {
+  const texto = observacion.trim();
+  const respuesta = await llamarApi(
+    `${rutaActividad(idObra, idActividad)}/avances/${encodeURIComponent(idAvance)}/revision`,
+    {
+      metodo: 'PATCH',
+      tokenAcceso,
+      cuerpo: { decision, ...(texto ? { observacion: texto } : {}) },
+    },
+  );
+  if (!esObjeto(respuesta)) {
+    throw new ErrorApi(MENSAJE_RESPUESTA_INVALIDA, null);
+  }
+  return { avance: aAvance(respuesta.avance), actividad: aActividadDetalle(respuesta.actividad) };
+}
+
+/**
+ * @param tokenAcceso - Token JWT del trabajador.
+ * @returns Sus actividades activas en todas sus obras.
+ * @throws ErrorApi si falla la red o la respuesta no es válida.
+ */
+export async function obtenerMisActividades(tokenAcceso: string): Promise<MiActividad[]> {
+  const respuesta = await llamarApi('/actividades/mias', { tokenAcceso });
+  if (!esObjeto(respuesta) || !Array.isArray(respuesta.actividades)) {
+    throw new ErrorApi(MENSAJE_RESPUESTA_INVALIDA, null);
+  }
+  return respuesta.actividades.map((valor: unknown) => {
+    if (!esObjeto(valor) || typeof valor.obraId !== 'string') {
+      throw new ErrorApi(MENSAJE_RESPUESTA_INVALIDA, null);
+    }
+    return {
+      ...aActividadResumen(valor),
+      obraId: valor.obraId,
+      obraNombre: textoOSinDato(valor.obraNombre),
+    };
+  });
 }

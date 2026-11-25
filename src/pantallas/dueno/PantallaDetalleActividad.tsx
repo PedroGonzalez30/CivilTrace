@@ -4,11 +4,15 @@
  * @descripcion Muestra los datos de una actividad activa o terminada y su historial de avances.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
- * @version 1.0.0
+ * @version 1.1.0
+ * @historial 24/11/2026 - Emilio Manuel Esquivel - Estado y motivo de rechazo por evidencia, botón
+ *   "Revisar" en las pendientes y "+" para subir evidencia (supervisor), recarga al volver a la
+ *   pantalla (feature 003, D-10)
  */
 
 // 1. Importaciones
-import { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import {
@@ -18,8 +22,10 @@ import {
   ImagenEvidencia,
   TarjetaFormulario,
 } from '@/componentes';
+import BotonFlotante from '@/componentes/BotonFlotante';
 import { ErrorApi } from '@/conexion/clienteApi';
 import { COLORES } from '@/constantes/colores';
+import { COLORES_ASISTENCIA } from '@/constantes/textosAsistencia';
 import { RADIOS, SOMBRAS, TAMANOS, TIPOGRAFIA } from '@/constantes/tema';
 import { obtenerDetalleActividad } from '@/servicios/servicioActividades';
 import type { ActividadDetalle, EstadoAvance } from '@/tipos/actividad';
@@ -30,6 +36,9 @@ interface PantallaDetalleActividadProps {
   idObra: string;
   idActividad: string;
   onRegresar: () => void;
+  // Supervisor (feature 003): subir su evidencia y revisar las pendientes.
+  onSubirEvidencia?: (nombreActividad: string) => void;
+  onRevisarAvance?: (idAvance: string) => void;
 }
 
 // 3. Constantes del módulo
@@ -62,6 +71,8 @@ export default function PantallaDetalleActividad({
   idObra,
   idActividad,
   onRegresar,
+  onSubirEvidencia,
+  onRevisarAvance,
 }: PantallaDetalleActividadProps) {
   const [detalle, setDetalle] = useState<ActividadDetalle | null>(null);
   const [cargando, setCargando] = useState(true);
@@ -94,6 +105,18 @@ export default function PantallaDetalleActividad({
       cancelado = true;
     };
   }, [tokenAcceso, idObra, idActividad, intento]);
+
+  // Al volver de subir o revisar una evidencia se recarga la cronología.
+  // La primera vez ya carga el efecto de arriba; solo se recarga al regresar.
+  const yaEnfocada = useRef(false);
+  useFocusEffect(
+    useCallback(() => {
+      if (yaEnfocada.current) {
+        setIntento((anterior) => anterior + 1);
+      }
+      yaEnfocada.current = true;
+    }, []),
+  );
 
   const esTerminada = detalle?.estado === 'TERMINADA';
   const subtitulo = esTerminada ? SUBTITULO_TERMINADA : SUBTITULO_ACTIVA;
@@ -178,7 +201,33 @@ export default function PantallaDetalleActividad({
                     {esTerminada ? (
                       <Text style={estilos.etiquetaAvanceSecundaria}>{TITULO_AVANCE}</Text>
                     ) : null}
-                    <Text style={estilos.fechaAvance}>{avance.fechaRegistro}</Text>
+                    <View style={estilos.filaAvance}>
+                      <Text style={estilos.fechaAvance}>
+                        {avance.fechaRegistro}
+                        {avance.tipo === 'TERMINADO' ? ' · Entrega final' : ''}
+                      </Text>
+                      <Text
+                        style={[
+                          estilos.chipAvance,
+                          avance.estado === 'PENDIENTE' && estilos.chipPendiente,
+                          avance.estado === 'RECHAZADO' && estilos.chipRechazado,
+                        ]}
+                      >
+                        {etiquetaEstadoAvance(avance.estado).texto}
+                      </Text>
+                    </View>
+                    {avance.estado === 'RECHAZADO' && avance.observacion ? (
+                      <Text style={estilos.motivoRechazo}>Motivo: {avance.observacion}</Text>
+                    ) : null}
+                    {avance.estado === 'PENDIENTE' && onRevisarAvance ? (
+                      <Pressable
+                        style={estilos.botonRevisar}
+                        onPress={() => onRevisarAvance(avance.id)}
+                        accessibilityRole="button"
+                      >
+                        <Text style={estilos.textoRevisar}>Revisar</Text>
+                      </Pressable>
+                    ) : null}
                     {avance.comentario ? (
                       <Text style={estilos.comentarioAvance}>{avance.comentario}</Text>
                     ) : null}
@@ -197,6 +246,12 @@ export default function PantallaDetalleActividad({
           </View>
         ) : null}
       </ScrollView>
+      {onSubirEvidencia && detalle && !esTerminada ? (
+        <BotonFlotante
+          etiqueta="Subir evidencia"
+          onPresionar={() => onSubirEvidencia(detalle.nombre)}
+        />
+      ) : null}
     </View>
   );
 }
@@ -306,6 +361,44 @@ const estilos = StyleSheet.create({
   fechaAvance: {
     ...TIPOGRAFIA.leyenda,
     color: COLORES.textoAtenuado,
+  },
+  filaAvance: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 8,
+  },
+  chipAvance: {
+    ...TIPOGRAFIA.leyenda,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    borderRadius: RADIOS.pildora,
+    overflow: 'hidden',
+    backgroundColor: COLORES.exitoFondo,
+    color: COLORES_ASISTENCIA.verdeTexto,
+  },
+  chipPendiente: {
+    backgroundColor: COLORES_ASISTENCIA.chipPendienteFondo,
+    color: COLORES_ASISTENCIA.chipPendienteTexto,
+  },
+  chipRechazado: {
+    backgroundColor: COLORES_ASISTENCIA.alertaFondo,
+    color: COLORES_ASISTENCIA.rojoTexto,
+  },
+  motivoRechazo: {
+    ...TIPOGRAFIA.leyenda,
+    color: COLORES_ASISTENCIA.rojoTexto,
+  },
+  botonRevisar: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: RADIOS.pildora,
+    backgroundColor: COLORES_ASISTENCIA.azul,
+  },
+  textoRevisar: {
+    ...TIPOGRAFIA.etiqueta,
+    color: COLORES.superficie,
   },
   comentarioAvance: {
     ...TIPOGRAFIA.leyenda,

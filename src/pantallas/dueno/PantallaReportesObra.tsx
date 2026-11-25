@@ -19,6 +19,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  KeyboardAvoidingView,
   View,
 } from 'react-native';
 
@@ -202,7 +203,8 @@ export default function PantallaReportesObra({
         animationType="fade"
         onRequestClose={() => setFiltroVisible(false)}
       >
-        <View style={estilos.modalFondo}>
+        {/* El teclado numérico no debe tapar las fechas (D-27). */}
+        <KeyboardAvoidingView style={estilos.modalFondo} behavior="padding">
           <View style={estilos.modalCaja}>
             <View style={estilos.modalEncabezado}>
               <Text style={estilos.modalTitulo}>Filtrar por fecha</Text>
@@ -242,7 +244,7 @@ export default function PantallaReportesObra({
               onPresionar={manejarAplicarFiltro}
             />
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       <Modal

@@ -9,7 +9,7 @@
 
 // 1. Importaciones
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -102,7 +102,8 @@ export default function PantallaRegistro({ onRegistroExitoso }: PantallaRegistro
       <EncabezadoApp />
       <KeyboardAvoidingView
         style={estilos.flexible}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        // En Android de borde a borde la ventana ya no se ajusta sola al teclado (D-27).
+        behavior="padding"
       >
         <ScrollView
           contentContainerStyle={[

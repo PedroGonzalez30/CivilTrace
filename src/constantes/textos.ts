@@ -39,6 +39,9 @@ export const TEXTOS_AGREGAR_OBRA = {
   subtitulo: 'Completa los datos de la obra o servicio.',
   etiquetaBoton: 'Agregar',
   errorEnvio: 'No se pudo crear la obra. Intente de nuevo',
+  // D-24: sin supervisores en la empresa no se puede crear una obra.
+  sinSupervisores:
+    'Aún no hay supervisores en tu empresa. Compárteles el código de supervisores desde el menú.',
 };
 
 export const TEXTOS_OBRA_CREADA = {

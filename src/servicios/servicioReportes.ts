@@ -5,7 +5,9 @@
  *              de evidencia autenticadas y genera el reporte en formato PDF.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
- * @version 1.1.0
+ * @version 1.2.0
+ * @historial 24/11/2026 - Emilio Manuel Esquivel - Los tipos del reporte omiten los campos de
+ *   revisión del feature 003
  */
 
 import * as Print from 'expo-print';
@@ -22,11 +24,18 @@ import type {
 import type { Obra } from '@/tipos/obra';
 import { convertirFechaLocalAIso, convertirIsoAFechaLocal } from '@/utilidades/formatearFecha';
 
-export interface AvanceReporte extends AvanceActividad {
+// El reporte no usa los datos de revisión ni de entrega del feature 003.
+export interface AvanceReporte extends Omit<
+  AvanceActividad,
+  'tipo' | 'observacion' | 'revisadoPor'
+> {
   fotoDataUri: string | null;
 }
 
-export interface ActividadReporte extends Omit<ActividadDetalle, 'avances'> {
+export interface ActividadReporte extends Omit<
+  ActividadDetalle,
+  'avances' | 'descripcion' | 'fechaInicio' | 'responsableId' | 'enRevision'
+> {
   avances: AvanceReporte[];
 }
 

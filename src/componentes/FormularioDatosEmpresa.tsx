@@ -5,7 +5,9 @@
  *              "Editar" se habilita y, antes de guardar, pide confirmación.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
- * @version 1.0.0
+ * @version 1.1.0
+ * @historial 24/11/2026 - Emilio Manuel Esquivel - Al guardar el logotipo se actualiza el
+ *   encabezado (D-25, feature 002)
  */
 
 // 1. Importaciones
@@ -24,6 +26,7 @@ import { COLORES } from '@/constantes/colores';
 import { TAMANOS, TIPOGRAFIA } from '@/constantes/tema';
 import { TEXTOS_DATOS_EMPRESA as TEXTOS } from '@/constantes/textos';
 import { useFormulario } from '@/hooks/useFormulario';
+import { useLogoEmpresa } from '@/hooks/useLogoEmpresa';
 import {
   actualizarDatosEmpresa,
   descargarLogoEmpresa,
@@ -60,6 +63,7 @@ export default function FormularioDatosEmpresa({
   const [esConfirmacionVisible, setEsConfirmacionVisible] = useState(false);
   const [estaGuardando, setEstaGuardando] = useState(false);
   const [errorGuardado, setErrorGuardado] = useState<string | null>(null);
+  const logoEncabezado = useLogoEmpresa();
   const [logoElegido, setLogoElegido] = useState<LogoElegido | null>(null);
   const [logoGuardadoUri, setLogoGuardadoUri] = useState<string | null>(null);
 
@@ -132,6 +136,8 @@ export default function FormularioDatosEmpresa({
         await subirLogoEmpresa(tokenAcceso, logoElegido.uri, logoElegido.tipo);
         setLogoGuardadoUri(logoElegido.uri);
         setLogoElegido(null);
+        // El encabezado muestra el logotipo nuevo sin cerrar sesión (D-25).
+        logoEncabezado?.recargar();
       }
       const actualizados = await actualizarDatosEmpresa(tokenAcceso, {
         nombre: nombre.trim(),
