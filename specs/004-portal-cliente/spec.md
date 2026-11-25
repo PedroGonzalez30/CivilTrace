@@ -12,9 +12,10 @@ La especificación completa está en el repo de la API:
 - RF-65: al guardar una obra, aviso si el correo con el enlace del portal no salió; opción
   "Reenviar enlace al cliente" para el dueño.
 - RF-13: en la vista previa del reporte (`SUP_REporte PDF` `179:2834`, `ReportePdf -Dueño`
-  `144:1963`), selección de actividades Verificadas y botón "Enviar al cliente"; aviso "Se envió
-  al cliente" (`ReportePdfEnviar -Dueño` `144:2116`). Mensajes si falta el correo del cliente o si
-  hay actividades no Verificadas.
+  `144:1963`) el supervisor elige el rango de fechas con el filtro y toca "Enviar al cliente"; la
+  entrega lleva solo las fotos aprobadas del rango (D-29). Aviso "Se envió al cliente"
+  (`ReportePdfEnviar -Dueño` `144:2116`). Mensajes si falta el correo del cliente o si el rango no
+  tiene fotos aprobadas.
 - RF-16: "Generar acta" para entregas Aceptadas (`ReporteActa -Dueño` `144:2536`).
 - Lista de entregas de la obra con su estado, las observaciones del cliente y el acta.
 - RF-17: actividades y evidencias de una entrega Aceptada se muestran sin opciones de edición.
