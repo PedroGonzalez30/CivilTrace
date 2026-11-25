@@ -103,6 +103,7 @@ describe('HojaDetalleDia', () => {
       motivo: 'CITA_MEDICA',
       efectoPago: 'MEDIO_DIA',
       conDescuento: true,
+      horasDescontadas: null,
       anotacion: 'Salió a las 12:00 por cita en el IMSS; presentó comprobante.',
       registradoPor: 'Mario Castro',
       registradoEn: '2026-05-19T19:10:00.000Z',

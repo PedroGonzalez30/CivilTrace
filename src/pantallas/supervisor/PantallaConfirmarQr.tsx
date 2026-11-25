@@ -9,6 +9,7 @@
  * @requerimientos RF-27 Registrar asistencia por el supervisor, RNF-07 Captura sin conexión
  *   (D-14)
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Creación (feature 001)
+ * @historial 25/11/2026 - Emilio Manuel Esquivel - Entrada o salida en grande (feature 006)
  */
 
 // 1. Importaciones
@@ -114,6 +115,18 @@ export default function PantallaConfirmarQr({
       <ScrollView contentContainerStyle={estilos.contenido}>
         <Text style={estilos.titulo}>Asistencia</Text>
         <Text style={estilos.subtitulo}>Verifica la información del trabajador</Text>
+        {/* Feature 006: que se vea de inmediato si se va a registrar la entrada o la salida. */}
+        <View
+          style={[
+            estilos.tipoRegistro,
+            preparacion.tipo === 'ENTRADA' ? estilos.tipoEntrada : estilos.tipoSalida,
+          ]}
+          accessibilityRole="header"
+        >
+          <Text style={estilos.textoTipoRegistro}>
+            {preparacion.tipo === 'ENTRADA' ? 'Registro de ENTRADA' : 'Registro de SALIDA'}
+          </Text>
+        </View>
         <View style={estilos.tarjeta}>
           <Dato etiqueta="Trabajador" valor={trabajador.nombre} />
           <Dato
@@ -187,6 +200,21 @@ function Dato({ etiqueta, valor }: { etiqueta: string; valor: string }) {
 
 // 5. Estilos
 const estilos = StyleSheet.create({
+  tipoRegistro: {
+    borderRadius: RADIOS.tarjeta,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  tipoEntrada: {
+    backgroundColor: COLORES.exitoFondo,
+  },
+  tipoSalida: {
+    backgroundColor: COLORES_ASISTENCIA.azulSuave,
+  },
+  textoTipoRegistro: {
+    ...TIPOGRAFIA.titulo3,
+    color: COLORES.texto,
+  },
   contenedor: { flex: 1, backgroundColor: COLORES.pantalla },
   centrado: { alignItems: 'center', justifyContent: 'center' },
   contenido: { padding: 24, gap: 14, paddingBottom: 40 },

@@ -5,6 +5,8 @@
  * @autor POR_COMPLETAR
  * @fecha POR_COMPLETAR
  * @version 1.0.0
+ * @historial 25/11/2026 - Emilio Manuel Esquivel - Reglas visibles, confirmar contraseña y sin
+ *   autollenado (feature 006, D-12)
  */
 
 // 1. Importaciones
@@ -34,7 +36,11 @@ import { registrar } from '@/servicios/servicioAutenticacion';
 import { guardarSesion } from '@/servicios/servicioSesion';
 import { RolUsuario, type SesionAutenticacion } from '@/tipos/autenticacion';
 import { esRolValido } from '@/utilidades/esRolValido';
-import { CAMPOS_REGISTRO, validarRegistro } from '@/utilidades/validacionAutenticacion';
+import {
+  CAMPOS_REGISTRO,
+  REGLAS_CONTRASENA,
+  validarRegistro,
+} from '@/utilidades/validacionAutenticacion';
 
 // 2. Tipos e interfaces
 interface PantallaRegistroProps {
@@ -52,7 +58,14 @@ export default function PantallaRegistro({ onRegistroExitoso }: PantallaRegistro
 
   const formulario = useFormulario({
     campos: CAMPOS_REGISTRO,
-    valoresIniciales: { nombre: '', correo: '', contrasena: '', rol: '', empresa: '' },
+    valoresIniciales: {
+      nombre: '',
+      correo: '',
+      contrasena: '',
+      confirmarContrasena: '',
+      rol: '',
+      empresa: '',
+    },
     validar: validarRegistro,
     onEnviar: async (valores) => {
       if (!esRolValido(valores.rol)) {
@@ -146,9 +159,34 @@ export default function PantallaRegistro({ onRegistroExitoso }: PantallaRegistro
               editable={!formulario.estaEnviando}
               secureTextEntry
               autoCapitalize="none"
-              autoComplete="password-new"
+              // Sin autollenado: el sistema llenaba el campo con una contraseña sugerida.
+              autoComplete="off"
+              textContentType="none"
               onCambiarTexto={formulario.manejarCambio('contrasena')}
               onPerderFoco={formulario.manejarPerdidaFoco('contrasena')}
+            />
+            <View style={estilos.reglas} accessibilityLabel="Requisitos de la contraseña">
+              {REGLAS_CONTRASENA.map((regla) => {
+                const cumple = regla.cumple(formulario.valores.contrasena);
+                return (
+                  <Text key={regla.texto} style={cumple ? estilos.reglaCumplida : estilos.regla}>
+                    {cumple ? '✓' : '•'} {regla.texto}
+                  </Text>
+                );
+              })}
+            </View>
+            <CampoTexto
+              etiqueta="Confirmar contraseña"
+              textoMarcador="Escribe otra vez tu contraseña"
+              valor={formulario.valores.confirmarContrasena}
+              error={formulario.obtenerError('confirmarContrasena')}
+              editable={!formulario.estaEnviando}
+              secureTextEntry
+              autoCapitalize="none"
+              autoComplete="off"
+              textContentType="none"
+              onCambiarTexto={formulario.manejarCambio('confirmarContrasena')}
+              onPerderFoco={formulario.manejarPerdidaFoco('confirmarContrasena')}
             />
             <SelectorRol
               etiqueta="Rol"
@@ -188,6 +226,18 @@ export default function PantallaRegistro({ onRegistroExitoso }: PantallaRegistro
 
 // 5. Estilos
 const estilos = StyleSheet.create({
+  reglas: {
+    gap: 2,
+    marginTop: -6,
+  },
+  regla: {
+    ...TIPOGRAFIA.leyenda,
+    color: COLORES.textoAtenuado,
+  },
+  reglaCumplida: {
+    ...TIPOGRAFIA.leyenda,
+    color: COLORES.exitoTexto,
+  },
   contenedor: {
     flex: 1,
     backgroundColor: COLORES.fondo,

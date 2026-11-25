@@ -7,6 +7,7 @@
  * @version 1.1.0
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Pestañas de asistencia y color activo (feature 001)
  *   24/11/2026 - Emilio Manuel Esquivel - Se oculta con el teclado abierto (D-27, feature 002)
+ * @historial 25/11/2026 - Emilio Manuel Esquivel - Iconos centrados (feature 006)
  */
 
 // 1. Importaciones
@@ -96,15 +97,17 @@ const estilos = StyleSheet.create({
   contenedor: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     minHeight: TAMANOS.navegacionInferior,
-    paddingHorizontal: 24,
+    paddingHorizontal: 8,
     backgroundColor: COLORES.superficie,
     borderTopLeftRadius: RADIOS.encabezado,
     borderTopRightRadius: RADIOS.encabezado,
     ...SOMBRAS.navegacion,
   },
+  // Feature 006: el mismo ancho para todos centra los iconos sin importar el largo del texto.
   elemento: {
+    flex: 1,
     alignItems: 'center',
     gap: 4,
   },

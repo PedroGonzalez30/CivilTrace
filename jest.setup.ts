@@ -70,6 +70,12 @@ jest.mock('expo-file-system', () => {
     static createDownloadTask = jest.fn((_url: string, destino: ArchivoSimulado) => ({
       downloadAsync: jest.fn(async () => destino),
     }));
+    // P-18: el PDF del reporte se escribe en la caché antes de compartirlo.
+    write = jest.fn(async () => undefined);
+    // D-33: las fotos se suben como File; "inexistente" en la ruta simula una foto que no se lee.
+    get size() {
+      return this.uri.includes('inexistente') ? 0 : 1024;
+    }
     // Feature 004: descarga del reporte y del acta de una entrega.
     static downloadFileAsync = jest.fn(async (_url: string, destino: ArchivoSimulado) => destino);
   }
@@ -84,4 +90,9 @@ jest.mock('expo-sqlite', () => ({
   openDatabaseAsync: jest.fn(async () => {
     throw new Error('Las pruebas usan el repositorio en memoria, no SQLite');
   }),
+}));
+
+// D-33: las subidas binarias usan expo/fetch; en las pruebas se redirige al fetch global simulado.
+jest.mock('expo/fetch', () => ({
+  fetch: (...argumentos: Parameters<typeof fetch>) => globalThis.fetch(...argumentos),
 }));

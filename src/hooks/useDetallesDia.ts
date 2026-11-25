@@ -8,6 +8,7 @@
  * @version 1.0.0
  * @requerimientos RF-60 Registrar retardo o salida anticipada, D-07
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Creación (feature 001)
+ * @historial 25/11/2026 - Emilio Manuel Esquivel - Horas descontadas (feature 006, D-35)
  */
 
 // 1. Importaciones
@@ -31,6 +32,8 @@ export interface FormularioDetalle {
   motivo: MotivoAsistencia | null;
   efectoPago: EfectoPago;
   anotacion: string;
+  // D-35: texto como se escribe ("1.5"); vacío = sin descuento.
+  horasDescontadas: string;
   horaEntrada: string | null;
   horaSalida: string | null;
 }
@@ -45,6 +48,19 @@ interface ParametrosDia {
 
 // 3. Constantes del módulo
 const MENSAJE_ERROR = 'No se pudieron guardar los detalles';
+const MENSAJE_HORAS_INVALIDAS = 'Las horas a descontar van de 0.5 a 12, en medias horas';
+const HORAS_MAXIMAS_DESCUENTO = 12;
+
+/** D-35: de 0.5 a 12 horas en pasos de media hora (igual que la API). */
+export function esHorasValidas(texto: string): boolean {
+  const horas = Number(texto);
+  return (
+    Number.isFinite(horas) &&
+    horas > 0 &&
+    horas <= HORAS_MAXIMAS_DESCUENTO &&
+    Number.isInteger(horas * 2)
+  );
+}
 
 // 4. Funciones auxiliares
 function aFormulario(detalle: DetalleDia, zona: string): FormularioDetalle {
@@ -53,6 +69,7 @@ function aFormulario(detalle: DetalleDia, zona: string): FormularioDetalle {
     motivo: detalle.motivo,
     efectoPago: detalle.efectoPago,
     anotacion: detalle.anotacion ?? '',
+    horasDescontadas: detalle.horasDescontadas === null ? '' : String(detalle.horasDescontadas),
     horaEntrada: detalle.entrada ? obtenerHoraLocal(detalle.entrada.hora, zona) : null,
     horaSalida: detalle.salida ? obtenerHoraLocal(detalle.salida.hora, zona) : null,
   };
@@ -72,6 +89,10 @@ function calcularCambios(
   }
   if (actual.efectoPago !== original.efectoPago) {
     cambios.efectoPago = actual.efectoPago;
+  }
+  if (actual.horasDescontadas.trim() !== original.horasDescontadas) {
+    const horas = actual.horasDescontadas.trim();
+    cambios.horasDescontadas = horas === '' ? null : Number(horas.replace(',', '.'));
   }
   if (actual.anotacion.trim() !== original.anotacion) {
     cambios.anotacion = actual.anotacion.trim() || null;
@@ -137,6 +158,11 @@ export function useDetallesDia(parametros: ParametrosDia) {
     }
     if (formulario.tipoJornada !== 'COMPLETA' && !formulario.anotacion.trim()) {
       setError(MENSAJES_ASISTENCIA.observacionObligatoria);
+      return false;
+    }
+    const horas = formulario.horasDescontadas.trim().replace(',', '.');
+    if (horas !== '' && !esHorasValidas(horas)) {
+      setError(MENSAJE_HORAS_INVALIDAS);
       return false;
     }
     const cambios = calcularCambios(original, formulario, parametros);

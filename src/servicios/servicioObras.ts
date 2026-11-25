@@ -127,3 +127,62 @@ export async function crearObra(tokenAcceso: string, datos: DatosNuevaObra): Pro
     : null;
   return { obra: aObra(respuesta.obra), enlacePortal };
 }
+
+// Feature 006 (RF-68 Asignar trabajadores a una obra, SRS v5.0).
+export interface PersonaObra {
+  id: string;
+  nombre: string;
+  oficio: string | null;
+}
+
+export interface TrabajadoresDeObra {
+  asignados: PersonaObra[];
+  disponibles: PersonaObra[];
+}
+
+function aTrabajadoresDeObra(valor: unknown): TrabajadoresDeObra {
+  if (!esObjeto(valor) || !Array.isArray(valor.asignados) || !Array.isArray(valor.disponibles)) {
+    throw new ErrorApi(MENSAJE_RESPUESTA_INVALIDA, null);
+  }
+  return {
+    asignados: valor.asignados as PersonaObra[],
+    disponibles: valor.disponibles as PersonaObra[],
+  };
+}
+
+/**
+ * Trabajadores de la empresa asignados y disponibles para una obra.
+ *
+ * @param tokenAcceso - Token del supervisor de la obra o del dueño.
+ * @param idObra - Obra.
+ */
+export async function listarTrabajadoresDeObra(
+  tokenAcceso: string,
+  idObra: string,
+): Promise<TrabajadoresDeObra> {
+  return aTrabajadoresDeObra(
+    await llamarApi(`/obras/${encodeURIComponent(idObra)}/trabajadores`, { tokenAcceso }),
+  );
+}
+
+/**
+ * Asigna trabajadores a una obra ya creada (RF-68).
+ *
+ * @param tokenAcceso - Token del supervisor de la obra o del dueño.
+ * @param idObra - Obra.
+ * @param trabajadoresIds - Trabajadores elegidos.
+ * @returns La lista actualizada.
+ */
+export async function asignarTrabajadores(
+  tokenAcceso: string,
+  idObra: string,
+  trabajadoresIds: string[],
+): Promise<TrabajadoresDeObra> {
+  return aTrabajadoresDeObra(
+    await llamarApi(`/obras/${encodeURIComponent(idObra)}/trabajadores`, {
+      metodo: 'POST',
+      tokenAcceso,
+      cuerpo: { trabajadoresIds },
+    }),
+  );
+}

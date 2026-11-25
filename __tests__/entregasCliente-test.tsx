@@ -28,6 +28,7 @@ import * as servicioEntregas from '@/servicios/servicioEntregas';
 import * as servicioObras from '@/servicios/servicioObras';
 import * as servicioReportes from '@/servicios/servicioReportes';
 import type { Obra } from '@/tipos/obra';
+import { guardarEnCacheParaCompartir } from '@/utilidades/archivoLocal';
 
 // 3. Constantes del módulo
 jest.mock('@/conexion/configuracionApi', () => ({
@@ -361,5 +362,13 @@ describe('Enviar al cliente desde la vista previa del reporte (RF-13, D-29)', ()
         'No hay avances aprobados en ese rango de fechas',
       ),
     );
+  });
+});
+
+describe('PDF del reporte en Android (P-18)', () => {
+  it('P18-A1 escribe el PDF en base64 en la caché con un nombre seguro', async () => {
+    const uri = await guardarEnCacheParaCompartir('JVBERi0=', 'Reporte Hospital/Norte.pdf');
+
+    expect(uri).toBe('file:///cache/Reporte Hospital_Norte.pdf');
   });
 });

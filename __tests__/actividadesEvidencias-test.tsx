@@ -142,7 +142,6 @@ describe('Servicio de actividades (feature 003)', () => {
   });
 
   it('CP12-A10-APP subir evidencia manda la foto con el tipo y el comentario', async () => {
-    globalThis.fetch = jest.fn(async () => ({ blob: async () => 'blob' })) as never;
     const llamar = jest.spyOn(clienteApi, 'llamarApi').mockResolvedValue({
       avance: { ...AVANCE, fechaRegistro: '2026-11-11T18:00:00.000Z' },
     });
@@ -158,21 +157,21 @@ describe('Servicio de actividades (feature 003)', () => {
       '/obras/o1/actividades/act1/avances',
       expect.objectContaining({
         metodo: 'POST',
-        cuerpoBinario: { datos: 'blob', tipo: 'image/jpeg' },
+        cuerpoBinario: {
+          datos: expect.objectContaining({ uri: 'file:///foto.jpg' }),
+          tipo: 'image/jpeg',
+        },
         encabezados: { 'x-tipo-avance': 'TERMINADO', 'x-comentario-avance': 'Termin%C3%A9' },
       }),
     );
     expect(avance).toMatchObject({ estado: 'PENDIENTE', tipo: 'TERMINADO' });
   });
 
-  it('CP12-A11-APP si no se puede leer la foto avisa sin llamar a la API', async () => {
-    globalThis.fetch = jest.fn(async () => {
-      throw new Error('sin archivo');
-    }) as never;
+  it('CP12-A11-APP si no se puede leer la foto avisa sin llamar a la API (D-33)', async () => {
     const llamar = jest.spyOn(clienteApi, 'llamarApi');
     await expect(
       actividades.subirEvidencia('tkn', 'o1', 'act1', {
-        uri: 'file:///x',
+        uri: 'file:///inexistente.jpg',
         tipoImagen: 'image/jpeg',
         tipo: 'DIARIO',
         comentario: '',

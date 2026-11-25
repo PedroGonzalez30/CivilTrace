@@ -10,6 +10,7 @@
  * @requerimientos RF-56 Mostrar días con descuento, RF-58 Mostrar calendario de asistencia,
  *   D-13
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Creación (feature 001)
+ * @historial 25/11/2026 - Emilio Manuel Esquivel - Muestra las horas descontadas (feature 006, D-35)
  */
 
 // 1. Importaciones
@@ -49,6 +50,7 @@ const NOMBRES_CAMPO: Record<string, string> = {
   motivo: 'motivo',
   efectoPago: 'efecto en el pago',
   anotacion: 'anotación',
+  horasDescontadas: 'horas a descontar',
 };
 
 // 4. Componente principal
@@ -122,6 +124,12 @@ export default function HojaDetalleDia({ detalle, zonaHoraria, onCerrar }: HojaD
               <Text style={estilos.valor}>{ETIQUETAS_EFECTO_PAGO_DETALLE[detalle.efectoPago]}</Text>
             </View>
           </View>
+          {detalle.horasDescontadas ? (
+            <Fila
+              etiqueta="Horas descontadas"
+              valor={`${detalle.horasDescontadas} ${detalle.horasDescontadas === 1 ? 'hora' : 'horas'}`}
+            />
+          ) : null}
           {detalle.anotacion ? (
             <View style={estilos.anotacion}>
               <Text style={estilos.etiqueta}>Anotación</Text>
