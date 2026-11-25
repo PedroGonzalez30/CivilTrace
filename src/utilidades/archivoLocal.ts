@@ -9,10 +9,11 @@
  * @version 1.0.0
  * @requerimientos RF-08 Capturar evidencia fotográfica, RF-57 Editar perfil de usuario
  * @historial 25/11/2026 - Emilio Manuel Esquivel - Creación (D-33)
+ *   25/11/2026 - Emilio Manuel Esquivel - Copiar a la caché antes de compartir (P-18)
  */
 
 // 1. Importaciones
-import { File } from 'expo-file-system';
+import { File, Paths } from 'expo-file-system';
 
 import { ErrorApi } from '@/conexion/clienteApi';
 
@@ -35,4 +36,20 @@ export function abrirFotoLocal(uri: string): File {
   } catch {
     throw new ErrorApi(MENSAJE_FOTO_ILEGIBLE, null);
   }
+}
+
+/**
+ * Copia un archivo a la caché de la app con un nombre legible para poder compartirlo. En Android,
+ * expo-sharing no tiene permiso de leer el PDF donde lo deja expo-print ("Not allowed to read file
+ * under given URL", P-18).
+ *
+ * @param uri - Archivo de origen (por ejemplo, el PDF de Print.printToFileAsync).
+ * @param nombre - Nombre del archivo a compartir, con extensión.
+ * @returns La dirección de la copia en la caché.
+ */
+export async function copiarACacheParaCompartir(uri: string, nombre: string): Promise<string> {
+  const nombreSeguro = nombre.replace(/[^\p{L}\p{N}._ -]/gu, '_');
+  const destino = new File(Paths.cache, nombreSeguro);
+  await new File(uri).copy(destino, { overwrite: true });
+  return destino.uri;
 }

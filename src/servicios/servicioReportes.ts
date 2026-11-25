@@ -8,6 +8,7 @@
  * @version 1.2.0
  * @historial 24/11/2026 - Emilio Manuel Esquivel - Los tipos del reporte omiten los campos de
  *   revisión del feature 003
+ *   25/11/2026 - Emilio Manuel Esquivel - El PDF se copia a la caché antes de compartir (P-18)
  */
 
 import * as Print from 'expo-print';
@@ -23,6 +24,7 @@ import type {
 } from '@/tipos/actividad';
 import type { Obra } from '@/tipos/obra';
 import { convertirFechaLocalAIso, convertirIsoAFechaLocal } from '@/utilidades/formatearFecha';
+import { copiarACacheParaCompartir } from '@/utilidades/archivoLocal';
 
 // El reporte no usa los datos de revisión ni de entrega del feature 003.
 export interface AvanceReporte extends Omit<
@@ -376,7 +378,8 @@ export async function generarYCompartirPdfReporte(reporte: DatosReporteObra): Pr
     // Diagnóstico P-18: las fotos van dentro del HTML; un HTML enorme puede hacer fallar la impresión.
     console.info(`[PDF reporte] HTML de ${(html.length / 1024 / 1024).toFixed(1)} MB`);
   }
-  const { uri } = await Print.printToFileAsync({ html });
+  const { uri: uriImpresion } = await Print.printToFileAsync({ html });
+  const uri = await copiarACacheParaCompartir(uriImpresion, `Reporte ${reporte.obra.nombre}.pdf`);
   if (await Sharing.isAvailableAsync()) {
     await Sharing.shareAsync(uri, {
       mimeType: 'application/pdf',
