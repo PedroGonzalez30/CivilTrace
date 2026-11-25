@@ -20,6 +20,7 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from
 import EncabezadoApp from '@/componentes/EncabezadoApp';
 import { IconoCheckCirculo, IconoChevronIzquierda, IconoMas } from '@/componentes/Iconos';
 import ImagenEvidencia from '@/componentes/ImagenEvidencia';
+import TextoUbicacion from '@/componentes/TextoUbicacion';
 import { ErrorApi } from '@/conexion/clienteApi';
 import { COLORES } from '@/constantes/colores';
 import { COLORES_ASISTENCIA } from '@/constantes/textosAsistencia';
@@ -160,6 +161,7 @@ export default function PantallaActividadTrabajador({
                         {avance.tipo === 'TERMINADO' ? 'Entrega final' : 'Avance diario'}
                       </Text>
                       <Text style={estilos.leyenda}>{avance.fechaRegistro}</Text>
+                      <TextoUbicacion datos={avance} />
                       <Text
                         style={[
                           estilos.estado,

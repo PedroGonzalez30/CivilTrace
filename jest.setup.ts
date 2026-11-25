@@ -45,7 +45,7 @@ jest.mock('expo-network', () => ({
 }));
 
 jest.mock('expo-location', () => ({
-  Accuracy: { Balanced: 3 },
+  Accuracy: { Balanced: 3, High: 4 },
   requestForegroundPermissionsAsync: jest.fn(async () => ({ granted: true, status: 'granted' })),
   getForegroundPermissionsAsync: jest.fn(async () => ({ granted: true, status: 'granted' })),
   getCurrentPositionAsync: jest.fn(async () => ({
