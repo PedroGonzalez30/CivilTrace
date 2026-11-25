@@ -23,7 +23,7 @@ import AvisoSincronizacion from '@/componentes/AvisoSincronizacion';
 import BotonPrincipal from '@/componentes/BotonPrincipal';
 import EncabezadoApp from '@/componentes/EncabezadoApp';
 import HojaDetallesAsistencia from '@/componentes/HojaDetallesAsistencia';
-import { IconoLapiz } from '@/componentes/Iconos';
+import { IconoLapiz, IconoUsuarios } from '@/componentes/Iconos';
 import TarjetaHorarioDia from '@/componentes/TarjetaHorarioDia';
 import { COLORES } from '@/constantes/colores';
 import { COLORES_ASISTENCIA } from '@/constantes/textosAsistencia';
@@ -42,6 +42,8 @@ interface PantallaLeerQrProps {
   onEditarHorario: () => void;
   onVerRechazados: () => void;
   onVerCalendario: (trabajadorId: string) => void;
+  // Feature 005: botón Personal (arriba a la derecha) para ver el desempeño de los trabajadores.
+  onVerPersonal?: () => void;
 }
 
 // 3. Constantes del módulo
@@ -58,6 +60,7 @@ export default function PantallaLeerQr({
   onEditarHorario,
   onVerRechazados,
   onVerCalendario,
+  onVerPersonal,
 }: PantallaLeerQrProps) {
   const lectura = useLecturaQr(sesion, obraId);
   const { recargar } = lectura;
@@ -93,7 +96,20 @@ export default function PantallaLeerQr({
         contentContainerStyle={estilos.contenido}
         refreshControl={<RefreshControl refreshing={lectura.cargando} onRefresh={recargar} />}
       >
-        <Text style={estilos.titulo}>Asistencia de personal</Text>
+        <View style={estilos.filaTitulo}>
+          <Text style={estilos.titulo}>Asistencia de personal</Text>
+          {onVerPersonal ? (
+            <Pressable
+              style={estilos.botonPersonal}
+              onPress={onVerPersonal}
+              accessibilityRole="button"
+              accessibilityLabel="Personal: ver desempeño"
+            >
+              <IconoUsuarios tamano={18} color={COLORES_ASISTENCIA.azul} />
+              <Text style={estilos.textoPersonal}>Personal</Text>
+            </Pressable>
+          ) : null}
+        </View>
         <Text style={estilos.obra}>{obraNombre}</Text>
         <AvisoSincronizacion
           sinConexion={lectura.sinConexion}
@@ -210,7 +226,23 @@ export default function PantallaLeerQr({
 const estilos = StyleSheet.create({
   contenedor: { flex: 1, backgroundColor: COLORES.pantalla },
   contenido: { padding: 24, gap: 14, paddingBottom: 40 },
-  titulo: { ...TIPOGRAFIA.titulo1, color: COLORES.texto },
+  titulo: { ...TIPOGRAFIA.titulo1, color: COLORES.texto, flexShrink: 1 },
+  filaTitulo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  botonPersonal: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: RADIOS.pildora,
+    backgroundColor: COLORES_ASISTENCIA.azulBoton,
+  },
+  textoPersonal: { ...TIPOGRAFIA.etiqueta, color: COLORES_ASISTENCIA.azul },
   obra: { ...TIPOGRAFIA.titulo3, color: COLORES_ASISTENCIA.azul },
   error: { ...TIPOGRAFIA.leyenda, color: COLORES.error },
   tarjeta: {
