@@ -70,6 +70,8 @@ jest.mock('expo-file-system', () => {
     static createDownloadTask = jest.fn((_url: string, destino: ArchivoSimulado) => ({
       downloadAsync: jest.fn(async () => destino),
     }));
+    // Feature 004: descarga del reporte y del acta de una entrega.
+    static downloadFileAsync = jest.fn(async (_url: string, destino: ArchivoSimulado) => destino);
   }
   return {
     Paths: { document: { uri: 'file:///documentos' }, cache: { uri: 'file:///cache' } },

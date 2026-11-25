@@ -88,6 +88,7 @@ const ACTIVIDAD: ActividadDetalle = {
   fechaInicio: '02/10/2026',
   responsableId: 'ana',
   enRevision: true,
+  bloqueada: false,
   avances: [
     { ...AVANCE, id: 'av0', estado: 'APROBADO', tipo: 'DIARIO', fechaRegistro: '10/11/2026' },
     AVANCE,

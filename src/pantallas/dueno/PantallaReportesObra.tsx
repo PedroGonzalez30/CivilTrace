@@ -5,7 +5,10 @@
  *              de entregables por actividad y generación de reporte PDF real.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
- * @version 1.0.0
+ * @version 1.1.0
+ * @requerimientos RF-12 Generar reporte de avance de obra, RF-13 Enviar entrega al cliente
+ * @historial 24/11/2026 - Emilio Manuel Esquivel - "Enviar al cliente" y entregas de la obra
+ *   (feature 004, D-29)
  */
 
 import { useCallback, useEffect, useState } from 'react';
@@ -29,6 +32,8 @@ import {
   IconoFlechaIzquierda,
   TarjetaFormulario,
 } from '@/componentes';
+import SeccionEntregas from '@/componentes/SeccionEntregas';
+import { ErrorApi } from '@/conexion/clienteApi';
 import { COLORES } from '@/constantes/colores';
 import { RADIOS, SOMBRAS, TAMANOS, TIPOGRAFIA } from '@/constantes/tema';
 import {
@@ -36,6 +41,7 @@ import {
   generarYCompartirPdfReporte,
   type DatosReporteObra,
 } from '@/servicios/servicioReportes';
+import { enviarEntrega } from '@/servicios/servicioEntregas';
 import type { Obra } from '@/tipos/obra';
 import { aplicarMascaraFecha } from '@/utilidades/formatearFecha';
 
@@ -61,6 +67,8 @@ export default function PantallaReportesObra({
   const [cargando, setCargando] = useState(true);
   const [generandoPdf, setGenerandoPdf] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [estaEnviando, setEstaEnviando] = useState(false);
+  const [versionEntregas, setVersionEntregas] = useState(0);
 
   const cargarReporte = useCallback(
     async (inicio: string, fin: string) => {
@@ -94,6 +102,42 @@ export default function PantallaReportesObra({
     } finally {
       setGenerandoPdf(false);
     }
+  };
+
+  // D-29: la entrega lleva solo las fotos aprobadas del rango del filtro.
+  const enviarAlCliente = async () => {
+    setEstaEnviando(true);
+    try {
+      const entrega = await enviarEntrega(tokenAcceso, obra.id, fechaInicio, fechaFin);
+      setVistaPreviaVisible(false);
+      setVersionEntregas((version) => version + 1);
+      Alert.alert(
+        'Se envió al cliente',
+        entrega.enlacePortal === 'ENVIADO'
+          ? 'Se envió el reporte correctamente al correo del cliente.'
+          : 'La entrega ya está en el portal del cliente, pero no se pudo enviar el correo. El dueño puede reenviar el enlace desde el detalle de la obra.',
+      );
+    } catch (errorEnvio) {
+      Alert.alert(
+        'No se pudo enviar',
+        errorEnvio instanceof ErrorApi
+          ? errorEnvio.message
+          : 'Ocurrió un error al enviar la entrega. Inténtalo de nuevo.',
+      );
+    } finally {
+      setEstaEnviando(false);
+    }
+  };
+
+  const manejarEnviarCliente = () => {
+    Alert.alert(
+      'Enviar al cliente',
+      `Se enviarán las fotografías aprobadas del ${fechaInicio} al ${fechaFin} al portal del cliente y se le avisará por correo.`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Enviar', onPress: () => void enviarAlCliente() },
+      ],
+    );
   };
 
   const manejarAplicarFiltro = () => {
@@ -195,6 +239,12 @@ export default function PantallaReportesObra({
             </Text>
           </TarjetaFormulario>
         )}
+
+        <SeccionEntregas
+          tokenAcceso={tokenAcceso}
+          idObra={obra.id}
+          versionLista={versionEntregas}
+        />
       </ScrollView>
 
       <Modal
@@ -319,6 +369,12 @@ export default function PantallaReportesObra({
               etiqueta={generandoPdf ? 'Generando PDF...' : 'Descargar / Compartir PDF'}
               onPresionar={manejarGenerarPdf}
               deshabilitado={generandoPdf || !reporte}
+            />
+            <BotonPrincipal
+              variante="contorno"
+              etiqueta={estaEnviando ? 'Enviando...' : 'Enviar al cliente'}
+              onPresionar={manejarEnviarCliente}
+              deshabilitado={estaEnviando || !reporte || reporte.actividades.length === 0}
             />
           </View>
         </View>
@@ -588,6 +644,7 @@ const estilos = StyleSheet.create({
   },
   pieVistaPrevia: {
     padding: 16,
+    gap: 10,
     backgroundColor: COLORES.superficie,
     borderTopWidth: 1,
     borderTopColor: COLORES.borde,
