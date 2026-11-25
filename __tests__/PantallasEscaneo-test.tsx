@@ -199,6 +199,8 @@ describe('PantallaConfirmarQr', () => {
     );
 
     expect(await screen.findByText('Hora de entrada')).toBeTruthy();
+    // Feature 006: se ve en grande que es una entrada.
+    expect(screen.getByText('Registro de ENTRADA')).toBeTruthy();
     expect(screen.getByText('8:02 am')).toBeTruthy();
     expect(await screen.findByText('32.6245, -115.4523')).toBeTruthy();
     expect(screen.getByText('Sin faltas este mes')).toBeTruthy();

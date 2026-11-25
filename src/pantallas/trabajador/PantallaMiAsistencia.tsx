@@ -9,6 +9,7 @@
  * @version 1.0.0
  * @requerimientos RF-19 Registrar asistencia propia, D-17, D-18, RNF-07 Captura sin conexión
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Creación (feature 001)
+ * @historial 25/11/2026 - Emilio Manuel Esquivel - Margen alrededor del QR (feature 006)
  */
 
 // 1. Importaciones
@@ -34,6 +35,8 @@ interface PantallaMiAsistenciaProps {
 }
 
 // 3. Constantes del módulo
+// Feature 006: margen blanco alrededor del QR; también ayuda a que la cámara lo lea.
+const MARGEN_QR = 16;
 const TAMANO_QR = 260;
 
 // 4. Componente principal
@@ -92,7 +95,7 @@ export default function PantallaMiAsistencia({
 
         <View style={estilos.tarjetaQr}>
           {codigoQr ? (
-            <QRCode value={codigoQr} size={TAMANO_QR} />
+            <QRCode value={codigoQr} size={TAMANO_QR} quietZone={MARGEN_QR} />
           ) : (
             <View style={estilos.qrVacio} />
           )}

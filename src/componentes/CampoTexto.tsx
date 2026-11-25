@@ -5,6 +5,7 @@
  * @autor POR_COMPLETAR
  * @fecha POR_COMPLETAR
  * @version 1.0.0
+ * @historial 25/11/2026 - Emilio Manuel Esquivel - Prop textContentType (feature 006)
  */
 
 // 1. Importaciones
@@ -40,6 +41,7 @@ interface CampoTextoProps {
   keyboardType?: KeyboardTypeOptions;
   autoCapitalize?: TextInputProps['autoCapitalize'];
   autoComplete?: TextInputProps['autoComplete'];
+  textContentType?: TextInputProps['textContentType'];
   returnKeyType?: ReturnKeyTypeOptions;
   referenciaEntrada?: Ref<CampoTextoRef>;
   esMultilinea?: boolean;
@@ -64,6 +66,7 @@ export default function CampoTexto({
   keyboardType,
   autoCapitalize,
   autoComplete,
+  textContentType,
   returnKeyType,
   puedeAlternarVisibilidad,
   referenciaEntrada,
@@ -108,6 +111,7 @@ export default function CampoTexto({
           keyboardType={keyboardType}
           autoCapitalize={autoCapitalize}
           autoComplete={autoComplete}
+          textContentType={textContentType}
           autoCorrect={false}
           returnKeyType={returnKeyType}
           onChangeText={onCambiarTexto}
