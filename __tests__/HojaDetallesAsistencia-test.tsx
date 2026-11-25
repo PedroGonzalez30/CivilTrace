@@ -53,6 +53,7 @@ const DETALLE: DetalleDia = {
   motivo: null,
   efectoPago: 'PAGO_COMPLETO',
   conDescuento: false,
+  horasDescontadas: null,
   anotacion: null,
   registradoPor: 'María',
   registradoEn: '2026-11-20T16:02:00.000Z',
@@ -124,6 +125,33 @@ describe('HojaDetallesAsistencia', () => {
       efectoPago: 'MEDIO_DIA',
       anotacion: 'Salió a las 12:00 por cita en el IMSS',
     });
+  });
+
+  it('CP19-A20-APP registra horas a descontar y valida medias horas (D-35)', async () => {
+    detalles.editarDetalleDia.mockResolvedValue({ ...DETALLE, horasDescontadas: 1.5 });
+    const onGuardado = jest.fn();
+    await renderizar(onGuardado);
+    await screen.findByText('Emilio Manuel Esquivel');
+    await fireEvent.changeText(
+      screen.getByLabelText('Anotaciones'),
+      'Llegó una hora y media tarde',
+    );
+
+    await fireEvent.changeText(screen.getByLabelText('Horas a descontar'), '1.3');
+    await fireEvent.press(screen.getByText('Guardar detalles'));
+    expect(screen.getByText('Las horas a descontar van de 0.5 a 12, en medias horas')).toBeTruthy();
+    expect(detalles.editarDetalleDia).not.toHaveBeenCalled();
+
+    await fireEvent.changeText(screen.getByLabelText('Horas a descontar'), '1,5');
+    await fireEvent.press(screen.getByText('Guardar detalles'));
+    await waitFor(() => expect(onGuardado).toHaveBeenCalled());
+    expect(detalles.editarDetalleDia).toHaveBeenCalledWith(
+      'tkn',
+      'hospital',
+      'ana',
+      '2026-11-20',
+      expect.objectContaining({ horasDescontadas: 1.5 }),
+    );
   });
 
   it('CP19-A5-APP el error del servidor y la falta de conexión se muestran sin cerrar la hoja', async () => {

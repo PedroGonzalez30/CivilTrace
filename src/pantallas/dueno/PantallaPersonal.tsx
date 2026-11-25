@@ -7,6 +7,8 @@
  * @fecha 19/11/2026
  * @version 1.1.0
  * @historial 19/11/2026 - Pedro González - Lista de personal y eliminación según el diseño.
+ * @historial 25/11/2026 - Emilio Manuel Esquivel - Tocar un trabajador abre su desempeño
+ *   (feature 005, D-30)
  */
 
 // 1. Importaciones
@@ -25,6 +27,7 @@ import { COLORES } from '@/constantes/colores';
 import { TIPOGRAFIA } from '@/constantes/tema';
 import { TEXTOS_PERSONAL } from '@/constantes/textos';
 import { usePersonalEmpresa } from '@/hooks/usePersonalEmpresa';
+import PantallaDesempeno from '@/pantallas/comunes/PantallaDesempeno';
 import { eliminarPersonal } from '@/servicios/servicioEmpresa';
 import type { PersonaEmpresa } from '@/tipos/personal';
 
@@ -43,6 +46,8 @@ export default function PantallaPersonal({ tokenAcceso }: PantallaPersonalProps)
   const [estaEliminando, setEstaEliminando] = useState(false);
   const [seElimino, setSeElimino] = useState(false);
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
+  // Feature 005: al tocar un trabajador se muestra su desempeño en lugar de la lista.
+  const [trabajadorDesempeno, setTrabajadorDesempeno] = useState<string | null>(null);
 
   // Oculta el aviso de éxito a los 3 segundos.
   useEffect(() => {
@@ -83,6 +88,16 @@ export default function PantallaPersonal({ tokenAcceso }: PantallaPersonalProps)
     }
   };
 
+  if (trabajadorDesempeno) {
+    return (
+      <PantallaDesempeno
+        tokenAcceso={tokenAcceso}
+        trabajadorId={trabajadorDesempeno}
+        onRegresar={() => setTrabajadorDesempeno(null)}
+      />
+    );
+  }
+
   return (
     <View style={estilos.contenedor}>
       <EncabezadoApp />
@@ -113,6 +128,7 @@ export default function PantallaPersonal({ tokenAcceso }: PantallaPersonalProps)
               textoVacio={TEXTOS_PERSONAL.vacioTrabajadores}
               personas={personal.trabajadores}
               onEliminar={manejarPedirEliminar}
+              onSeleccionar={(persona) => setTrabajadorDesempeno(persona.id)}
             />
           </TarjetaFormulario>
         ) : (

@@ -6,18 +6,22 @@
  * @fecha POR_COMPLETAR
  * @version 1.1.0
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Oficio del perfil (D-18, feature 001)
+ * @historial 25/11/2026 - Emilio Manuel Esquivel - Reglas de contraseña (D-12) y confirmación al
+ *   registrarse (feature 006)
  */
 
 import { RolUsuario } from '@/tipos/autenticacion';
 
 export type CampoInicioSesion = 'correo' | 'contrasena';
-export type CampoRegistro = 'nombre' | 'correo' | 'contrasena' | 'rol' | 'empresa';
+export type CampoRegistro =
+  'nombre' | 'correo' | 'contrasena' | 'confirmarContrasena' | 'rol' | 'empresa';
 
 export const CAMPOS_INICIO_SESION: readonly CampoInicioSesion[] = ['correo', 'contrasena'];
 export const CAMPOS_REGISTRO: readonly CampoRegistro[] = [
   'nombre',
   'correo',
   'contrasena',
+  'confirmarContrasena',
   'rol',
   'empresa',
 ];
@@ -53,6 +57,22 @@ function validarContrasena(valor: string): string | undefined {
     return `Mínimo ${LONGITUD_MINIMA_CONTRASENA} caracteres`;
   }
   return undefined;
+}
+
+/** Reglas de una contraseña nueva (D-12), en el orden en que se muestran al registrarse. */
+export const REGLAS_CONTRASENA: readonly { texto: string; cumple: (valor: string) => boolean }[] = [
+  { texto: 'Mínimo 8 caracteres', cumple: (valor) => valor.length >= LONGITUD_MINIMA_CONTRASENA },
+  { texto: 'Una letra mayúscula', cumple: (valor) => /[A-Z]/.test(valor) },
+  { texto: 'Una letra minúscula', cumple: (valor) => /[a-z]/.test(valor) },
+  { texto: 'Un número', cumple: (valor) => /[0-9]/.test(valor) },
+];
+
+function validarContrasenaRegistro(valor: string): string | undefined {
+  if (!valor) {
+    return 'La contraseña es requerida';
+  }
+  const incumplida = REGLAS_CONTRASENA.find((regla) => !regla.cumple(valor));
+  return incumplida ? `La contraseña necesita: ${incumplida.texto.toLowerCase()}` : undefined;
 }
 
 /**
@@ -91,7 +111,12 @@ export function validarRegistro(
   }
 
   errores.correo = validarCorreo(valores.correo);
-  errores.contrasena = validarContrasena(valores.contrasena);
+  errores.contrasena = validarContrasenaRegistro(valores.contrasena);
+  if (!valores.confirmarContrasena) {
+    errores.confirmarContrasena = 'Confirma tu contraseña';
+  } else if (valores.confirmarContrasena !== valores.contrasena) {
+    errores.confirmarContrasena = 'Las contraseñas no coinciden';
+  }
 
   if (!valores.rol) {
     errores.rol = 'Selecciona tu rol';

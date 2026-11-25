@@ -31,15 +31,20 @@ jest.mock('expo-camera', () => {
 
 // 4. Pruebas
 describe('SelectorHora', () => {
-  it('CP22-A7-APP abre la lista, elige una hora y muestra — sin valor', async () => {
+  it('CP22-A7-APP se escribe la hora, se confirma en am/pm y avisa si no es válida (D-36)', async () => {
     const onCambiar = jest.fn();
     const { rerender } = await render(
       <SelectorHora etiqueta="Entrada" valor="08:00" onCambiar={onCambiar} />,
     );
 
-    await fireEvent.press(screen.getByLabelText('Entrada: 08:00 am'));
-    await fireEvent.press(screen.getByText('08:15 am'));
+    const campo = screen.getByLabelText('Entrada: 08:00 am');
+    await fireEvent.changeText(campo, '0815');
     expect(onCambiar).toHaveBeenCalledWith('08:15');
+    expect(screen.getByText('08:15 am')).toBeTruthy();
+
+    await fireEvent.changeText(campo, '2575');
+    expect(screen.getByText('Escribe la hora como 08:00 o 16:30')).toBeTruthy();
+    expect(onCambiar).toHaveBeenCalledTimes(1);
 
     await rerender(<SelectorHora etiqueta="Salida" valor={null} onCambiar={onCambiar} />);
     expect(screen.getByLabelText('Salida: —')).toBeTruthy();

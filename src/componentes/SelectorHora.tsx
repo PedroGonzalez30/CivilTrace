@@ -1,22 +1,23 @@
 /**
  * @archivo SelectorHora.tsx
  * @proyecto Civil Trace
- * @descripcion Campo de hora con ícono de reloj (Figma SUP_HorarioObra) que abre una lista de
- *   horas cada 15 minutos. Evita agregar una librería de selector de fecha.
+ * @descripcion Campo para escribir una hora (HH:MM, 24 horas) en el horario de la obra y en los
+ *   detalles de asistencia. Debajo muestra la hora en formato am/pm para confirmar.
  * @autor Emilio Manuel Esquivel
  * @fecha 23/11/2026
- * @version 1.0.0
- * @requerimientos D-06
- * @historial 23/11/2026 - Emilio Manuel Esquivel - Creación (feature 001)
+ * @version 2.0.0
+ * @requerimientos RF-29 Registrar asistencia por el supervisor, RF-64 Modificar registro de
+ *   asistencia (SRS v5.0)
+ * @historial 23/11/2026 - Emilio Manuel Esquivel - Creación con lista de horas (feature 001)
+ *   25/11/2026 - Emilio Manuel Esquivel - Se escribe la hora en lugar de elegirla de una lista
+ *   (retroalimentación del equipo, feature 006, D-36)
  */
 
 // 1. Importaciones
-import { useState } from 'react';
-import { FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import { useEffect, useState } from 'react';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { COLORES } from '@/constantes/colores';
-import { COLORES_ASISTENCIA } from '@/constantes/textosAsistencia';
 import { RADIOS, TIPOGRAFIA } from '@/constantes/tema';
 import { formatearHoraCampo } from '@/utilidades/formatoHoras';
 
@@ -29,113 +30,96 @@ interface SelectorHoraProps {
 }
 
 // 3. Constantes del módulo
-const PRIMERA_HORA = 5;
-const ULTIMA_HORA = 22;
-const PASO_MINUTOS = 15;
 const SIN_HORA = '—';
-const INDICE_POR_DEFECTO = 12;
-const HORAS = Array.from({ length: (ULTIMA_HORA - PRIMERA_HORA + 1) * 4 }, (_, indice) => {
-  const minutos = PRIMERA_HORA * 60 + indice * PASO_MINUTOS;
-  return `${String(Math.floor(minutos / 60)).padStart(2, '0')}:${String(minutos % 60).padStart(2, '0')}`;
-});
+const LARGO_HORA = 5;
+const DIGITOS_HORA = 4;
+const REGEX_HORA = /^([01]\d|2[0-3]):([0-5]\d)$/;
+const MENSAJE_INVALIDA = 'Escribe la hora como 08:00 o 16:30';
 
 // 4. Componente principal
+/**
+ * Acomoda lo que se escribe como HH:MM: solo dígitos y los dos puntos después de la hora.
+ *
+ * @param texto - Lo que escribió el usuario.
+ * @returns El texto con formato.
+ */
+export function aplicarMascaraHora(texto: string): string {
+  const digitos = texto.replace(/\D/g, '').slice(0, DIGITOS_HORA);
+  return digitos.length > 2 ? `${digitos.slice(0, 2)}:${digitos.slice(2)}` : digitos;
+}
+
+/** @returns true si es una hora válida de 00:00 a 23:59. */
+export function esHoraValida(texto: string): boolean {
+  return REGEX_HORA.test(texto);
+}
+
 export default function SelectorHora({ etiqueta, valor, onCambiar }: SelectorHoraProps) {
-  const [abierto, setAbierto] = useState(false);
+  const [texto, setTexto] = useState(valor ?? '');
+
+  useEffect(() => {
+    setTexto(valor ?? '');
+  }, [valor]);
+
+  const manejarCambio = (escrito: string) => {
+    const conFormato = aplicarMascaraHora(escrito);
+    setTexto(conFormato);
+    if (esHoraValida(conFormato) && conFormato !== valor) {
+      onCambiar(conFormato);
+    }
+  };
+
+  const estaCompleta = texto.length === LARGO_HORA;
+  const esInvalida = estaCompleta && !esHoraValida(texto);
 
   return (
     <View style={estilos.contenedor}>
       <Text style={estilos.etiqueta}>{etiqueta}</Text>
-      <Pressable
-        style={estilos.campo}
-        onPress={() => setAbierto(true)}
-        accessibilityRole="button"
+      <TextInput
+        style={[estilos.campo, esInvalida && estilos.campoError]}
+        value={texto}
+        onChangeText={manejarCambio}
+        placeholder="08:00"
+        placeholderTextColor={COLORES.marcador}
+        keyboardType="number-pad"
+        maxLength={LARGO_HORA}
         accessibilityLabel={`${etiqueta}: ${valor ? formatearHoraCampo(valor) : SIN_HORA}`}
-      >
-        <Text style={estilos.valor}>{valor ? formatearHoraCampo(valor) : SIN_HORA}</Text>
-        <Svg
-          width={20}
-          height={20}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={COLORES.textoSutil}
-          strokeWidth={2}
-        >
-          <Circle cx={12} cy={12} r={10} />
-          <Path d="M12 6v6l4 2" />
-        </Svg>
-      </Pressable>
-      <Modal
-        visible={abierto}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setAbierto(false)}
-      >
-        <Pressable style={estilos.fondo} onPress={() => setAbierto(false)}>
-          <View style={estilos.lista}>
-            <Text style={estilos.tituloLista}>{etiqueta}</Text>
-            <FlatList
-              data={HORAS}
-              keyExtractor={(hora) => hora}
-              initialScrollIndex={valor ? Math.max(0, HORAS.indexOf(valor)) : INDICE_POR_DEFECTO}
-              getItemLayout={(_, indice) => ({ length: 44, offset: 44 * indice, index: indice })}
-              renderItem={({ item }) => (
-                <Pressable
-                  style={[estilos.opcion, item === valor && estilos.opcionActiva]}
-                  onPress={() => {
-                    onCambiar(item);
-                    setAbierto(false);
-                  }}
-                >
-                  <Text style={[estilos.textoOpcion, item === valor && estilos.textoActivo]}>
-                    {formatearHoraCampo(item)}
-                  </Text>
-                </Pressable>
-              )}
-            />
-          </View>
-        </Pressable>
-      </Modal>
+      />
+      <Text style={esInvalida ? estilos.error : estilos.ayuda}>
+        {esInvalida ? MENSAJE_INVALIDA : esHoraValida(texto) ? formatearHoraCampo(texto) : SIN_HORA}
+      </Text>
     </View>
   );
 }
 
 // 5. Estilos
 const estilos = StyleSheet.create({
-  contenedor: { flex: 1, gap: 8 },
-  etiqueta: { ...TIPOGRAFIA.leyenda, color: COLORES.textoSutil },
+  contenedor: {
+    flex: 1,
+    gap: 6,
+  },
+  etiqueta: {
+    ...TIPOGRAFIA.etiqueta,
+    color: COLORES.texto,
+  },
   campo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    backgroundColor: COLORES.fondoEntrada,
     borderWidth: 1,
     borderColor: COLORES.borde,
-    borderRadius: RADIOS.entrada,
-    backgroundColor: COLORES.fondoEntrada,
-    paddingHorizontal: 12,
-    height: 52,
-  },
-  valor: { ...TIPOGRAFIA.etiqueta, fontSize: 16, color: COLORES.texto },
-  fondo: {
-    flex: 1,
-    backgroundColor: COLORES_ASISTENCIA.fondoOscuro,
-    justifyContent: 'center',
-    padding: 40,
-  },
-  lista: {
-    backgroundColor: COLORES.superficie,
-    borderRadius: RADIOS.modal,
-    maxHeight: 420,
-    padding: 12,
-  },
-  tituloLista: { ...TIPOGRAFIA.titulo3, color: COLORES.texto, marginBottom: 8 },
-  opcion: {
-    height: 44,
-    justifyContent: 'center',
-    paddingHorizontal: 12,
     borderRadius: RADIOS.accion,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    ...TIPOGRAFIA.valorCampo,
+    color: COLORES.texto,
   },
-  opcionActiva: { backgroundColor: COLORES_ASISTENCIA.azulChip },
-  textoOpcion: { ...TIPOGRAFIA.subtitulo, color: COLORES.texto },
-  textoActivo: { color: COLORES_ASISTENCIA.azul },
+  campoError: {
+    borderColor: COLORES.error,
+  },
+  ayuda: {
+    ...TIPOGRAFIA.leyenda,
+    color: COLORES.textoAtenuado,
+  },
+  error: {
+    ...TIPOGRAFIA.leyenda,
+    color: COLORES.error,
+  },
 });

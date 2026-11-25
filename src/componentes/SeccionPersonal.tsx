@@ -5,6 +5,7 @@
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 19/11/2026
  * @version 1.0.0
+ * @historial 25/11/2026 - Emilio Manuel Esquivel - onSeleccionar para abrir el desempeño (feature 005)
  */
 
 // 1. Importaciones
@@ -22,6 +23,7 @@ interface SeccionPersonalProps {
   textoVacio: string;
   personas: PersonaEmpresa[];
   onEliminar: (persona: PersonaEmpresa) => void;
+  onSeleccionar?: (persona: PersonaEmpresa) => void;
 }
 
 // 4. Componente principal
@@ -31,6 +33,7 @@ export default function SeccionPersonal({
   textoVacio,
   personas,
   onEliminar,
+  onSeleccionar,
 }: SeccionPersonalProps) {
   return (
     <View>
@@ -45,6 +48,7 @@ export default function SeccionPersonal({
               nombre={persona.nombre}
               subtitulo={subtituloPersonas}
               onEliminar={() => onEliminar(persona)}
+              onPresionar={onSeleccionar ? () => onSeleccionar(persona) : undefined}
             />
           ))
         )}

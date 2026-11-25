@@ -8,6 +8,8 @@
  * @requerimientos RF-47 Consultar detalle de obra, RF-65 Enviar enlace del portal al cliente
  * @historial 24/11/2026 - Emilio Manuel Esquivel - "Reenviar enlace al cliente" para el dueño
  *   (feature 004)
+ *   25/11/2026 - Emilio Manuel Esquivel - Textos cortos en los botones y "Trabajadores de la obra"
+ *   (feature 006, RF-68)
  */
 
 import { useState } from 'react';
@@ -22,6 +24,7 @@ import {
 } from '@/componentes';
 import { COLORES } from '@/constantes/colores';
 import { RADIOS, SOMBRAS, TAMANOS, TIPOGRAFIA } from '@/constantes/tema';
+import ModalAsignarTrabajadores from '@/componentes/ModalAsignarTrabajadores';
 import { ErrorApi } from '@/conexion/clienteApi';
 import type { Obra } from '@/tipos/obra';
 
@@ -32,6 +35,8 @@ interface PantallaDetalleObraProps {
   onAbrirReportes: (idObra: string) => void;
   // Solo la pila del dueño lo manda: el supervisor no reenvía el enlace del portal.
   onReenviarEnlace?: () => Promise<void>;
+  // Feature 006 (RF-68): con el token, el dueño o el supervisor pueden agregar trabajadores.
+  tokenAcceso?: string;
 }
 
 export default function PantallaDetalleObra({
@@ -40,8 +45,10 @@ export default function PantallaDetalleObra({
   onAbrirActividades,
   onAbrirReportes,
   onReenviarEnlace,
+  tokenAcceso,
 }: PantallaDetalleObraProps) {
   const [estaReenviando, setEstaReenviando] = useState(false);
+  const [verTrabajadores, setVerTrabajadores] = useState(false);
 
   const manejarReenviarEnlace = async () => {
     if (!onReenviarEnlace) {
@@ -104,16 +111,24 @@ export default function PantallaDetalleObra({
             <BotonPrincipal
               estilo={estilos.mitad}
               variante="marca"
-              etiqueta="Actividades de la obra"
+              etiqueta="Actividades"
               onPresionar={() => onAbrirActividades(obra.id)}
             />
             <BotonPrincipal
               estilo={estilos.mitad}
               variante="marca"
-              etiqueta="Reportes de la obra"
+              etiqueta="Reportes"
               onPresionar={() => onAbrirReportes(obra.id)}
             />
           </View>
+          {tokenAcceso ? (
+            <BotonPrincipal
+              estilo={estilos.botonEnlace}
+              variante="contorno"
+              etiqueta="Trabajadores de la obra"
+              onPresionar={() => setVerTrabajadores(true)}
+            />
+          ) : null}
           {onReenviarEnlace ? (
             <BotonPrincipal
               estilo={estilos.botonEnlace}
@@ -125,6 +140,14 @@ export default function PantallaDetalleObra({
           ) : null}
         </View>
       </ScrollView>
+      {tokenAcceso ? (
+        <ModalAsignarTrabajadores
+          visible={verTrabajadores}
+          tokenAcceso={tokenAcceso}
+          idObra={obra.id}
+          onCerrar={() => setVerTrabajadores(false)}
+        />
+      ) : null}
     </View>
   );
 }
