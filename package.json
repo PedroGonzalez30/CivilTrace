@@ -119,6 +119,15 @@
       },
       "./src/componentes/{SeccionEntregas,TarjetaEntrega}.tsx": {
         "lines": 60
+      },
+      "./src/servicios/servicioDesempeno.ts": {
+        "lines": 60
+      },
+      "./src/componentes/TarjetaMetrica.tsx": {
+        "lines": 60
+      },
+      "./src/pantallas/{comunes/PantallaDesempeno,supervisor/PantallaPersonalObra}.tsx": {
+        "lines": 60
       }
     },
     "setupFilesAfterEnv": [

@@ -5,6 +5,7 @@
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 19/11/2026
  * @version 1.0.0
+ * @historial 25/11/2026 - Emilio Manuel Esquivel - Tocar el nombre abre el desempeño (feature 005)
  */
 
 // 1. Importaciones
@@ -20,6 +21,8 @@ interface FilaPersonaProps {
   nombre: string;
   subtitulo: string;
   onEliminar: () => void;
+  // Feature 005: tocar a un trabajador abre su desempeño.
+  onPresionar?: () => void;
 }
 
 // 3. Constantes del módulo
@@ -27,20 +30,31 @@ const OPACIDAD_PAPELERA = 0.45;
 const MARGEN_AREA_TOQUE = 10;
 
 // 4. Componente principal
-export default function FilaPersona({ nombre, subtitulo, onEliminar }: FilaPersonaProps) {
+export default function FilaPersona({
+  nombre,
+  subtitulo,
+  onEliminar,
+  onPresionar,
+}: FilaPersonaProps) {
   return (
     <View style={estilos.fila}>
       <View style={estilos.avatar}>
         <Text style={estilos.iniciales}>{obtenerIniciales(nombre)}</Text>
       </View>
-      <View style={estilos.textos}>
+      <Pressable
+        style={estilos.textos}
+        disabled={!onPresionar}
+        onPress={onPresionar}
+        accessibilityRole={onPresionar ? 'button' : undefined}
+        accessibilityLabel={onPresionar ? `Ver desempeño de ${nombre}` : undefined}
+      >
         <Text numberOfLines={1} style={estilos.nombre}>
           {nombre}
         </Text>
         <Text numberOfLines={1} style={estilos.subtitulo}>
           {subtitulo}
         </Text>
-      </View>
+      </Pressable>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={`Eliminar a ${nombre}`}
