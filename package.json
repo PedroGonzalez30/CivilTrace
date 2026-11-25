@@ -113,6 +113,12 @@
       },
       "./src/componentes/BotonFlotante.tsx": {
         "lines": 60
+      },
+      "./src/servicios/servicioEntregas.ts": {
+        "lines": 60
+      },
+      "./src/componentes/{SeccionEntregas,TarjetaEntrega}.tsx": {
+        "lines": 60
       }
     },
     "setupFilesAfterEnv": [

@@ -10,6 +10,7 @@
 
 // 1. Importaciones
 import { ErrorApi, llamarApi } from '@/conexion/clienteApi';
+import type { ResultadoEnlacePortal } from '@/tipos/entrega';
 import type { DatosNuevaObra, Obra } from '@/tipos/obra';
 import { convertirFechaLocalAIso, convertirIsoAFechaLocal } from '@/utilidades/formatearFecha';
 
@@ -81,15 +82,21 @@ export async function obtenerObras(tokenAcceso: string): Promise<Obra[]> {
   return respuesta.obras.map(aObra);
 }
 
+export interface ObraCreada {
+  obra: Obra;
+  // Correo con el enlace del portal que la API manda al crear la obra (RF-65, feature 004).
+  enlacePortal: ResultadoEnlacePortal | null;
+}
+
 /**
  * Crea una obra. Solo el dueño tiene permiso.
  *
  * @param tokenAcceso - Token de acceso de la sesión.
  * @param datos - Datos del formulario (fechas como DD/MM/AAAA).
- * @returns La obra creada.
+ * @returns La obra creada y si salió el correo con el enlace del portal.
  * @throws ErrorApi con un mensaje en español si los datos no son válidos o no hay conexión.
  */
-export async function crearObra(tokenAcceso: string, datos: DatosNuevaObra): Promise<Obra> {
+export async function crearObra(tokenAcceso: string, datos: DatosNuevaObra): Promise<ObraCreada> {
   const fechaInicio = convertirFechaLocalAIso(datos.fechaInicio);
   const fechaFinal = convertirFechaLocalAIso(datos.fechaFin);
   if (!fechaInicio || !fechaFinal) {
@@ -115,5 +122,8 @@ export async function crearObra(tokenAcceso: string, datos: DatosNuevaObra): Pro
   if (!esObjeto(respuesta)) {
     throw new ErrorApi(MENSAJE_RESPUESTA_INVALIDA, null);
   }
-  return aObra(respuesta.obra);
+  const enlacePortal = ['ENVIADO', 'FALLIDO', 'SIN_CORREO'].includes(String(respuesta.enlacePortal))
+    ? (respuesta.enlacePortal as ResultadoEnlacePortal)
+    : null;
+  return { obra: aObra(respuesta.obra), enlacePortal };
 }

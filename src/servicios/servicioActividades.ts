@@ -129,6 +129,7 @@ function aActividadDetalle(valor: unknown): ActividadDetalle {
   return {
     ...resumen,
     avances: valor.avances.map(aAvance),
+    bloqueada: valor.bloqueada === true,
   };
 }
 

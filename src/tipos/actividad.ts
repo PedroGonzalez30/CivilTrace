@@ -48,6 +48,8 @@ export interface ActividadResumen {
 
 export interface ActividadDetalle extends ActividadResumen {
   avances: AvanceActividad[];
+  // Feature 004 (RF-17, D-31): terminada y aceptada por el cliente; ya no se modifica.
+  bloqueada: boolean;
 }
 
 // Actividad del trabajador en cualquiera de sus obras (GET /actividades/mias).
