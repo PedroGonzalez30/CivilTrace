@@ -89,3 +89,8 @@ jest.mock('expo-sqlite', () => ({
     throw new Error('Las pruebas usan el repositorio en memoria, no SQLite');
   }),
 }));
+
+// D-33: las subidas binarias usan expo/fetch; en las pruebas se redirige al fetch global simulado.
+jest.mock('expo/fetch', () => ({
+  fetch: (...argumentos: Parameters<typeof fetch>) => globalThis.fetch(...argumentos),
+}));

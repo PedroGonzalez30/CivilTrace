@@ -6,10 +6,13 @@
  * @fecha 16/11/2026
  * @version 1.2.0
  * @historial 23/11/2026 - Emilio Manuel Esquivel - ErrorSinConexion, motivo y PATCH (feature 001)
+ *   25/11/2026 - Emilio Manuel Esquivel - Subidas binarias con expo/fetch (D-33)
  *   24/11/2026 - Emilio Manuel Esquivel - Encabezados extra (tipo y comentario de evidencia, feature 003)
  */
 
 // 1. Importaciones
+import { fetch as fetchExpo } from 'expo/fetch';
+
 import { TIEMPO_ESPERA_API_MS, URL_API } from '@/conexion/configuracionApi';
 
 // 2. Tipos e interfaces
@@ -109,8 +112,12 @@ export async function llamarApi(ruta: string, opciones: OpcionesLlamada = {}): P
     tiempoEsperaMs ?? TIEMPO_ESPERA_API_MS,
   );
 
+  // D-33: un File de expo-file-system como cuerpo solo lo envía bien el fetch de expo/fetch (así lo
+  // documenta Expo SDK 58); con el fetch global llegaba algo que no era la foto.
+  const enviar = cuerpoBinario ? fetchExpo : fetch;
+
   try {
-    const respuesta = await fetch(`${URL_API}${ruta}`, {
+    const respuesta = await enviar(`${URL_API}${ruta}`, {
       method: metodo,
       headers: {
         Accept: 'application/json',
