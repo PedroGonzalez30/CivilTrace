@@ -14,7 +14,8 @@ export const COLORES = {
   texto: '#0f172a',
   textoAtenuado: '#475569',
   textoSutil: '#64748b',
-  marcador: '#9ca3af',
+  // Feature 006: más oscuro; el equipo veía muy tenues los textos guía de los campos.
+  marcador: '#6b7280',
   fondoEntrada: '#f8fafc',
   borde: '#e2e8f0',
   bordeModal: '#e5e7eb',

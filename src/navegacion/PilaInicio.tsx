@@ -85,6 +85,7 @@ export default function PilaInicio({ sesion, onNombreEmpresaCambiado }: PilaInic
           return obra ? (
             <PantallaDetalleObra
               obra={obra}
+              tokenAcceso={sesion.token}
               onRegresar={navigation.goBack}
               onAbrirActividades={(idObra) => navigation.navigate('ActividadesObra', { idObra })}
               onAbrirReportes={(idObra) => navigation.navigate('ReportesObra', { idObra })}
