@@ -194,6 +194,8 @@ export interface DetalleDia {
   motivo: MotivoAsistencia | null;
   efectoPago: EfectoPago;
   conDescuento: boolean;
+  // Feature 006 (D-35): horas a descontar del pago; null si no hay.
+  horasDescontadas: number | null;
   anotacion: string | null;
   registradoPor: string | null;
   registradoEn: string | null;
@@ -207,6 +209,7 @@ export interface CambiosDetalle {
   anotacion?: string | null;
   entradaEn?: string | null;
   salidaEn?: string | null;
+  horasDescontadas?: number | null;
 }
 
 export interface DiaCalendario {

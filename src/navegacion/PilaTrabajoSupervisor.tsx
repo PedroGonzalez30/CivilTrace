@@ -62,6 +62,7 @@ export default function PilaTrabajoSupervisor({ sesion }: PilaTrabajoSupervisorP
           return obra ? (
             <PantallaDetalleObra
               obra={obra}
+              tokenAcceso={sesion.token}
               onRegresar={navigation.goBack}
               onAbrirActividades={(idObra) =>
                 navigation.navigate('ActividadesObra', { idObra, obraNombre: obra.nombre })
