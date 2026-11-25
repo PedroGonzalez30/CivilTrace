@@ -10,6 +10,7 @@
  * @historial 23/11/2026 - Emilio Manuel Esquivel - El teclado ya no tapa las anotaciones
  * @requerimientos RF-60 Registrar retardo o salida anticipada, D-07
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Creación (feature 001)
+ *   25/11/2026 - Emilio Manuel Esquivel - Campo "Horas a descontar" (feature 006, D-35)
  */
 
 // 1. Importaciones
@@ -199,6 +200,22 @@ export default function HojaDetallesAsistencia(props: HojaDetallesAsistenciaProp
                   </Pressable>
                 ))}
               </View>
+              <Text style={estilos.seccion}>Horas a descontar</Text>
+              <TextInput
+                style={estilos.campoHoras}
+                value={formulario.horasDescontadas}
+                onChangeText={(horasDescontadas) =>
+                  cambiar({ horasDescontadas: horasDescontadas.replace(/[^\d.,]/g, '') })
+                }
+                keyboardType="decimal-pad"
+                maxLength={4}
+                accessibilityLabel="Horas a descontar"
+                placeholder="Ej. 1.5 (opcional)"
+                placeholderTextColor={COLORES.marcador}
+              />
+              <Text style={estilos.nota}>
+                Por llegar tarde o salir antes. Solo se registra; no calcula montos.
+              </Text>
               <Text style={estilos.seccion}>Anotaciones</Text>
               <TextInput
                 style={estilos.anotacion}
@@ -344,6 +361,16 @@ const estilos = StyleSheet.create({
   opcionActiva: { backgroundColor: COLORES.superficie },
   textoSegmento: { ...TIPOGRAFIA.leyenda, color: COLORES.textoSutil },
   textoActivo: { ...TIPOGRAFIA.etiqueta, color: COLORES.texto },
+  campoHoras: {
+    backgroundColor: COLORES.fondoEntrada,
+    borderWidth: 1,
+    borderColor: COLORES.borde,
+    borderRadius: RADIOS.accion,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    ...TIPOGRAFIA.valorCampo,
+    color: COLORES.texto,
+  },
   anotacion: {
     ...TIPOGRAFIA.subtitulo,
     minHeight: 72,
