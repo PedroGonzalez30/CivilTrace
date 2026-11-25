@@ -70,6 +70,10 @@ jest.mock('expo-file-system', () => {
     static createDownloadTask = jest.fn((_url: string, destino: ArchivoSimulado) => ({
       downloadAsync: jest.fn(async () => destino),
     }));
+    // D-33: las fotos se suben como File; "inexistente" en la ruta simula una foto que no se lee.
+    get size() {
+      return this.uri.includes('inexistente') ? 0 : 1024;
+    }
     // Feature 004: descarga del reporte y del acta de una entrega.
     static downloadFileAsync = jest.fn(async (_url: string, destino: ArchivoSimulado) => destino);
   }

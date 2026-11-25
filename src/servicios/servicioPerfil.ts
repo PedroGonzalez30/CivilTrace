@@ -6,11 +6,14 @@
  * @fecha 20/11/2026
  * @version 1.0.0
  * @historial 23/11/2026 - Emilio Manuel Esquivel - Oficio del perfil (D-18, feature 001)
+ * @historial 25/11/2026 - Emilio Manuel Esquivel - La foto se sube como File de expo-file-system
+ *   (D-33): fetch(uri) en Android subía el texto "File not found"
  */
 
 // 1. Importaciones
 import { ErrorApi, llamarApi } from '@/conexion/clienteApi';
 import { URL_API } from '@/conexion/configuracionApi';
+import { abrirFotoLocal } from '@/utilidades/archivoLocal';
 
 // 2. Tipos e interfaces
 export interface DatosPerfil {
@@ -36,7 +39,6 @@ const RUTA_PERFIL = '/perfil';
 const RUTA_FOTO = '/perfil/foto';
 const TIEMPO_ESPERA_SUBIDA_MS = 60000;
 const MENSAJE_RESPUESTA_INVALIDA = 'El servidor envió una respuesta inesperada';
-const MENSAJE_FOTO_ILEGIBLE = 'No se pudo leer la foto seleccionada';
 const MENSAJE_FOTO_NO_DISPONIBLE = 'No se pudo cargar tu foto de perfil';
 const MENSAJE_SIN_CONEXION = 'No se pudo conectar con el servidor. Revisa tu conexión.';
 
@@ -118,12 +120,8 @@ export async function subirFotoPerfil(
   tipo: string,
   ruta: string = RUTA_FOTO,
 ): Promise<void> {
-  let datos: Blob;
-  try {
-    datos = await (await fetch(uriFoto)).blob();
-  } catch {
-    throw new ErrorApi(MENSAJE_FOTO_ILEGIBLE, null);
-  }
+  // D-33: se manda el archivo tal cual; fetch(uri) en Android subía el texto "File not found".
+  const datos = abrirFotoLocal(uriFoto);
   await llamarApi(ruta, {
     metodo: 'POST',
     tokenAcceso,

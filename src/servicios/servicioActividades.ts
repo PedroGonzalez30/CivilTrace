@@ -8,6 +8,8 @@
  * @version 2.0.0
  * @historial 24/11/2026 - Emilio Manuel Esquivel - Crear actividad, subir evidencia, revisar
  *   avance y mis actividades; campos nuevos de la API (feature 003)
+ * @historial 25/11/2026 - Emilio Manuel Esquivel - La foto se sube como File de expo-file-system
+ *   (D-33): fetch(uri) en Android subía el texto "File not found"
  */
 
 // 1. Importaciones
@@ -26,13 +28,13 @@ import type {
   ResultadoRevision,
 } from '@/tipos/actividad';
 import { convertirFechaLocalAIso, convertirIsoAFechaLocal } from '@/utilidades/formatearFecha';
+import { abrirFotoLocal } from '@/utilidades/archivoLocal';
 
 // 3. Constantes del módulo
 const MENSAJE_RESPUESTA_INVALIDA = 'El servidor envió una respuesta inesperada';
 const SIN_DATO = '—';
 const LONGITUD_FECHA_ISO = 10;
 const TIEMPO_ESPERA_SUBIDA_MS = 60000;
-const MENSAJE_FOTO_ILEGIBLE = 'No se pudo leer la foto seleccionada';
 
 // 4. Funciones privadas
 function esObjeto(valor: unknown): valor is Record<string, unknown> {
@@ -253,12 +255,8 @@ export async function subirEvidencia(
   idActividad: string,
   evidencia: EvidenciaNueva,
 ): Promise<AvanceActividad> {
-  let datos: Blob;
-  try {
-    datos = await (await fetch(evidencia.uri)).blob();
-  } catch {
-    throw new ErrorApi(MENSAJE_FOTO_ILEGIBLE, null);
-  }
+  // D-33: se manda el archivo tal cual; fetch(uri) en Android subía el texto "File not found".
+  const datos = abrirFotoLocal(evidencia.uri);
   const respuesta = await llamarApi(`${rutaActividad(idObra, idActividad)}/avances`, {
     metodo: 'POST',
     tokenAcceso,
