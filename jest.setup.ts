@@ -70,8 +70,8 @@ jest.mock('expo-file-system', () => {
     static createDownloadTask = jest.fn((_url: string, destino: ArchivoSimulado) => ({
       downloadAsync: jest.fn(async () => destino),
     }));
-    // P-18: el PDF del reporte se copia a la caché antes de compartirlo.
-    copy = jest.fn(async () => undefined);
+    // P-18: el PDF del reporte se escribe en la caché antes de compartirlo.
+    write = jest.fn(async () => undefined);
     // D-33: las fotos se suben como File; "inexistente" en la ruta simula una foto que no se lee.
     get size() {
       return this.uri.includes('inexistente') ? 0 : 1024;

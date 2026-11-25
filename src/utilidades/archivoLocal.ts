@@ -9,7 +9,7 @@
  * @version 1.0.0
  * @requerimientos RF-08 Capturar evidencia fotográfica, RF-57 Editar perfil de usuario
  * @historial 25/11/2026 - Emilio Manuel Esquivel - Creación (D-33)
- *   25/11/2026 - Emilio Manuel Esquivel - Copiar a la caché antes de compartir (P-18)
+ *   25/11/2026 - Emilio Manuel Esquivel - Guardar en la caché antes de compartir (P-18)
  */
 
 // 1. Importaciones
@@ -39,17 +39,20 @@ export function abrirFotoLocal(uri: string): File {
 }
 
 /**
- * Copia un archivo a la caché de la app con un nombre legible para poder compartirlo. En Android,
- * expo-sharing no tiene permiso de leer el PDF donde lo deja expo-print ("Not allowed to read file
- * under given URL", P-18).
+ * Escribe un archivo en la caché de la app a partir de su contenido en base64, para compartirlo.
+ * En Android (Expo Go) no se puede leer ni copiar el PDF donde lo deja expo-print ("Not allowed to
+ * read file" / "Missing 'READ' permission", P-18); por eso se pide su contenido y se escribe aquí.
  *
- * @param uri - Archivo de origen (por ejemplo, el PDF de Print.printToFileAsync).
- * @param nombre - Nombre del archivo a compartir, con extensión.
- * @returns La dirección de la copia en la caché.
+ * @param base64 - Contenido del archivo en base64, sin prefijo data:.
+ * @param nombre - Nombre del archivo, con extensión.
+ * @returns La dirección del archivo en la caché.
  */
-export async function copiarACacheParaCompartir(uri: string, nombre: string): Promise<string> {
+export async function guardarEnCacheParaCompartir(base64: string, nombre: string): Promise<string> {
   const nombreSeguro = nombre.replace(/[^\p{L}\p{N}._ -]/gu, '_');
   const destino = new File(Paths.cache, nombreSeguro);
-  await new File(uri).copy(destino, { overwrite: true });
+  if (!destino.exists) {
+    destino.create();
+  }
+  await destino.write(base64, { encoding: 'base64' });
   return destino.uri;
 }
