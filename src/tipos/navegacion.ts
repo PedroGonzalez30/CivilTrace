@@ -43,6 +43,9 @@ export type ParametrosPilaAsistenciaSupervisor = {
   HorarioObra: { obraId: string; obraNombre: string };
   CalendarioTrabajador: { trabajadorId: string; obraId: string; obraNombre: string };
   Rechazados: { obraId: string; obraNombre: string };
+  // Feature 005: personal de la obra y desempeño de un trabajador.
+  PersonalObra: { obraId: string; obraNombre: string };
+  DesempenoTrabajador: { trabajadorId: string; obraNombre: string };
 };
 
 // Supervisor (feature 003: obras, actividades y evidencias en Inicio).

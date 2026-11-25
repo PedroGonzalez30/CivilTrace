@@ -20,6 +20,8 @@ import PantallaEscogerObra from '@/pantallas/supervisor/PantallaEscogerObra';
 import PantallaHorarioObra from '@/pantallas/supervisor/PantallaHorarioObra';
 import PantallaLeerQr from '@/pantallas/supervisor/PantallaLeerQr';
 import PantallaRechazados from '@/pantallas/supervisor/PantallaRechazados';
+import PantallaDesempeno from '@/pantallas/comunes/PantallaDesempeno';
+import PantallaPersonalObra from '@/pantallas/supervisor/PantallaPersonalObra';
 import type { SesionAutenticacion } from '@/tipos/autenticacion';
 import type { ParametrosPilaAsistenciaSupervisor } from '@/tipos/navegacion';
 
@@ -61,6 +63,7 @@ export default function PilaAsistenciaSupervisor({ sesion }: PilaAsistenciaSuper
             onVerCalendario={(trabajadorId) =>
               navigation.navigate('CalendarioTrabajador', { ...route.params, trabajadorId })
             }
+            onVerPersonal={() => navigation.navigate('PersonalObra', route.params)}
           />
         )}
       </Pila.Screen>
@@ -101,6 +104,32 @@ export default function PilaAsistenciaSupervisor({ sesion }: PilaAsistenciaSuper
           <PantallaRechazados
             sesion={sesion}
             obraId={route.params.obraId}
+            onRegresar={() => navigation.goBack()}
+          />
+        )}
+      </Pila.Screen>
+      <Pila.Screen name="PersonalObra">
+        {({ navigation, route }) => (
+          <PantallaPersonalObra
+            tokenAcceso={sesion.token}
+            obraId={route.params.obraId}
+            obraNombre={route.params.obraNombre}
+            onRegresar={() => navigation.goBack()}
+            onElegir={(trabajador) =>
+              navigation.navigate('DesempenoTrabajador', {
+                trabajadorId: trabajador.id,
+                obraNombre: route.params.obraNombre,
+              })
+            }
+          />
+        )}
+      </Pila.Screen>
+      <Pila.Screen name="DesempenoTrabajador">
+        {({ navigation, route }) => (
+          <PantallaDesempeno
+            tokenAcceso={sesion.token}
+            trabajadorId={route.params.trabajadorId}
+            contexto={route.params.obraNombre}
             onRegresar={() => navigation.goBack()}
           />
         )}
