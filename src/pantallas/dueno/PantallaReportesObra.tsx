@@ -33,6 +33,7 @@ import {
   TarjetaFormulario,
 } from '@/componentes';
 import SeccionEntregas from '@/componentes/SeccionEntregas';
+import TextoUbicacion from '@/componentes/TextoUbicacion';
 import { ErrorApi } from '@/conexion/clienteApi';
 import { COLORES } from '@/constantes/colores';
 import { RADIOS, SOMBRAS, TAMANOS, TIPOGRAFIA } from '@/constantes/tema';
@@ -345,6 +346,7 @@ export default function PantallaReportesObra({
                       <Text style={estilos.descripcionEntregable}>
                         {avance.comentario || 'Sin descripción registrada.'}
                       </Text>
+                      <TextoUbicacion datos={avance} />
                       {avance.fotoDataUri ? (
                         <Image
                           source={{ uri: avance.fotoDataUri }}

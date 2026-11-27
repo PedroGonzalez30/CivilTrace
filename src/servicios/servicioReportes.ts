@@ -5,10 +5,11 @@
  *              de evidencia autenticadas y genera el reporte en formato PDF.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
- * @version 1.2.0
+ * @version 1.3.0
  * @historial 24/11/2026 - Emilio Manuel Esquivel - Los tipos del reporte omiten los campos de
  *   revisión del feature 003
  *   25/11/2026 - Emilio Manuel Esquivel - El PDF se guarda en la caché antes de compartir (P-18)
+ *   25/11/2026 - Emilio Manuel Esquivel - Ubicación de cada foto (feature 007, RF-12)
  */
 
 import * as Print from 'expo-print';
@@ -25,6 +26,7 @@ import type {
 import type { Obra } from '@/tipos/obra';
 import { convertirFechaLocalAIso, convertirIsoAFechaLocal } from '@/utilidades/formatearFecha';
 import { guardarEnCacheParaCompartir } from '@/utilidades/archivoLocal';
+import { describirUbicacion, leerUbicacionRespuesta } from '@/utilidades/ubicacionEvidencia';
 
 // El reporte no usa los datos de revisión ni de entrega del feature 003.
 export interface AvanceReporte extends Omit<
@@ -178,6 +180,7 @@ export async function cargarDatosReporteObra(
             fechaRegistro: formatearFechaAvance(av.fechaRegistro),
             registradoPor: textoOSinDato(av.registradoPor),
             tieneFoto,
+            ...leerUbicacionRespuesta(av),
             fotoDataUri: tieneFoto
               ? await obtenerFotoComoDataUri(tokenAcceso, obra.id, item.id as string, av.id)
               : null,
@@ -225,6 +228,7 @@ export function construirHtmlReporteObra(reporte: DatosReporteObra): string {
                     </div>
                     <p class="avance-meta"><strong>Responsable que subió:</strong> ${escaparHtml(avance.registradoPor)}</p>
                     <p class="avance-meta"><strong>Estado:</strong> ${escaparHtml(avance.estado)}</p>
+                    <p class="avance-meta"><strong>Ubicación:</strong> ${escaparHtml(describirUbicacion(avance))}</p>
                     <p class="avance-desc"><strong>Descripción del entregable:</strong> ${escaparHtml(avance.comentario || 'Sin descripción registrada.')}</p>
                     ${
                       avance.fotoDataUri

@@ -74,6 +74,8 @@ const AVANCE: AvanceActividad = {
   tipo: 'TERMINADO',
   observacion: null,
   revisadoPor: null,
+  ubicacion: null,
+  referenciaUbicacion: null,
 };
 
 const ACTIVIDAD: ActividadDetalle = {
@@ -151,6 +153,8 @@ describe('Servicio de actividades (feature 003)', () => {
       tipoImagen: 'image/jpeg',
       tipo: 'TERMINADO',
       comentario: ' Terminé ',
+      ubicacion: { latitud: 32.6245, longitud: -115.4523, precisionMetros: 10 },
+      referenciaUbicacion: '',
     });
 
     expect(llamar).toHaveBeenCalledWith(
@@ -161,7 +165,13 @@ describe('Servicio de actividades (feature 003)', () => {
           datos: expect.objectContaining({ uri: 'file:///foto.jpg' }),
           tipo: 'image/jpeg',
         },
-        encabezados: { 'x-tipo-avance': 'TERMINADO', 'x-comentario-avance': 'Termin%C3%A9' },
+        encabezados: {
+          'x-tipo-avance': 'TERMINADO',
+          'x-comentario-avance': 'Termin%C3%A9',
+          'x-latitud': '32.6245',
+          'x-longitud': '-115.4523',
+          'x-precision-ubicacion': '10',
+        },
       }),
     );
     expect(avance).toMatchObject({ estado: 'PENDIENTE', tipo: 'TERMINADO' });
@@ -175,6 +185,8 @@ describe('Servicio de actividades (feature 003)', () => {
         tipoImagen: 'image/jpeg',
         tipo: 'DIARIO',
         comentario: '',
+        ubicacion: null,
+        referenciaUbicacion: 'Azotea',
       }),
     ).rejects.toThrow('No se pudo leer la foto seleccionada');
     expect(llamar).not.toHaveBeenCalled();
@@ -532,6 +544,11 @@ describe('Pantallas del trabajador y subir evidencia', () => {
       screen.getByPlaceholderText('Describe el avance de hoy...'),
       'Listo',
     );
+    // Feature 007: la foto de la galería no trae GPS en sus datos EXIF, así que pide referencia.
+    await fireEvent.press(screen.getAllByText('Subir evidencia').at(-1)!);
+    expect(screen.getByText('Sin ubicación GPS: escribe dónde se tomó la foto')).toBeTruthy();
+    expect(subir).not.toHaveBeenCalled();
+    await fireEvent.changeText(screen.getByLabelText('Referencia de ubicación'), 'Baño de arriba');
     // "Subir evidencia" es también el título de la tarjeta; el botón es el último.
     await fireEvent.press(screen.getAllByText('Subir evidencia').at(-1)!);
 
@@ -541,6 +558,8 @@ describe('Pantallas del trabajador y subir evidencia', () => {
         tipoImagen: 'image/jpeg',
         tipo: 'TERMINADO',
         comentario: 'Listo',
+        ubicacion: null,
+        referenciaUbicacion: 'Baño de arriba',
       }),
     );
     expect(onSubida).toHaveBeenCalledWith(AVANCE);

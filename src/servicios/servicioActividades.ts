@@ -5,11 +5,13 @@
  *              evidencias fotográficas.
  * @autor Pedro Ivan Gonzalez Valdez
  * @fecha 20/11/2026
- * @version 2.0.0
+ * @version 2.1.0
  * @historial 24/11/2026 - Emilio Manuel Esquivel - Crear actividad, subir evidencia, revisar
  *   avance y mis actividades; campos nuevos de la API (feature 003)
  * @historial 25/11/2026 - Emilio Manuel Esquivel - La foto se sube como File de expo-file-system
  *   (D-33): fetch(uri) en Android subía el texto "File not found"
+ * @historial 25/11/2026 - Emilio Manuel Esquivel - Ubicación de cada evidencia: se manda al subir
+ *   y se lee en cada avance (feature 007, RF-08)
  */
 
 // 1. Importaciones
@@ -29,6 +31,7 @@ import type {
 } from '@/tipos/actividad';
 import { convertirFechaLocalAIso, convertirIsoAFechaLocal } from '@/utilidades/formatearFecha';
 import { abrirFotoLocal } from '@/utilidades/archivoLocal';
+import { leerUbicacionRespuesta } from '@/utilidades/ubicacionEvidencia';
 
 // 3. Constantes del módulo
 const MENSAJE_RESPUESTA_INVALIDA = 'El servidor envió una respuesta inesperada';
@@ -86,6 +89,7 @@ function aAvance(valor: unknown): AvanceActividad {
     tipo: valor.tipo === 'TERMINADO' ? 'TERMINADO' : 'DIARIO',
     observacion: typeof valor.observacion === 'string' ? valor.observacion : null,
     revisadoPor: typeof valor.revisadoPor === 'string' ? valor.revisadoPor : null,
+    ...leerUbicacionRespuesta(valor),
   };
 }
 
@@ -133,6 +137,19 @@ function aActividadDetalle(valor: unknown): ActividadDetalle {
     avances: valor.avances.map(aAvance),
     bloqueada: valor.bloqueada === true,
   };
+}
+
+// RF-08: coordenadas del teléfono o, sin GPS, la referencia escrita (la API exige una de las dos).
+function cabecerasUbicacion(evidencia: EvidenciaNueva): Record<string, string> {
+  if (evidencia.ubicacion) {
+    const { latitud, longitud, precisionMetros } = evidencia.ubicacion;
+    return {
+      'x-latitud': String(latitud),
+      'x-longitud': String(longitud),
+      ...(precisionMetros === null ? {} : { 'x-precision-ubicacion': String(precisionMetros) }),
+    };
+  }
+  return { 'x-referencia-ubicacion': encodeURIComponent(evidencia.referenciaUbicacion.trim()) };
 }
 
 // 5. Funciones públicas
@@ -264,6 +281,7 @@ export async function subirEvidencia(
     encabezados: {
       'x-tipo-avance': evidencia.tipo,
       'x-comentario-avance': encodeURIComponent(evidencia.comentario.trim()),
+      ...cabecerasUbicacion(evidencia),
     },
     tiempoEsperaMs: TIEMPO_ESPERA_SUBIDA_MS,
   });
